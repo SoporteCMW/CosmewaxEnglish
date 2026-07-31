@@ -1,0 +1,137 @@
+.card-zone {
+  min-height: 260px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+
+.card {
+  width: 100%;
+  border: 1px solid var(--ink);
+  background: var(--paper-raised);
+  padding: 26px 24px 20px;
+  position: relative;
+}
+.card-tag {
+  position: absolute;
+  top: -10px;
+  left: 20px;
+  background: var(--petrol);
+  color: var(--paper);
+  font-size: 9.5px;
+  letter-spacing: 0.06em;
+  padding: 2px 8px;
+  text-transform: uppercase;
+}
+.card-box {
+  position: absolute;
+  top: -10px;
+  right: 20px;
+  display: flex;
+  gap: 3px;
+}
+.dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  border: 1px solid var(--ink);
+  background: transparent;
+}
+.dot.is-on { background: var(--amber); border-color: var(--amber); }
+
+.prompt-label,
+.your-answer-label {
+  font-size: 9.5px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  margin-bottom: 6px;
+}
+.prompt-text {
+  font-family: var(--font-display);
+  font-size: 21px;
+  line-height: 1.4;
+  margin-bottom: 18px;
+  color: var(--ink);
+}
+.your-answer-label { margin-bottom: 3px; }
+.your-answer-text {
+  font-family: var(--font-display);
+  font-size: 15px;
+  color: var(--ink-soft);
+  margin-bottom: 14px;
+  padding-bottom: 10px;
+  border-bottom: 1px dashed var(--line);
+}
+.answer-note {
+  font-size: 12px;
+  color: var(--ink-soft);
+  line-height: 1.5;
+  margin-bottom: 10px;
+}
+
+.rate-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-top: 14px;
+}
+.rate-btn {
+  padding: 11px 4px;
+  border: 1px solid var(--ink);
+  background: var(--paper);
+  font-family: inherit;
+  font-size: 11px;
+  letter-spacing: 0.03em;
+  cursor: pointer;
+  text-transform: uppercase;
+}
+.rate-btn.is-again { color: var(--bad); border-color: var(--bad); }
+.rate-btn.is-again:hover { background: var(--bad); color: #fff; }
+.rate-btn.is-good { color: var(--petrol-dark); border-color: var(--petrol-dark); }
+.rate-btn.is-good:hover { background: var(--petrol); color: #fff; }
+.rate-btn.is-easy { color: var(--amber); border-color: var(--amber); }
+.rate-btn.is-easy:hover { background: var(--amber); color: #fff; }
+
+/* ---- Formulario de alta ---- */
+details.add-form {
+  border: 1px solid var(--line);
+  margin-top: 24px;
+}
+details.add-form summary {
+  padding: 10px 14px;
+  font-size: 11px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  cursor: pointer;
+  background: var(--paper-dim);
+  color: var(--ink-soft);
+}
+.add-form-inner {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 0;
+}
+.add-form-inner label {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--ink-soft);
+  display: block;
+  margin-bottom: 3px;
+}
+.add-form-inner input,
+.add-form-inner select,
+.add-form-inner textarea {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid var(--line);
+  background: var(--paper-raised);
+  font-family: inherit;
+  font-size: 13px;
+  color: var(--ink);
+}
+.add-form-inner textarea { resize: vertical; min-height: 40px; }

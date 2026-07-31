@@ -1,0 +1,13 @@
+# El código de servidor y los secretos no se sirven nunca por HTTP.
+# Reglas independientes de la ruta de despliegue (funcionan en /CosmewaxEnglish/
+# o en cualquier otro subdirectorio). Cada carpeta protegida lleva además su
+# propio .htaccess, que es la barrera que aguanta si AllowOverride está limitado.
+RedirectMatch 404 (?i)/(config|src|storage)/
+RedirectMatch 404 (?i)/\.env
+
+<IfModule mod_headers.c>
+  Header set X-Content-Type-Options "nosniff"
+  Header set Referrer-Policy "same-origin"
+</IfModule>
+
+DirectoryIndex index.php

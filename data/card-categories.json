@@ -1,0 +1,5 @@
+[
+  { "id": "reunion", "label": "Reunión", "formLabel": "Reunión — supervivencia" },
+  { "id": "tecnico", "label": "Técnico", "formLabel": "Técnico-regulatorio" },
+  { "id": "comercial", "label": "Comercial", "formLabel": "Comercial / seguimiento" }
+]

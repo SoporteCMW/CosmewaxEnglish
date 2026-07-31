@@ -1,0 +1,57 @@
+[
+  {
+    "id": "delay",
+    "category": "cliente",
+    "initiator": "assistant",
+    "title": "Retraso en el pedido",
+    "desc": "El cliente llama porque un pedido va con retraso y quiere una fecha concreta.",
+    "context": "You are a client of Cosmewax, a B2B cosmetics manufacturer. Your last order of depilatory wax was supposed to arrive last week and still has not arrived. You are polite but firm, and you want a concrete new delivery date.",
+    "opening": "Hi, this is Sarah from GlowLine Cosmetics. I'm calling about our last order — it was supposed to arrive last week and we still haven't received it. Can you tell me what's going on?"
+  },
+  {
+    "id": "quality",
+    "category": "cliente",
+    "initiator": "assistant",
+    "title": "Muestra no conforme",
+    "desc": "El cliente no está satisfecho con la textura de una muestra recibida.",
+    "context": "You are a client of Cosmewax. You received a depilatory wax sample and are not happy with it — the texture is stickier than your current supplier's product. You want to understand why and what can be done.",
+    "opening": "Hello, this is Marc from Belle Peau. We received the wax sample you sent over, but honestly the texture isn't what we expected — it's much stickier than what we currently use. Can we talk about that?"
+  },
+  {
+    "id": "price",
+    "category": "cliente",
+    "initiator": "assistant",
+    "title": "Negociación de precio",
+    "desc": "El cliente quiere mejorar el precio para un pedido grande.",
+    "context": "You are a client of Cosmewax looking to place a much larger order this quarter. You want to negotiate a better price, citing volume and mentioning other suppliers, in a cordial but persistent way.",
+    "opening": "Hi, it's Elena from Nordic Beauty Supplies. We're looking at placing a much bigger order this quarter, and I wanted to see if there's any room to improve on the pricing you sent us."
+  },
+  {
+    "id": "newproduct",
+    "category": "cliente",
+    "initiator": "assistant",
+    "title": "Interés en producto nuevo",
+    "desc": "El cliente pregunta por una formulación nueva para piel sensible.",
+    "context": "You are a client of Cosmewax interested in a depilatory wax formulated for sensitive skin. You ask about ingredients, development timelines, and whether a sample could be tested.",
+    "opening": "Hi, this is Tom from PureSkin Labs. We're interested in a depilatory wax formulated for sensitive skin — do you already have something like that, or could you develop one for us?"
+  },
+  {
+    "id": "followup",
+    "category": "cliente",
+    "initiator": "assistant",
+    "title": "Seguimiento de proyecto",
+    "desc": "El cliente quiere una actualización del estado de un proyecto en curso.",
+    "context": "You are a client checking in on a private-label development project that started last month. You want a quick, clear status update: milestones reached, next steps, and estimated completion date.",
+    "opening": "Hi, it's Anna, just checking in on the private-label project we kicked off last month. Could you give me a quick status update?"
+  },
+  {
+    "id": "present",
+    "category": "presentacion",
+    "initiator": "user",
+    "title": "Presentar un desarrollo y debatir",
+    "desc": "Tú explicas un desarrollo (ventajas e inconvenientes); tu interlocutor pregunta y debate contigo, sin ser complaciente.",
+    "context": null,
+    "opening": null,
+    "guide": "Cuando estés listo, explica tu desarrollo: qué es, qué ventajas ofrece y qué inconvenientes o retos tiene. Habla como si lo presentaras en una reunión real — tu interlocutor te irá preguntando."
+  }
+]

@@ -1,0 +1,20 @@
+[
+  {
+    "id": "pro",
+    "title": "Cosmética / profesional",
+    "desc": "Un texto sobre la industria cosmética, formulación, regulación o innovación en el sector.",
+    "prompt": "about the cosmetics industry — for example product development, ingredients, regulation, sustainability, or innovation in cosmetics manufacturing"
+  },
+  {
+    "id": "news",
+    "title": "Actualidad",
+    "desc": "Un texto de interés general: tecnología, ciencia, negocios o cultura.",
+    "prompt": "about a current general-interest topic such as technology, science, business, or culture — nothing overly technical, suitable for a general adult reader"
+  },
+  {
+    "id": "random",
+    "title": "Sorpréndeme",
+    "desc": "Un tema variado y aleatorio, para salir de lo habitual.",
+    "prompt": "about any topic you find genuinely interesting — surprise the learner with variety, avoid repeating common topics"
+  }
+]

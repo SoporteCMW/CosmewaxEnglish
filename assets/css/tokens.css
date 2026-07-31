@@ -1,0 +1,24 @@
+/* Paleta y escalas. Único sitio donde se definen colores y tipografías:
+   cualquier ajuste de marca se hace aquí, no en las hojas de cada modo. */
+:root {
+  --paper: #f6f3ec;
+  --paper-raised: #fffdf8;
+  --paper-dim: #ece7da;
+  --ink: #201f1a;
+  --ink-soft: #55524a;
+  --petrol: #1f4a4a;
+  --petrol-dark: #143333;
+  --amber: #c1893f;
+  --amber-soft: #ecd9b8;
+  --line: #d9d2bf;
+  --good: #3f6b4a;
+  --good-bg: #eef4ee;
+  --bad: #a6432f;
+  --bad-bg: #f7ebe8;
+
+  --font-body: 'Courier New', ui-monospace, Menlo, monospace;
+  --font-display: Georgia, 'Times New Roman', serif;
+
+  --sheet-width: 720px;
+  --radius-sm: 2px;
+}

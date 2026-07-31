@@ -1,0 +1,4 @@
+[
+  { "id": "cliente", "label": "📞 Llamadas de cliente — el interlocutor empieza", "whoLabel": "Cliente" },
+  { "id": "presentacion", "label": "🗣️ Presentación técnica — tú empiezas", "whoLabel": "Interlocutor" }
+]
