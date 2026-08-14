@@ -1,0 +1,726 @@
+:root {
+    --corp-primary: #587587;
+    --corp-primary-dark: #46606F;
+    --corp-primary-light: #7A95A6;
+    --corp-bg: #F0F2F5;
+    --corp-bg-soft: #F8F9FB;
+    --corp-text: #1A202C;
+    --corp-text-soft: #6B7888;
+    --corp-border: #E2E5EB;
+    --corp-topbar-bg: var(--corp-primary);
+    --corp-topbar-blur: none;
+    --corp-surface: #ffffff;
+    --corp-surface-hover: #f7fafc;
+    --corp-input-bg: #ffffff;
+    --corp-input-border: #e2e8f0;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--corp-bg);
+    color: var(--corp-text);
+    line-height: 1.6;
+    min-height: 100vh;
+}
+
+   /* ================== FOOTER ================== */
+        .footer {
+            text-align: center;
+            color: var(--corp-text-soft);
+            font-size: 11px;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid var(--corp-border);
+            letter-spacing: 1px;
+        }
+        .footer-brand {
+            color: var(--corp-primary);
+            font-weight: 700;
+            letter-spacing: 2px;
+        }
+
+        .env-badge {
+    display: inline-block;
+    padding: 2px 7px;
+    border-radius: 4px;
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    line-height: 1.6;
+    border: 1px solid transparent;
+}
+
+.env-dev {
+    background: rgba(251, 191, 36, 0.2);
+    color: #fbbf24;
+    border-color: rgba(251, 191, 36, 0.45);
+}
+
+.env-staging {
+    background: rgba(139, 92, 246, 0.2);
+    color: #c4b5fd;
+    border-color: rgba(139, 92, 246, 0.45);
+}
+
+.env-prod {
+    background: rgba(16, 185, 129, 0.2);
+    color: #6ee7b7;
+    border-color: rgba(16, 185, 129, 0.35);
+}
+
+/* ================== TOP BAR ================== */
+.topbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    background: var(--corp-topbar-bg);
+    backdrop-filter: var(--corp-topbar-blur);
+    -webkit-backdrop-filter: var(--corp-topbar-blur);
+    color: white;
+    padding: 14px 24px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.12);
+    transition: background 0.3s;
+}
+.topbar-logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding-right: 20px;
+    border-right: 1px solid rgba(255,255,255,0.25);
+}
+.topbar-logo-img {
+    height: 42px;
+    width: auto;
+    display: block;
+    flex-shrink: 0;
+}
+.topbar-section {
+    font-size: 16px;
+    font-weight: 400;
+    letter-spacing: 0.3px;
+    flex: 1;
+}
+.topbar-meta {
+    font-size: 12px;
+    opacity: 0.85;
+    letter-spacing: 0.5px;
+}
+
+.topbar-user {
+    font-size: 12px;
+    opacity: 0.9;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    white-space: nowrap;
+}
+
+/* Foto de perfil del usuario (Microsoft Graph) — con fallback a iniciales */
+.topbar-avatar {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+    border: 1px solid rgba(255, 255, 255, 0.55);
+    background: rgba(255, 255, 255, 0.15);
+}
+.topbar-avatar-fallback {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    color: white;
+}
+.topbar-user-info {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.15;
+}
+.topbar-user-name {
+    font-weight: 600;
+    font-size: 12px;
+}
+.topbar-user-role {
+    font-size: 10px;
+    opacity: 0.75;
+    font-weight: 400;
+}
+
+.topbar-logout {
+    color: rgba(255,255,255,0.85);
+    text-decoration: none;
+    transition: opacity 0.15s;
+}
+.topbar-logout:hover { opacity: 1; text-decoration: underline; }
+
+.container {
+    width: 98vw;
+    margin-top: 70px;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 15px;
+    overflow-x: hidden;
+}
+
+.header {
+    background: var(--corp-surface);
+    border: 1px solid var(--corp-border);
+    padding: 6px 16px;
+    border-radius: 8px;
+    margin-bottom: 12px;
+    box-shadow: 0 1px 3px rgba(88,117,135,0.08);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.controls {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 15px;
+    flex-wrap: wrap;
+}
+
+.btn {
+    background: rgb(88, 117, 135);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.2s;
+}
+
+.btn:hover {
+    background: rgb(74, 98, 117);
+    transform: translateY(-1px);
+}
+
+.btn:disabled {
+    background: #a0aec0;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* ── Toggle moderno on/off para "Refresco automático" ────────────────────
+   Estructura HTML esperada:
+     <label class="auto-refresh-toggle">
+       <input type="checkbox" id="autoRefreshToggle">
+       <span class="auto-refresh-slider"></span>
+       <span class="auto-refresh-text">Refresco automático (5 min)</span>
+     </label>
+─────────────────────────────────────────────────────────────────────── */
+.auto-refresh-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    user-select: none;
+    font-size: 14px;
+    color: var(--corp-text);
+    padding: 6px 4px;
+}
+/* Ocultar el checkbox nativo manteniéndolo accesible para teclado */
+.auto-refresh-toggle input[type="checkbox"] {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+/* Carril del switch (gris cuando OFF) */
+.auto-refresh-slider {
+    position: relative;
+    display: inline-block;
+    width: 42px;
+    height: 22px;
+    background: #cbd5e0;
+    border-radius: 22px;
+    transition: background 0.25s ease;
+    flex-shrink: 0;
+}
+/* Bolita interna (estado OFF a la izquierda) */
+.auto-refresh-slider::before {
+    content: "";
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 18px;
+    height: 18px;
+    background: white;
+    border-radius: 50%;
+    transition: transform 0.25s ease;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+}
+/* Estado ON: carril verde y bolita desplazada a la derecha */
+.auto-refresh-toggle input[type="checkbox"]:checked + .auto-refresh-slider {
+    background: #10b981;
+}
+.auto-refresh-toggle input[type="checkbox"]:checked + .auto-refresh-slider::before {
+    transform: translateX(20px);
+}
+/* Anillo de foco para accesibilidad por teclado */
+.auto-refresh-toggle input[type="checkbox"]:focus-visible + .auto-refresh-slider {
+    outline: 2px solid var(--corp-primary);
+    outline-offset: 2px;
+}
+/* Texto al lado del switch — atenuado cuando OFF para indicar el estado */
+.auto-refresh-text {
+    font-weight: 500;
+    color: var(--corp-text);
+    transition: color 0.25s ease, opacity 0.25s ease;
+}
+.auto-refresh-toggle input[type="checkbox"]:not(:checked) ~ .auto-refresh-text {
+    color: var(--corp-text-soft);
+    opacity: 0.75;
+}
+
+.search-box {
+    flex: 1;
+    min-width: 300px;
+    position: relative;
+}
+
+.search-input {
+    width: 100%;
+    padding: 10px 40px 10px 15px;
+    background: var(--corp-input-bg);
+    color: var(--corp-text);
+    border: 2px solid var(--corp-input-border);
+    border-radius: 6px;
+    font-size: 14px;
+    transition: border-color 0.2s, background 0.3s, color 0.3s;
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: rgb(88, 117, 135);
+}
+
+.search-icon {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #a0aec0;
+}
+
+.stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.stat-card {
+    background: var(--corp-surface);
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    border-left: 4px solid rgb(88, 117, 135);
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    transition: all 0.3s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.stat-icon {
+    font-size: 2rem;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+}
+
+.stat-content {
+    flex: 1;
+}
+
+.stat-number {
+    font-size: 2rem;
+    font-weight: bold;
+    color: rgb(88, 117, 135);
+}
+
+.stat-label {
+    color: #718096;
+    font-size: 0.9rem;
+}
+
+/* Estilos específicos por departamento */
+
+/* Total - Rojo */
+.stat-total {
+    border-left-color: #dc2626;
+}
+
+.stat-total .stat-icon {
+    background: #fee2e2;
+    color: #dc2626;
+}
+
+.stat-total .stat-number {
+    color: #dc2626;
+}
+
+/* Planning - Verde */
+.stat-planning {
+    border-left-color: #047857;
+}
+
+.stat-planning .stat-icon {
+    background: #d1fae5;
+    color: #047857;
+}
+
+.stat-planning .stat-number {
+    color: #047857;
+}
+
+/* Logística (Inbound & Outbound) - Azul */
+.stat-logistica {
+    border-left-color: #1e40af;
+}
+
+.stat-logistica .stat-icon {
+    background: #dbeafe;
+    color: #1e40af;
+}
+
+.stat-logistica .stat-number {
+    color: #1e40af;
+}
+
+/* Product Coordination - Púrpura */
+.stat-coordination {
+    border-left-color: #6d28d9;
+}
+
+.stat-coordination .stat-icon {
+    background: #ede9fe;
+    color: #6d28d9;
+}
+
+.stat-coordination .stat-number {
+    color: #6d28d9;
+}
+
+/* Production - Naranja */
+.stat-production {
+    border-left-color: #c2410c;
+}
+
+.stat-production .stat-icon {
+    background: #fed7aa;
+    color: #c2410c;
+}
+
+.stat-production .stat-number {
+    color: #c2410c;
+}
+
+.table-container {
+    background: var(--corp-surface);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.table th {
+    background: rgb(74, 98, 117);
+    color: white;
+    padding: 12px 15px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.table td {
+    padding: 12px 15px;
+    border-bottom: 1px solid var(--corp-border);
+    font-size: 0.9rem;
+}
+
+.table tr:hover {
+    background: var(--corp-surface-hover);
+}
+
+.badge {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.badge-yes {
+    background: #c6f6d5;
+    color: #22543d;
+}
+
+.badge-no {
+    background: #fed7d7;
+    color: #742a2a;
+}
+
+.badge-scheduled {
+    background: #bee3f8;
+    color: #2a4365;
+}
+
+.badge-started {
+    background: #fef5e7;
+    color: #744210;
+}
+
+.badge-completed {
+    background: #c6f6d5;
+    color: #22543d;
+}
+
+.badge-neutral {
+    background: #e2e8f0;
+    color: #4a5568;
+}
+
+.date-cell {
+    white-space: nowrap;
+}
+
+.loading {
+    text-align: center;
+    padding: 40px;
+    font-size: 1.1rem;
+    color: #718096;
+}
+
+.error {
+    background: #fed7d7;
+    color: #742a2a;
+    padding: 15px;
+    border-radius: 6px;
+    margin-bottom: 20px;
+    border-left: 4px solid #e53e3e;
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    gap: 5px;
+    margin-top: 15px;
+    padding: 15px;
+}
+
+.page-btn {
+    padding: 8px 12px;
+    border: 1px solid var(--corp-input-border);
+    background: var(--corp-surface);
+    color: var(--corp-text-soft);
+    text-decoration: none;
+    border-radius: 4px;
+    transition: all 0.2s;
+}
+
+.page-btn:hover,
+.page-btn.active {
+    background: rgb(88, 117, 135);
+    color: white;
+    border-color: rgb(88, 117, 135);
+}
+
+/* ── Botones de carga / exportación de códigos en celdas de la tabla ── */
+.btn-codigos {
+    background: var(--corp-primary);
+    color: white;
+    border: none;
+    padding: 4px 9px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.72rem;
+    font-weight: 600;
+    white-space: nowrap;
+    transition: background 0.2s, transform 0.1s;
+    line-height: 1.4;
+}
+.btn-codigos:hover:not(:disabled) {
+    background: var(--corp-primary-dark);
+    transform: translateY(-1px);
+}
+.btn-codigos:disabled {
+    background: #a0aec0;
+    cursor: not-allowed;
+    transform: none;
+}
+/* Variante verde cuando el botón pasa a "Exportar" */
+.btn-codigos.btn-export {
+    background: #0f766e;
+}
+.btn-codigos.btn-export:hover {
+    background: #115e59;
+}
+/* Variante roja en caso de error */
+.btn-codigos.btn-error {
+    background: #b85c5c;
+}
+/* Placeholder "—" de las celdas de códigos antes de cargar */
+.cod-empty {
+    color: #a0aec0;
+    font-size: 0.9rem;
+}
+
+.code-field {
+    font-family: 'Courier New', monospace;
+    background: var(--corp-bg-soft);
+    color: var(--corp-text);
+    padding: 2px 4px;
+    border-radius: 3px;
+    font-size: 0.85rem;
+}
+
+.empty-field {
+    color: var(--corp-text-soft);
+    font-style: italic;
+    font-size: 0.8rem;
+    background: var(--corp-bg-soft);
+    padding: 2px 6px;
+    border-radius: 3px;
+    border: 1px dashed var(--corp-border);
+}
+
+.field-with-data {
+    font-weight: 500;
+}
+
+/* Colores corporativos adicionales */
+.accent-blue {
+    color: rgb(31, 73, 125);
+}
+
+.text-corporate {
+    color: rgb(88, 117, 135);
+}
+
+@media (max-width: 768px) {
+    .container {
+        padding: 10px;
+    }
+
+    .header h1 {
+        font-size: 2rem;
+    }
+
+    .controls {
+        flex-direction: column;
+    }
+
+    .search-box {
+        min-width: 100%;
+    }
+
+    .table-container {
+        overflow-x: auto;
+    }
+
+    .table {
+        min-width: 1400px;
+    }
+}
+
+/* Prevenir scroll horizontal en el body (nivel página) */
+body {
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+/* Permitir que #tableContainer haga scroll horizontal */
+.container {
+    max-width: 100%;
+}
+
+/* Permitir que el dropdown de Select2 se muestre fuera del header */
+.header {
+    width: 100%;
+    max-width: 100%;
+    overflow: visible;
+    position: relative;
+}
+
+/* ── Tema oscuro ────────────────────────────────────────────────────────── */
+html[data-theme="dark"] {
+    --corp-bg: #0a0f1e;
+    --corp-bg-soft: #0f172a;
+    --corp-text: #f8fafc;
+    --corp-text-soft: #94a3b8;
+    --corp-border: rgba(148, 163, 184, 0.15);
+    --corp-topbar-bg: rgba(15, 23, 42, 0.92);
+    --corp-topbar-blur: blur(12px);
+    --corp-surface: #111827;
+    --corp-surface-hover: #1e293b;
+    --corp-input-bg: #0f172a;
+    --corp-input-border: rgba(148, 163, 184, 0.2);
+}
+
+html[data-theme="dark"] body,
+html[data-theme="dark"] .stat-card,
+html[data-theme="dark"] .table-container,
+html[data-theme="dark"] .header {
+    transition: background 0.3s, color 0.3s;
+}
+
+/* Placeholder de construcción */
+html[data-theme="dark"] [style*="background:white"],
+html[data-theme="dark"] [style*="background: white"] {
+    background: var(--corp-surface) !important;
+    color: var(--corp-text) !important;
+    border-color: var(--corp-border) !important;
+}
+
+/* ── Botón toggle tema en la topbar ─────────────────────────────────────── */
+.topbar-theme-btn {
+    width: 32px;
+    height: 32px;
+    display: grid;
+    place-items: center;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    color: white;
+    cursor: pointer;
+    font-size: 13px;
+    flex-shrink: 0;
+    transition: background 0.2s;
+}
+.topbar-theme-btn:hover { background: rgba(255, 255, 255, 0.22); }
+.topbar-theme-btn .icon-moon { display: none; }
+.topbar-theme-btn .icon-sun  { display: inline-block; }
+html[data-theme="dark"] .topbar-theme-btn .icon-moon { display: inline-block; }
+html[data-theme="dark"] .topbar-theme-btn .icon-sun  { display: none; }

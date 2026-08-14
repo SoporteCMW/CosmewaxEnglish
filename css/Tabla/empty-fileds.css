@@ -1,0 +1,203 @@
+/* ========================================
+   CAMPOS VACÍOS CON INDICADORES DE DEPARTAMENTO
+   ======================================== */
+
+.empty-field {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    color: #991b1b;
+    font-style: italic;
+    font-size: 0.85rem;
+    font-weight: 700;
+    background: #fecaca;
+    border-radius: 6px;
+    border: 2px solid #dc2626;
+    white-space: nowrap;
+    cursor: help;
+    transition: all 0.2s ease;
+    box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+}
+
+.empty-field:hover {
+    background: #fca5a5;
+    border-color: #991b1b;
+    transform: scale(1.08);
+    box-shadow: 0 0 0 5px rgba(220, 38, 38, 0.2);
+}
+
+.empty-field i {
+    font-size: 0.9rem;
+    opacity: 1;
+}
+
+/* ========================================
+   CAMPO N/A (NO APLICA)
+   ======================================== */
+
+.na-field {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #6b7280;
+    font-style: italic;
+    font-size: 0.85rem;
+    font-weight: 600;
+    background: #f3f4f6;
+    border-radius: 6px;
+    border: 2px solid #d1d5db;
+    padding: 4px 12px;
+    white-space: nowrap;
+    cursor: default;
+    transition: all 0.2s ease;
+}
+
+.na-field:hover {
+    background: #e5e7eb;
+    border-color: #9ca3af;
+}
+
+/* ========================================
+   ICONOS POR DEPARTAMENTO CON COLORES ESPECÍFICOS
+   ======================================== */
+
+/* Logística - Azul */
+.empty-field i.fa-truck-loading {
+    color: #1e40af;
+}
+
+/* Product Coordination - Púrpura */
+.empty-field i.fa-clipboard-check {
+    color: #6d28d9;
+}
+
+/* Production - Naranja */
+.empty-field i.fa-industry {
+    color: #c2410c;
+}
+
+/* General - Rojo */
+.empty-field i.fa-exclamation-circle {
+    color: #991b1b;
+}
+
+/* ========================================
+   BADGE VACÍO (PARA SERIALIZACIÓN)
+   ======================================== */
+
+.badge-empty {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    background-color: #fecaca;
+    color: #991b1b;
+    border: 2px solid #dc2626;
+    cursor: help;
+    transition: all 0.2s ease;
+    box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+}
+
+.badge-empty:hover {
+    background-color: #fca5a5;
+    border-color: #991b1b;
+    transform: scale(1.08);
+    box-shadow: 0 0 0 5px rgba(220, 38, 38, 0.2);
+}
+
+.badge-empty i {
+    font-size: 0.75rem;
+}
+
+/* ========================================
+   CELDAS VACÍAS - FONDO ROJO COMPLETO
+   ======================================== */
+
+td:has(.empty-field),
+td:has(.badge-empty) {
+    background-color: #fee2e2 !important;
+    position: relative;
+}
+
+/* Celdas N/A - Fondo gris neutro */
+td:has(.na-field) {
+    background-color: #fafafa !important;
+    position: relative;
+}
+
+/* Indicador visual adicional en la esquina para campos vacíos */
+td:has(.empty-field)::before,
+td:has(.badge-empty)::before {
+    content: "⚠";
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    font-size: 0.7rem;
+    color: #dc2626;
+    opacity: 0.6;
+    animation: blink-warning 1.5s ease-in-out infinite;
+}
+
+/* ========================================
+   CAMPOS CON DATOS - ESTILO MÁS SUAVE
+   ======================================== */
+
+.field-with-data {
+    color: #1a202c;
+}
+
+.code-field {
+    font-family: 'Courier New', monospace;
+    font-weight: 600;
+    color: #2d3748;
+    background: #edf2f7;
+    padding: 2px 6px;
+    border-radius: 4px;
+}
+
+/* ========================================
+   ANIMACIONES
+   ======================================== */
+
+/* Animación de parpadeo para el warning */
+@keyframes blink-warning {
+    0%, 100% {
+        opacity: 0.6;
+    }
+    50% {
+        opacity: 0.2;
+    }
+}
+
+/* Animación de pulso para campos vacíos */
+@keyframes pulse-empty {
+    0%, 100% {
+        box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+    }
+    50% {
+        box-shadow: 0 0 0 6px rgba(220, 38, 38, 0.2);
+    }
+}
+
+.empty-field {
+    animation: pulse-empty 2s ease-in-out infinite;
+}
+
+.empty-field:hover {
+    animation: none;
+}
+
+/* ========================================
+   RESALTAR FILAS CON CAMPOS VACÍOS
+   ======================================== */
+
+tr:has(.empty-field):hover,
+tr:has(.badge-empty):hover {
+    background-color: #fef2f2;
+}
+
+tr:has(.na-field):hover {
+    background-color: #f9fafb;
+}

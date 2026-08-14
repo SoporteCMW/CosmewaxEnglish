@@ -1,0 +1,95 @@
+/* Anchos optimizados para columnas específicas - NUEVO ORDEN */
+
+/* Estilos para etiquetas de departamento */
+.department-labels {
+    display: table-row;
+    background: #f8fafc;
+}
+
+.department-label {
+    padding: 8px;
+    font-weight: 700;
+    font-size: 0.8rem;
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 3px solid currentColor;
+    vertical-align: middle;
+}
+
+.dept-estandar {
+    color: #64748b;
+    background: #f1f5f9;
+}
+
+.dept-planning {
+    color: #059669;
+    background: #ecfdf5;
+}
+
+.dept-logistica {
+    color: #2563eb;
+    background: #eff6ff;
+}
+
+.dept-product-coordination {
+    color: #7c3aed;
+    background: #faf5ff;
+}
+
+.dept-production {
+    color: #ea580c;
+    background: #fff7ed;
+}
+
+/* Estilos para el indicador de completitud */
+.status-complete {
+    color: #22c55e;
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.status-incomplete {
+    color: #ef4444;
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+/* Optimizar badges Yes/No para ocupar menos espacio */
+.badge-yes,
+.badge-no {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    min-width: 45px;
+    text-align: center;
+}
+
+.badge-yes {
+    background: #c6f6d5;
+    color: #22543d;
+}
+
+.badge-no {
+    background: #fed7d7;
+    color: #742a2a;
+}
+
+/* Badge empty compacto */
+.badge-empty {
+    padding: 4px 8px;
+    font-size: 0.7rem;
+    min-width: 55px;
+}
+
+/* Alineación de headers */
+.table th {
+    text-align: center;
+    vertical-align: middle;
+    padding: 12px 8px;
+    font-size: 0.85rem;
+    font-weight: 600;
+}

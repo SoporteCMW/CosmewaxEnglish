@@ -3,20 +3,27 @@
 declare(strict_types=1);
 
 /**
- * Único punto de contacto con la API de Claude.
+ * Único punto de contacto con la IA.
  *
- * La clave vive en `.env` y no sale del servidor. El cliente no envía prompts:
- * envía una `task` de una lista cerrada (ver TaskRouter) y los datos mínimos.
+ * El cliente no envía prompts: envía una `task` de una lista cerrada (ver
+ * TaskRouter) y los datos mínimos. Detrás puede estar el claude-sidecar interno
+ * o la API pública de Anthropic; el navegador no sabe cuál ni conoce su URL.
  *
  *   POST api/claude.php
- *   { "task": "conversation.reply", "scenarioId": "delay", "messages": [...] }
- *   { "task": "conversation.feedback", "scenarioId": "delay", "messages": [...] }
- *   { "task": "reading.passage", "topicId": "pro" }
+ *   { "task": "conversation.reply",   "scenarioId": "delay", "messages": [...] }
+ *   { "task": "conversation.feedback","scenarioId": "delay", "messages": [...] }
+ *   { "task": "reading.passage",      "topicId": "pro", "profileId": "rd" }
+ *   { "task": "listening.passage",    "topicId": "pro", "profileId": "rd" }
+ *   { "task": "listening.grade",      "passage": "...", "question": "...", "answer": "..." }
+ *   { "task": "notebook.lookup",      "word": "batch", "context": "..." }
+ *   { "task": "vocab.generate",       "profileId": "rd", "existingTerms": [...] }
+ *   { "task": "scenario.generate",    "profileId": "rd" }
  *
- *   200 → { "ok": true, "text": "..." }
+ *   200 → { "ok": true, ...datos de la tarea }
  *   4xx/5xx → { "ok": false, "error": { "code": "...", "message": "..." } }
  */
 
+use Cosmewax\English\Api\UnusableResponseException;
 use Cosmewax\English\Api\ValidationException;
 use Cosmewax\English\Claude\ClaudeException;
 use Cosmewax\English\Http\JsonResponse;
@@ -25,6 +32,11 @@ use Cosmewax\English\Support\RateLimiter;
 /** @var Cosmewax\English\App $app */
 $app = require dirname(__DIR__) . '/src/bootstrap.php';
 
+// Sesion antes que cualquier otra cosa: sin usuario autenticado no se llama al
+// servidor de IA ni se toca la BD. Devuelve 401 JSON, no un redirect: un
+// `Location:` en respuesta a fetch() daria un 200 con el HTML del login.
+Cosmewax\English\Support\Session::requireApi((bool) $app->config('app.login', true));
+
 if (($_SERVER['REQUEST_METHOD'] ?? '') !== 'POST') {
     header('Allow: POST');
     JsonResponse::error(405, 'method_not_allowed', 'Este endpoint sólo acepta POST.');
@@ -32,7 +44,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') !== 'POST') {
 }
 
 // Cabecera que un formulario o una imagen de otro origen no puede enviar: corta
-// el uso cruzado del endpoint (que cuesta dinero) sin montar tokens CSRF.
+// el uso cruzado del endpoint sin montar tokens CSRF.
 if (($_SERVER['HTTP_X_REQUESTED_WITH'] ?? '') !== 'CosmewaxEnglish') {
     JsonResponse::error(403, 'forbidden', 'Petición no reconocida.');
     exit;
@@ -50,6 +62,8 @@ if (is_string($origin) && $origin !== '') {
     }
 }
 
+// El servidor de IA lanza un proceso por llamada: sin tope, una pestaña en bucle
+// lo satura para todos los proyectos que lo comparten.
 $limit = $app->rateLimiter()->hit(RateLimiter::clientKey());
 if (!$limit['allowed']) {
     JsonResponse::error(
@@ -62,32 +76,36 @@ if (!$limit['allowed']) {
 }
 
 try {
-    $result = $app->taskRouter()->handle(JsonResponse::readBody());
-    JsonResponse::ok($result);
+    JsonResponse::ok($app->taskRouter()->handle(JsonResponse::readBody()));
 } catch (ValidationException $e) {
     JsonResponse::error(400, 'invalid_request', $e->getMessage());
+} catch (UnusableResponseException $e) {
+    // Respondió, pero no sirve. Reintentar suele funcionar.
+    error_log('[ai] respuesta no utilizable: ' . $e->getMessage());
+    JsonResponse::error(502, 'unusable_response', $e->getMessage() . ' Puedes reintentarlo.');
 } catch (ClaudeException $e) {
     error_log(sprintf(
-        '[claude] %s (%s) request_id=%s',
+        '[ai] %s (%s) request_id=%s',
         $e->getMessage(),
         $e->errorCode(),
         $e->requestId() ?? 'n/d'
     ));
 
-    // Los detalles de la API (incluido cualquier eco de credenciales) no se
-    // exponen al navegador salvo en modo depuración.
+    // Los detalles del servicio no se exponen al navegador salvo en depuración:
+    // ni la URL del sidecar, ni ecos de credenciales de la API pública.
     $message = match ($e->errorCode()) {
-        'not_configured' => 'El servidor no tiene configurada la clave de API todavía.',
-        'usage_limit' => 'La cuenta de Anthropic ha alcanzado su límite de gasto. '
-            . 'Revisa los límites de uso en la consola de Anthropic.',
-        'auth' => 'La clave de API no es válida o ha sido revocada.',
-        'not_found' => 'El modelo configurado no existe. Revisa ANTHROPIC_MODEL en .env '
-            . '(el formato lleva guiones: claude-haiku-4-5).',
-        'rate_limited' => 'La API está limitando las peticiones. Espera unos segundos.',
-        'overloaded', 'server_error' => 'La API está saturada ahora mismo. Reinténtalo.',
-        'network' => 'No se pudo contactar con la API (fallo de red).',
+        'not_configured' => 'Los modos con IA están desactivados en el servidor. '
+            . 'Tarjetas y Gramática funcionan igual.',
+        'sidecar_forbidden' => 'El servidor de IA sólo acepta peticiones desde la red interna de Cosmewax.',
+        'timeout' => 'El servidor de IA ha tardado demasiado. Reinténtalo.',
+        'usage_limit' => 'La cuenta de Anthropic ha alcanzado su límite de gasto.',
+        'auth' => 'Las credenciales de la API no son válidas.',
+        'not_found' => 'El modelo configurado no existe. Revisa el modelo en .env.',
+        'rate_limited' => 'El servicio está limitando las peticiones. Espera unos segundos.',
+        'overloaded', 'server_error' => 'El servidor de IA no está disponible ahora mismo. Reinténtalo.',
+        'network' => 'No se pudo contactar con el servidor de IA.',
         'refusal' => 'El modelo ha declinado responder a esta petición.',
-        default => 'No se pudo completar la petición a la API.',
+        default => 'No se pudo completar la petición a la IA.',
     };
 
     JsonResponse::error(

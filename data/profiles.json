@@ -1,0 +1,58 @@
+[
+  {
+    "id": "rd",
+    "label": "I+D / Formulación",
+    "topicHint": "an R&D / product development formulator at a cosmetics manufacturer, working on depilatory wax formulations, raw materials, and stability testing",
+    "vocabHint": "R&D and formulation vocabulary: raw materials, testing methods, stability, specifications, and formulation development",
+    "scenarioHint": "a technical discussion or client call about a product formulation, its development, or a technical issue"
+  },
+  {
+    "id": "comercial",
+    "label": "Comercial / Key Account",
+    "topicHint": "a commercial manager or key account manager selling B2B cosmetic formulations to brand clients — sales strategy, negotiation, and account management",
+    "vocabHint": "commercial and key account management vocabulary: negotiation, contracts, pricing strategy, and client relationship management",
+    "scenarioHint": "a client negotiation or account management call about pricing, contract terms, or growing the account"
+  },
+  {
+    "id": "regulatory",
+    "label": "Regulatory Affairs",
+    "topicHint": "a regulatory affairs specialist in the cosmetics industry, dealing with EU cosmetics regulation, ingredient compliance, product notification, and labelling requirements",
+    "vocabHint": "regulatory affairs vocabulary: compliance, notification systems, ingredient restrictions, labelling, and regulatory deadlines",
+    "scenarioHint": "a call with a client's regulatory team, or an internal compliance discussion, about a notification or labelling requirement"
+  },
+  {
+    "id": "quality",
+    "label": "Calidad (QA/QC)",
+    "topicHint": "a quality assurance or quality control manager at a cosmetics manufacturing plant, dealing with GMP, batch release, non-conformances, and audits",
+    "vocabHint": "quality assurance and quality control vocabulary: batch release, non-conformances, corrective actions, audits, and GMP compliance",
+    "scenarioHint": "a call about a quality issue, a batch release delay, or preparing for an upcoming audit"
+  },
+  {
+    "id": "supply",
+    "label": "Supply Chain / Compras",
+    "topicHint": "a supply chain and procurement specialist in cosmetics manufacturing, sourcing raw materials, negotiating with suppliers, and managing inbound logistics",
+    "vocabHint": "supply chain and procurement vocabulary: sourcing, supplier negotiation, purchase orders, raw material lead times, and cost negotiation",
+    "scenarioHint": "a call with a raw material supplier about pricing, lead times, or a supply issue"
+  },
+  {
+    "id": "production",
+    "label": "Producción / Planta",
+    "topicHint": "a production manager on a cosmetics manufacturing plant floor, dealing with production scheduling, line changeovers, scale-up, and plant safety",
+    "vocabHint": "production and plant operations vocabulary: production scheduling, line changeovers, downtime, safety procedures, and scale-up",
+    "scenarioHint": "an internal call about a production line issue, a scheduling conflict, or a scale-up trial"
+  },
+  {
+    "id": "logistics",
+    "label": "Logística / Distribución",
+    "topicHint": "a logistics and distribution manager in cosmetics manufacturing, dealing with shipping, freight, customs, warehousing, and delivery scheduling",
+    "vocabHint": "logistics and distribution vocabulary: freight, customs clearance, warehousing, delivery scheduling, and shipment tracking",
+    "scenarioHint": "a call with a freight forwarder or a client logistics contact about a shipment or a delivery schedule issue"
+  },
+  {
+    "id": "customer_service",
+    "label": "Atención al Cliente",
+    "topicHint": "a customer service representative for a B2B cosmetics manufacturer, handling client inquiries, order status questions, and complaint resolution",
+    "vocabHint": "customer service vocabulary: order status, complaint handling, service level agreements, and follow-up communication",
+    "scenarioHint": "a customer service call handling an order inquiry, a delivery question, or a complaint"
+  }
+]

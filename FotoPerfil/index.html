@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FotoPerfil — perfil y foto (Microsoft Graph)</title>
+<style>
+  :root {
+    --bg: #f4f5f7; --card: #ffffff; --fg: #1a1d21; --muted: #6b7280;
+    --border: #e3e6ea; --accent: #2563eb; --accent-fg: #ffffff;
+    --error: #dc2626; --shadow: 0 6px 24px rgba(0,0,0,.08);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #14171c; --card: #1c2027; --fg: #e8eaed; --muted: #9aa2ad;
+      --border: #2b3038; --accent: #3b82f6; --accent-fg: #ffffff;
+      --error: #f87171; --shadow: 0 6px 24px rgba(0,0,0,.35);
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; min-height: 100vh; background: var(--bg); color: var(--fg);
+    font: 15px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    display: flex; flex-direction: column; align-items: center; padding: 40px 16px;
+  }
+  h1 { font-size: 1.35rem; margin: 0 0 4px; }
+  .sub { color: var(--muted); margin: 0 0 24px; font-size: .9rem; }
+  .search {
+    display: flex; gap: 8px; width: 100%; max-width: 460px; margin-bottom: 20px;
+  }
+  input {
+    flex: 1; padding: 11px 14px; border: 1px solid var(--border); border-radius: 10px;
+    background: var(--card); color: var(--fg); font-size: 15px; outline: none;
+  }
+  input:focus { border-color: var(--accent); }
+  button {
+    padding: 11px 18px; border: 0; border-radius: 10px; background: var(--accent);
+    color: var(--accent-fg); font-size: 15px; font-weight: 600; cursor: pointer;
+  }
+  button:disabled { opacity: .55; cursor: default; }
+  .card {
+    width: 100%; max-width: 460px; background: var(--card); border: 1px solid var(--border);
+    border-radius: 16px; box-shadow: var(--shadow); padding: 24px; display: none;
+  }
+  .card.show { display: block; }
+  .row { display: flex; gap: 18px; align-items: center; }
+  .photo, .initials {
+    width: 84px; height: 84px; border-radius: 50%; flex-shrink: 0; object-fit: cover;
+    border: 2px solid var(--border);
+  }
+  .initials {
+    display: flex; align-items: center; justify-content: center; font-size: 1.7rem;
+    font-weight: 600; background: var(--accent); color: var(--accent-fg);
+  }
+  .name { font-size: 1.15rem; font-weight: 700; }
+  .title { color: var(--fg); }
+  .dept, .email { color: var(--muted); font-size: .9rem; }
+  .presence { display: inline-flex; align-items: center; gap: 6px; font-size: .82rem; margin-top: 6px; }
+  .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--muted); }
+  .dot.available { background: #16a34a; } .dot.busy { background: #dc2626; }
+  .dot.away { background: #f59e0b; } .dot.offline { background: #9ca3af; }
+  .msg { max-width: 460px; text-align: center; color: var(--muted); }
+  .msg.error { color: var(--error); }
+  .foot { margin-top: 28px; font-size: .78rem; color: var(--muted); max-width: 460px; text-align: center; }
+</style>
+</head>
+<body>
+  <h1>FotoPerfil</h1>
+  <p class="sub">Perfil y foto de un usuario del tenant vía Microsoft Graph</p>
+
+  <form class="search" id="form">
+    <input id="q" type="text" placeholder="email@dominio.com" autocomplete="off" autofocus>
+    <button id="btn" type="submit">Buscar</button>
+  </form>
+
+  <div class="msg" id="msg"></div>
+
+  <div class="card" id="card">
+    <div class="row">
+      <div id="avatar"></div>
+      <div>
+        <div class="name" id="name"></div>
+        <div class="title" id="title"></div>
+        <div class="dept" id="dept"></div>
+        <div class="email" id="email"></div>
+        <div class="presence" id="presence" style="display:none">
+          <span class="dot" id="dot"></span><span id="presLabel"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <p class="foot">Acceso restringido por red (.htaccess). Introduce un email corporativo; si escribes texto sin «@» se buscará por nombre para mostrar.</p>
+
+<script>
+const PRESENCE = {
+  Available: {label:'Disponible', cls:'available'}, Busy:{label:'Ocupado', cls:'busy'},
+  DoNotDisturb:{label:'No molestar', cls:'busy'}, Away:{label:'Ausente', cls:'away'},
+  BeRightBack:{label:'Ahora vuelvo', cls:'away'}, Offline:{label:'Desconectado', cls:'offline'},
+  PresenceUnknown:{label:'Desconocido', cls:'offline'},
+};
+
+const $ = id => document.getElementById(id);
+const form = $('form'), input = $('q'), btn = $('btn'), msg = $('msg'), card = $('card');
+
+form.addEventListener('submit', async e => {
+  e.preventDefault();
+  const val = input.value.trim();
+  if (!val) return;
+  const params = new URLSearchParams();
+  params.set(val.includes('@') ? 'email' : 'nombre', val);
+
+  card.classList.remove('show');
+  msg.className = 'msg';
+  msg.textContent = 'Buscando…';
+  btn.disabled = true;
+
+  try {
+    const resp = await fetch('api/profile.php?' + params);
+    const data = await resp.json();
+    if (!resp.ok) throw new Error(data.error || ('HTTP ' + resp.status));
+    render(data);
+    msg.textContent = '';
+  } catch (err) {
+    msg.className = 'msg error';
+    msg.textContent = 'Error: ' + err.message;
+  } finally {
+    btn.disabled = false;
+  }
+});
+
+function render(d) {
+  const initials = (d.name || '?').split(' ').map(w => w[0]).slice(0,2).join('').toUpperCase();
+  $('avatar').outerHTML = d.photo
+    ? `<img class="photo" id="avatar" src="${d.photo}" alt="">`
+    : `<div class="initials" id="avatar">${initials}</div>`;
+  $('name').textContent  = d.name || '—';
+  $('title').textContent = d.jobTitle || '';
+  $('dept').textContent  = d.department || '';
+  $('email').textContent = d.email || '';
+
+  const pres = d.availability ? (PRESENCE[d.availability] || {label:d.availability, cls:'offline'}) : null;
+  const presEl = $('presence');
+  if (pres) {
+    $('dot').className = 'dot ' + pres.cls;
+    $('presLabel').textContent = pres.label;
+    presEl.style.display = 'inline-flex';
+  } else {
+    presEl.style.display = 'none';
+  }
+  card.classList.add('show');
+}
+</script>
+</body>
+</html>

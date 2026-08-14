@@ -3,13 +3,14 @@
   width: 100%;
   text-align: left;
   padding: 14px 16px;
-  border: 1px solid var(--ink);
-  background: var(--paper-raised);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface-raised);
   margin-bottom: 10px;
   cursor: pointer;
   font-family: inherit;
 }
-.topic-btn:hover { background: var(--paper-dim); }
+.topic-btn:hover { background: var(--surface-dim); }
 .topic-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 .topic-btn .stitle {
   font-family: var(--font-display);
@@ -17,32 +18,34 @@
   font-weight: 700;
   margin-bottom: 3px;
 }
-.topic-btn .sdesc { font-size: 11.5px; color: var(--ink-soft); }
+.topic-btn .sdesc { font-size: 11.5px; color: var(--muted); }
 
 .trouble-words-box {
   border: 1px solid var(--line);
-  background: var(--paper-dim);
+  border-radius: var(--radius);
+  background: var(--surface-dim);
   padding: 10px 14px;
   margin-bottom: 16px;
   font-size: 11.5px;
-  color: var(--ink-soft);
+  color: var(--muted);
   line-height: 1.6;
 }
-.trouble-words-box strong { color: var(--ink); }
+.trouble-words-box strong { color: var(--text); }
 
 .reading-passage {
-  border: 1px solid var(--ink);
-  background: var(--paper-raised);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface-raised);
   padding: 20px;
   font-family: var(--font-display);
   font-size: 17px;
   line-height: 1.85;
   margin-bottom: 14px;
 }
-.reading-passage .rword.is-match { color: var(--ink); }
+.reading-passage .rword.is-match { color: var(--text); }
 .reading-passage .rword.is-missing {
-  background: var(--amber-soft);
-  color: var(--petrol-dark);
+  background: var(--accent-2-soft);
+  color: var(--accent-dark);
   font-weight: 700;
   border-radius: var(--radius-sm);
   padding: 0 2px;
@@ -50,7 +53,7 @@
 
 .read-live-transcript {
   font-size: 12px;
-  color: var(--ink-soft);
+  color: var(--muted);
   font-style: italic;
   min-height: 18px;
   margin-bottom: 12px;
@@ -64,21 +67,21 @@
 }
 .read-mic-btn {
   padding: 14px 28px;
-  background: var(--ink);
-  color: var(--paper);
+  background: var(--accent);
+  color: var(--on-accent);
   font-size: 13px;
   letter-spacing: 0.04em;
 }
-.read-mic-btn:hover { background: var(--petrol); }
-.read-mic-btn.is-recording { background: var(--bad); animation: pulse 1.1s infinite; }
+.read-mic-btn:hover { background: var(--accent); }
+.read-mic-btn.is-recording { background: var(--danger-surface); animation: pulse 1.1s infinite; }
 
 .read-stop-btn {
   display: block;
   width: 100%;
   padding: 11px;
-  background: var(--paper);
-  color: var(--bad);
-  border: 1px solid var(--bad);
+  background: var(--surface);
+  color: var(--danger);
+  border: 1px solid var(--danger);
   font-family: inherit;
   font-size: 11px;
   text-transform: uppercase;
@@ -86,11 +89,12 @@
   cursor: pointer;
   margin-bottom: 10px;
 }
-.read-stop-btn:hover { background: var(--bad); color: #fff; }
+.read-stop-btn:hover { background: var(--danger-surface); color: var(--on-accent); }
 
 .review-words-box {
-  border: 1px solid var(--ink);
-  background: var(--paper-raised);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface-raised);
   padding: 16px;
   margin-bottom: 14px;
 }
@@ -98,16 +102,16 @@
   font-size: 11px;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: var(--ink-soft);
+  color: var(--muted);
   margin-bottom: 10px;
 }
 .review-word-chip {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  border: 1px solid var(--amber);
-  background: var(--amber-soft);
-  color: var(--petrol-dark);
+  border: 1px solid var(--accent-2);
+  background: var(--accent-2-soft);
+  color: var(--accent-dark);
   padding: 5px 10px;
   margin: 0 6px 8px 0;
   font-size: 13px;
@@ -124,7 +128,7 @@
 
 .read-summary-line {
   font-size: 12px;
-  color: var(--ink-soft);
+  color: var(--muted);
   margin-bottom: 12px;
 }
 
@@ -132,8 +136,8 @@
   display: block;
   width: 100%;
   padding: 12px;
-  background: var(--ink);
-  color: var(--paper);
+  background: var(--accent);
+  color: var(--on-accent);
   border: none;
   font-family: inherit;
   font-size: 12px;
@@ -141,4 +145,4 @@
   text-transform: uppercase;
   cursor: pointer;
 }
-.read-secondary-btn:hover { background: var(--petrol); }
+.read-secondary-btn:hover { background: var(--accent); }

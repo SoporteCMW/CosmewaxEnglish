@@ -1,5 +1,6 @@
 [
   { "id": "reunion", "label": "Reunión", "formLabel": "Reunión — supervivencia" },
   { "id": "tecnico", "label": "Técnico", "formLabel": "Técnico-regulatorio" },
-  { "id": "comercial", "label": "Comercial", "formLabel": "Comercial / seguimiento" }
+  { "id": "comercial", "label": "Comercial", "formLabel": "Comercial / seguimiento" },
+  { "id": "personal", "label": "Cuaderno", "formLabel": "Cuaderno / palabras propias" }
 ]

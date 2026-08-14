@@ -1,24 +1,114 @@
-/* Paleta y escalas. Único sitio donde se definen colores y tipografías:
-   cualquier ajuste de marca se hace aquí, no en las hojas de cada modo. */
+/* Sistema visual corporativo (mismo que login.php y el esqueleto EsqueleticPHP).
+   Único sitio donde se definen colores y tipografías: cualquier ajuste de marca
+   se hace aquí, no en las hojas de cada modo.
+
+   El tema lo fija `data-theme` en <html>, que `login.php` e `index.php` escriben
+   antes de pintar leyendo `localStorage.siteTheme`. Por eso no se usa
+   `prefers-color-scheme`: manda la elección explícita del usuario, y debe ser la
+   misma en el login y dentro de la aplicación.
+
+   Reglas al añadir color:
+   - Texto, bordes e iconos  → --text, --muted, --accent, --accent-2, --danger, --good
+   - Superficies con texto encima → --surface*, --accent, --*-surface
+   - Texto sobre una superficie de acento → SIEMPRE --on-accent, nunca #fff:
+     en tema oscuro las superficies de acento cambian de luminosidad.
+   Un color que haga de texto y de fondo a la vez necesita dos tokens (por eso
+   existen --danger y --danger-surface): ningún valor único contrasta bien en
+   ambos papeles cuando hay dos temas. */
+
 :root {
-  --paper: #f6f3ec;
-  --paper-raised: #fffdf8;
-  --paper-dim: #ece7da;
-  --ink: #201f1a;
-  --ink-soft: #55524a;
-  --petrol: #1f4a4a;
-  --petrol-dark: #143333;
-  --amber: #c1893f;
-  --amber-soft: #ecd9b8;
-  --line: #d9d2bf;
-  --good: #3f6b4a;
-  --good-bg: #eef4ee;
-  --bad: #a6432f;
-  --bad-bg: #f7ebe8;
+  color-scheme: light;
 
-  --font-body: 'Courier New', ui-monospace, Menlo, monospace;
-  --font-display: Georgia, 'Times New Roman', serif;
+  /* ── Corporativos del esqueleto ─────────────────────────────────────────
+     Se declaran con su nombre original porque login.css y la topbar los usan. */
+  --blue: #16324f;
+  --blue-2: #102b45;
+  --brand-blue: #607f91;
+  --brand-blue-dark: #4e6f82;
+  --bg: #f5f7f8;
+  --radius: 8px;
 
-  --sheet-width: 720px;
-  --radius-sm: 2px;
+  /* La topbar es oscura en los dos temas, como en el resto de aplicaciones de
+     la casa. En claro es el gris azulado corporativo; en oscuro, translúcida. */
+  --topbar-bg: #587587;
+  --topbar-blur: none;
+
+  /* ── Superficies ─────────────────────────────────────────────────────── */
+  --surface: var(--bg);
+  --surface-raised: #ffffff;
+  --surface-dim: #edf3f6;
+
+  /* ── Texto ───────────────────────────────────────────────────────────── */
+  --text: #1b3448;
+  /* Un punto más oscuro que el #667987 del esqueleto: allí va sobre blanco,
+     y aquí la mayoría de los textos secundarios caen sobre --surface, donde
+     ese valor se queda en 4.2:1. */
+  --muted: #607381;
+  --line: #d8e2e8;
+
+  /* ── Acento primario: navy corporativo ───────────────────────────────── */
+  --accent: #16324f;
+  --accent-dark: #102b45;
+
+  /* ── Acento secundario: verde corporativo (el del hero del login) ────── */
+  --accent-2: #39775e;
+  --accent-2-surface: #356b56;
+  --accent-2-soft: #e6f2ec;
+
+  /* ── Estados ─────────────────────────────────────────────────────────── */
+  --good: #1c7c54;
+  --good-bg: #eaf6f0;
+  --danger: #b42318;
+  --danger-surface: #b42318;
+  --danger-bg: #fff1f0;
+
+  /* Texto sobre cualquier superficie de acento o de estado. */
+  --on-accent: #ffffff;
+
+  /* ── Tipografía ──────────────────────────────────────────────────────── */
+  --font-body: "Segoe UI", Arial, sans-serif;
+  --font-display: "Segoe UI", Arial, sans-serif;
+
+  /* ── Métrica ─────────────────────────────────────────────────────────── */
+  --sheet-width: 860px;
+  --radius-sm: 6px;
+}
+
+/* ── Tema oscuro ────────────────────────────────────────────────────────────
+   Los acentos se aclaran lo justo para destacar sobre el fondo, pero se
+   mantienen lo bastante oscuros para que --on-accent (blanco) siga contrastando
+   por encima de 4.5:1 encima de ellos. Los colores de estado se separan en dos:
+   claros para texto, oscuros para superficie. */
+html[data-theme="dark"] {
+  color-scheme: dark;
+
+  --blue: #e2e8f0;
+  --blue-2: #f8fafc;
+  --brand-blue: #7d9fb1;
+  --brand-blue-dark: #607f91;
+  --bg: #0a0f1e;
+
+  --topbar-bg: rgba(15, 23, 42, 0.92);
+  --topbar-blur: blur(12px);
+
+  --surface: var(--bg);
+  --surface-raised: #111827;
+  --surface-dim: #0f172a;
+
+  --text: #f8fafc;
+  --muted: #94a3b8;
+  --line: rgba(148, 163, 184, 0.2);
+
+  --accent: #4a6d80;
+  --accent-dark: #3d5b6b;
+
+  --accent-2: #4ade9f;
+  --accent-2-surface: #16855f;
+  --accent-2-soft: rgba(74, 222, 159, 0.12);
+
+  --good: #4ade9f;
+  --good-bg: rgba(74, 222, 159, 0.12);
+  --danger: #fb8a80;
+  --danger-surface: #9f1d13;
+  --danger-bg: rgba(251, 138, 128, 0.12);
 }

@@ -1,0 +1,12 @@
+# Semilla y respaldo de los catalogos. NO debe servirse: profiles.json trae
+# los *Hint, scenarios.json el context y reading-topics.json el prompt, que son
+# material de prompt. El navegador recibe los catalogos ya proyectados en
+# window.__APP__ desde index.php, nunca leyendo estos ficheros.
+
+<IfModule mod_authz_core.c>
+  Require all denied
+</IfModule>
+<IfModule !mod_authz_core.c>
+  Order allow,deny
+  Deny from all
+</IfModule>

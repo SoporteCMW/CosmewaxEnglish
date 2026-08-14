@@ -1,0 +1,186 @@
+/* ========================================
+   ANCHOS OPTIMIZADOS PARA COLUMNAS - NUEVO ORDEN SIN PLANNING
+   ======================================== */
+
+/* Producto — aumentado para que quepan los 11 dígitos del ItemId sin cortar */
+.table .column-headers th:nth-child(1),
+.table td:nth-child(1) {
+    width: 155px;
+    min-width: 155px;
+    max-width: 155px;
+    text-align: center;
+}
+
+/* Nombre - Flexible */
+.table .column-headers th:nth-child(2),
+.table td:nth-child(2) {
+    width: 120px;
+    min-width: 120px;
+    max-width: 120px;
+}
+
+/* Producción */
+.table .column-headers th:nth-child(3),
+.table td:nth-child(3) {
+    width: 110px;
+    min-width: 110px;
+    max-width: 110px;
+    text-align: center;
+}
+
+/* Estado Prod. */
+.table .column-headers th:nth-child(4),
+.table td:nth-child(4) {
+    width: 140px;
+    min-width: 140px;
+    max-width: 140px;
+    text-align: center;
+}
+
+/* Fecha Entrega */
+.table .column-headers th:nth-child(5),
+.table td:nth-child(5) {
+    width: 80px;
+    min-width: 80px;
+    max-width: 80px;
+    text-align: center;
+}
+
+/* Cantidad Pallet */
+.table .column-headers th:nth-child(6),
+.table td:nth-child(6) {
+    width: 100px;
+    min-width: 100px;
+    max-width: 100px;
+    text-align: center;
+    padding-right: 12px;
+}
+
+/* EAN */
+.table .column-headers th:nth-child(7),
+.table td:nth-child(7) {
+    width: 150px;
+    min-width: 150px;
+    max-width: 150px;
+    text-align: center;
+}
+
+/* DUN */
+.table .column-headers th:nth-child(8),
+.table td:nth-child(8) {
+    width: 175px;
+    min-width: 175px;
+    max-width: 175px;
+    text-align: center;
+}
+
+/* Descripción DUN - Flexible */
+.table .column-headers th:nth-child(9),
+.table td:nth-child(9) {
+    width: 120px;
+    min-width: 120px;
+    max-width: 120px;
+}
+
+/* Num. Sec. Pallet */
+.table .column-headers th:nth-child(10),
+.table td:nth-child(10) {
+    width: 110px;
+    min-width: 110px;
+    max-width: 110px;
+    text-align: center;
+}
+
+/* Artículo Serialización */
+.table .column-headers th:nth-child(11),
+.table td:nth-child(11) {
+    width: 60px;
+    min-width: 60px;
+    max-width: 60px;
+    text-align: center;
+}
+
+/* Prod. Serial. */
+.table .column-headers th:nth-child(12),
+.table td:nth-child(12) {
+    width: 70px;
+    min-width: 70px;
+    max-width: 70px;
+    text-align: center;
+}
+
+/* Pedido Venta (ahora después de Prod. Serial.) */
+.table .column-headers th:nth-child(13),
+.table td:nth-child(13) {
+    width: 110px;
+    min-width: 110px;
+    max-width: 110px;
+    text-align: center;
+}
+
+/* Lote */
+.table .column-headers th:nth-child(14),
+.table td:nth-child(14) {
+    width: 110px;
+    min-width: 110px;
+    max-width: 110px;
+    text-align: center;
+}
+
+/* Fecha Exp. */
+.table .column-headers th:nth-child(15),
+.table td:nth-child(15) {
+    width: 80px;
+    min-width: 80px;
+    max-width: 80px;
+    text-align: center;
+}
+
+/* Validado */
+.table .column-headers th:nth-child(16),
+.table td:nth-child(16) {
+    width: 90px;
+    min-width: 90px;
+    max-width: 90px;
+    text-align: center;
+}
+
+/* Códigos Total */
+.table .column-headers th:nth-child(17),
+.table td:nth-child(17) {
+    width: 90px;
+    min-width: 90px;
+    max-width: 90px;
+    text-align: right;
+    padding-right: 12px;
+}
+
+/* Códigos Utilizados — más ancho para que quepa el encabezado en mayúsculas */
+.table .column-headers th:nth-child(18),
+.table td:nth-child(18) {
+    width: 115px;
+    min-width: 115px;
+    max-width: 115px;
+    text-align: right;
+    padding-right: 12px;
+}
+
+/* Códigos Disponibles — la palabra más larga de las tres, necesita más espacio */
+.table .column-headers th:nth-child(19),
+.table td:nth-child(19) {
+    width: 125px;
+    min-width: 125px;
+    max-width: 125px;
+    text-align: right;
+    padding-right: 12px;
+}
+
+/* Exportar — botón de carga/exportación de códigos disponibles */
+.table .column-headers th:nth-child(20),
+.table td:nth-child(20) {
+    width: 110px;
+    min-width: 110px;
+    max-width: 110px;
+    text-align: center;
+}
+

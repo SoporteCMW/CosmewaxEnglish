@@ -1,0 +1,110 @@
+[
+  {
+    "id": "th_unvoiced",
+    "label": "TH sorda (θ) vs S/T",
+    "tip": "La \"th\" de \"think\" se hace poniendo la punta de la lengua entre los dientes y soplando, sin usar las cuerdas vocales. No es una \"s\" ni una \"t\".",
+    "pairs": [
+      { "a": "think", "b": "sink" },
+      { "a": "thing", "b": "sing" },
+      { "a": "three", "b": "tree" },
+      { "a": "mouth", "b": "mouse" },
+      { "a": "path", "b": "pass" },
+      { "a": "worth", "b": "worse" }
+    ]
+  },
+  {
+    "id": "th_voiced",
+    "label": "TH sonora (ð) vs D/Z",
+    "tip": "Igual que la \"th\" sorda pero vibrando las cuerdas vocales — la lengua entre los dientes, no detrás de ellos como en la \"d\" española.",
+    "pairs": [
+      { "a": "then", "b": "den" },
+      { "a": "breathe", "b": "breeze" }
+    ]
+  },
+  {
+    "id": "v_b",
+    "label": "V vs B",
+    "tip": "La \"v\" inglesa se hace con los dientes superiores tocando el labio inferior (como al morder el labio), nunca juntando los dos labios como en la \"b\".",
+    "pairs": [
+      { "a": "very", "b": "berry" },
+      { "a": "van", "b": "ban" },
+      { "a": "vote", "b": "boat" },
+      { "a": "vest", "b": "best" },
+      { "a": "curve", "b": "curb" }
+    ]
+  },
+  {
+    "id": "vowels",
+    "label": "Vocales cortas vs largas",
+    "tip": "El inglés tiene muchas más vocales que el español — presta atención a si el sonido es corto y relajado o largo y tenso, no solo a la letra escrita.",
+    "pairs": [
+      { "a": "ship", "b": "sheep" },
+      { "a": "bad", "b": "bed" },
+      { "a": "cat", "b": "cut" },
+      { "a": "full", "b": "fool" },
+      { "a": "hot", "b": "hut" },
+      { "a": "sit", "b": "seat" },
+      { "a": "man", "b": "men" },
+      { "a": "cup", "b": "cap" }
+    ]
+  },
+  {
+    "id": "h_muda",
+    "label": "H aspirada vs sin H",
+    "tip": "En español la \"h\" nunca se pronuncia; en inglés sí — es un soplido suave antes de la vocal, no la omitas.",
+    "pairs": [
+      { "a": "hair", "b": "air" },
+      { "a": "heat", "b": "eat" },
+      { "a": "hill", "b": "ill" },
+      { "a": "hold", "b": "old" },
+      { "a": "hand", "b": "and" },
+      { "a": "harm", "b": "arm" }
+    ]
+  },
+  {
+    "id": "sz_final",
+    "label": "S/Z final (sorda vs sonora)",
+    "tip": "Al final de palabra, compara si el sonido es un silbido sordo (\"s\") o vibra ligeramente (\"z\") — en español casi no se distinguen, pero en inglés cambian el significado.",
+    "pairs": [
+      { "a": "price", "b": "prize" },
+      { "a": "ice", "b": "eyes" },
+      { "a": "race", "b": "raise" },
+      { "a": "loose", "b": "lose" },
+      { "a": "rice", "b": "rise" }
+    ]
+  },
+  {
+    "id": "l_r",
+    "label": "L vs R",
+    "tip": "La \"r\" inglesa no se pronuncia con la lengua vibrando como en español — la lengua se curva hacia atrás sin tocar el paladar.",
+    "pairs": [
+      { "a": "light", "b": "right" },
+      { "a": "lice", "b": "rice" },
+      { "a": "belly", "b": "berry" },
+      { "a": "fly", "b": "fry" },
+      { "a": "glass", "b": "grass" },
+      { "a": "collect", "b": "correct" }
+    ]
+  },
+  {
+    "id": "p_b",
+    "label": "P vs B",
+    "tip": "La \"p\" inglesa lleva un pequeño golpe de aire (aspiración) al principio de palabra que en español no existe.",
+    "pairs": [
+      { "a": "pig", "b": "big" },
+      { "a": "pack", "b": "back" },
+      { "a": "cap", "b": "cab" }
+    ]
+  },
+  {
+    "id": "ch_sh",
+    "label": "CH/SH y J/Y",
+    "tip": "\"Ch\" (chip) es un golpe seco; \"sh\" (ship) es un soplido continuo — no las mezcles. La \"j\" inglesa (jet) no es la \"y\" (yet).",
+    "pairs": [
+      { "a": "chip", "b": "ship" },
+      { "a": "watch", "b": "wash" },
+      { "a": "cheer", "b": "sheer" },
+      { "a": "jet", "b": "yet" }
+    ]
+  }
+]

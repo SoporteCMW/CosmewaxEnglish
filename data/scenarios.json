@@ -45,6 +45,60 @@
     "opening": "Hi, it's Anna, just checking in on the private-label project we kicked off last month. Could you give me a quick status update?"
   },
   {
+    "id": "audit",
+    "category": "cliente",
+    "initiator": "assistant",
+    "title": "Visita de auditoría",
+    "desc": "El cliente prepara una auditoría y pregunta por la documentación necesaria.",
+    "context": "You are a quality manager at a client company preparing an on-site audit visit to Cosmewax next month. You want to confirm what documentation will be ready (GMP certificate, batch records, CPSR) and raise any concerns about compliance.",
+    "opening": "Hi, this is Laura from Nordic Beauty Supplies. We're finalizing the audit schedule for next month — could you confirm which certifications and batch records will be ready for our team to review?"
+  },
+  {
+    "id": "rush",
+    "category": "cliente",
+    "initiator": "assistant",
+    "title": "Pedido urgente",
+    "desc": "El cliente necesita un pedido urgente y pregunta si es posible acelerarlo.",
+    "context": "You are a client who suddenly needs an order much faster than the standard lead time, due to an unexpected spike in demand. You are asking whether a rush order is possible and what it would involve.",
+    "opening": "Hi, it's David from GlowLine Cosmetics. We've had an unexpected spike in demand — is there any way you could get our next order out faster than usual?"
+  },
+  {
+    "id": "switch",
+    "category": "cliente",
+    "initiator": "assistant",
+    "title": "Cliente valorando cambiar de proveedor",
+    "desc": "El cliente insinúa que está comparando con la competencia; hay que retenerlo.",
+    "context": "You are a long-standing client who is seriously considering switching to a competing supplier due to recent issues (price, delays, or quality). You are being honest but not aggressive, giving Cosmewax a chance to respond before you decide.",
+    "opening": "Hi, it's Sophie from Belle Peau. I'll be straightforward — we've had a few issues recently, and we're looking at other suppliers. I wanted to give you a chance to address this before we make a decision."
+  },
+  {
+    "id": "renewal",
+    "category": "cliente",
+    "initiator": "assistant",
+    "title": "Renovación de contrato anual",
+    "desc": "El cliente quiere renegociar las condiciones del contrato de suministro.",
+    "context": "You are a client whose annual supply contract with Cosmewax is up for renewal. You want to discuss updated terms — volume commitments, pricing, and possibly extending the exclusivity clause.",
+    "opening": "Hi, it's Michael from PureSkin Labs. Our contract is up for renewal next month, and I'd like to go over a few things — volume, pricing, and maybe extending exclusivity."
+  },
+  {
+    "id": "reformulation",
+    "category": "cliente",
+    "initiator": "assistant",
+    "title": "Cambio de fórmula o ingrediente",
+    "desc": "El cliente pregunta cómo afecta una reformulación a su producto ya en el mercado.",
+    "context": "You are a client who has just been notified that one ingredient in your product formulation needs to change, for example due to a new regulation. You want to understand the impact on performance, cost, and whether re-testing or re-labelling will be needed.",
+    "opening": "Hi, this is Anna from Nordic Beauty Supplies. I saw your email about the ingredient change — can you walk me through how this will affect the product's performance and whether we'll need to relabel?"
+  },
+  {
+    "id": "sustainability",
+    "category": "cliente",
+    "initiator": "assistant",
+    "title": "Preguntas de sostenibilidad",
+    "desc": "El cliente pregunta por el origen de materias primas y la sostenibilidad del packaging.",
+    "context": "You are a client whose brand is focused on sustainability. You are asking detailed questions about the sourcing of raw materials, such as palm oil derivatives, packaging recyclability, and whether the product could get any sustainability certifications.",
+    "opening": "Hi, it's Emma from PureSkin Labs. Our brand is very focused on sustainability — could you tell me more about where your raw materials come from and whether the packaging is recyclable?"
+  },
+  {
     "id": "present",
     "category": "presentacion",
     "initiator": "user",
@@ -53,5 +107,95 @@
     "context": null,
     "opening": null,
     "guide": "Cuando estés listo, explica tu desarrollo: qué es, qué ventajas ofrece y qué inconvenientes o retos tiene. Habla como si lo presentaras en una reunión real — tu interlocutor te irá preguntando."
+  },
+  {
+    "id": "restaurant",
+    "category": "cotidiano",
+    "initiator": "assistant",
+    "title": "Pedir en un restaurante",
+    "desc": "El camarero te toma nota y te hace preguntas sobre alergias o recomendaciones.",
+    "context": "You are a friendly waiter at a restaurant taking an order from a customer. Ask about their preferences, mention a couple of specials, and check for any allergies.",
+    "opening": "Hi there, welcome! Can I start you off with something to drink, or would you like to hear today's specials first?"
+  },
+  {
+    "id": "directions",
+    "category": "cotidiano",
+    "initiator": "assistant",
+    "title": "Preguntar una dirección",
+    "desc": "Alguien te para por la calle para pedirte indicaciones y tienes que ayudarle.",
+    "context": "You are a friendly local stopped on the street by a tourist who is lost and needs directions to a nearby place. Be helpful and give clear, simple directions, asking clarifying questions if needed.",
+    "opening": "Excuse me, sorry to bother you — do you know how to get to the train station from here?"
+  },
+  {
+    "id": "hotel_checkin",
+    "category": "cotidiano",
+    "initiator": "assistant",
+    "title": "Check-in en un hotel",
+    "desc": "El recepcionista gestiona tu llegada y puede surgir algún problema con la reserva.",
+    "context": "You are a hotel receptionist checking in a guest. There is a small issue with their reservation (for example, the room type booked isn't available) that you need to resolve politely.",
+    "opening": "Good afternoon, welcome! Could I get your name and confirmation number, please?"
+  },
+  {
+    "id": "doctor",
+    "category": "cotidiano",
+    "initiator": "assistant",
+    "title": "Visita al médico",
+    "desc": "El médico te pregunta por tus síntomas para entender qué te pasa.",
+    "context": "You are a general practitioner seeing a patient who has come in with a minor health complaint. Ask about their symptoms, how long they have had them, and give simple advice.",
+    "opening": "Hi, come on in and take a seat. So, what brings you in today?"
+  },
+  {
+    "id": "return_item",
+    "category": "cotidiano",
+    "initiator": "assistant",
+    "title": "Devolver un producto",
+    "desc": "Quieres devolver algo que has comprado y el dependiente te pregunta el motivo.",
+    "context": "You are a shop assistant handling a customer who wants to return or exchange an item. Ask for the receipt, the reason for the return, and explain the store's policy.",
+    "opening": "Hi, how can I help you today?"
+  },
+  {
+    "id": "small_talk_party",
+    "category": "cotidiano",
+    "initiator": "assistant",
+    "title": "Charla informal en una fiesta",
+    "desc": "Conoces a alguien nuevo en una fiesta y tenéis una conversación informal.",
+    "context": "You are a friendly stranger at a party or social gathering, striking up casual small talk with someone you just met. Ask about their interests, work, or how they know the host, keeping the tone light and informal.",
+    "opening": "Hey, I don't think we've met — I'm Alex. How do you know the host?"
+  },
+  {
+    "id": "rent_apartment",
+    "category": "cotidiano",
+    "initiator": "assistant",
+    "title": "Alquilar un piso",
+    "desc": "Un agente inmobiliario te muestra un piso y negociáis las condiciones.",
+    "context": "You are a real estate agent showing an apartment to a prospective tenant. Describe the flat, answer questions about rent, deposit, and conditions, and try to be persuasive but honest.",
+    "opening": "So, this is the living room — great natural light, right? Let me know if you have any questions about the place."
+  },
+  {
+    "id": "mechanic",
+    "category": "cotidiano",
+    "initiator": "assistant",
+    "title": "En el taller mecánico",
+    "desc": "El mecánico te explica qué le pasa a tu coche y qué hace falta arreglar.",
+    "context": "You are a car mechanic explaining a problem with a customer's car after an inspection, including what needs to be repaired and roughly how much it might cost.",
+    "opening": "Hi, so I took a look at your car — there's a couple of things I want to run by you."
+  },
+  {
+    "id": "pharmacy",
+    "category": "cotidiano",
+    "initiator": "assistant",
+    "title": "En la farmacia",
+    "desc": "El farmacéutico te ayuda a elegir algo para un problema de salud leve.",
+    "context": "You are a pharmacist helping a customer who has come in describing a minor health issue, like a cold or a headache, and needs a recommendation.",
+    "opening": "Hi, how can I help you today?"
+  },
+  {
+    "id": "public_transport",
+    "category": "cotidiano",
+    "initiator": "assistant",
+    "title": "Comprar billete de transporte",
+    "desc": "Preguntas en una taquilla por horarios y compras un billete.",
+    "context": "You are a ticket counter clerk at a train or bus station helping a customer figure out schedules, prices, and buy the right ticket.",
+    "opening": "Hi, where are you headed today?"
   }
 ]

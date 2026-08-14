@@ -1,0 +1,71 @@
+            #tableContainer {
+                max-height: calc(98vh - 350px);
+                overflow-y: auto;
+                overflow-x: auto;
+                position: relative;
+                border: 1px solid #e2e8f0;
+                border-radius: 8px;
+                background-color: #ffffff;
+                box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            }
+
+            #tableContainer thead {
+                position: sticky;
+                top: 0;
+                z-index: 10;
+                background-color: #475569;
+            }
+
+            #tableContainer thead th {
+                background-color: #475569;
+                position: sticky;
+                top: 0;
+            }
+
+            /* Scrollbar personalizado - solo vertical */
+            #tableContainer::-webkit-scrollbar {
+                width: 12px;
+            }
+
+            #tableContainer::-webkit-scrollbar-track {
+                background: #f1f5f9;
+                border-radius: 10px;
+            }
+
+            #tableContainer::-webkit-scrollbar-thumb {
+                background: #94a3b8;
+                border-radius: 10px;
+            }
+
+            #tableContainer::-webkit-scrollbar-thumb:hover {
+                background: #64748b;
+            }
+
+            /* Firefox scrollbar - solo vertical */
+            #tableContainer {
+                scrollbar-width: thin;
+                scrollbar-color: #94a3b8 #f1f5f9;
+            }
+
+            /* Sombra en el header cuando hay scroll */
+            #tableContainer.scrolled thead th {
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            }
+
+            /* Optimización de scroll */
+            #tableContainer table {
+                border-collapse: separate;
+                border-spacing: 0;
+                width: 100%;
+            }
+
+            /* Ancho mínimo para activar scroll horizontal (suma de todas las columnas) */
+            #tableContainer .table {
+                min-width: 2075px;
+            }
+
+            #tableContainer .table th,
+            #tableContainer .table td {
+                word-wrap: break-word;
+                overflow-wrap: break-word;
+            }

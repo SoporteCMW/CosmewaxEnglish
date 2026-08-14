@@ -1,0 +1,62 @@
+/* Estilos para el header con filtros */
+.header-actions {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    font-size: 13px;
+}
+
+/* Estilos para cada filtro */
+.filter-box {
+    display: flex;
+    flex-direction: column;
+    font-size: 14px;
+}
+
+.filter-box label {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--corp-primary);
+    margin-bottom: 2px;
+    display: block;
+}
+
+.filter-box label i {
+    color: var(--corp-primary);
+    font-size: 0.9rem;
+}
+
+/* Botón de actualizar */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    white-space: nowrap;
+    font-size: 12px;
+    padding: 5px 12px;
+    height: 30px;
+}
+
+.btn i {
+    font-size: 12px;
+}
+
+/* Responsive */
+@media (max-width: 968px) {
+    .header-actions {
+        width: 100%;
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .filter-box,
+    .btn {
+        width: 100%;
+    }
+
+    .filter-box select {
+        width: 100% !important;
+    }
+}

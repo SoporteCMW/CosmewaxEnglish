@@ -12,43 +12,44 @@
 }
 .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); }
 .conv-stats-row,
-.read-stats-row { display: none; grid-template-columns: repeat(3, 1fr); margin-bottom: 16px; }
+.read-stats-row,
+.listen-stats-row { display: none; grid-template-columns: repeat(3, 1fr); margin-bottom: 16px; }
 .voice-panel { display: none; grid-template-columns: repeat(3, 1fr); margin-bottom: 14px; }
 .stats-row:empty { display: none; }
 
-.stat { background: var(--paper); padding: 10px 12px; }
+.stat { background: var(--surface); padding: 10px 12px; }
 .stat .n {
   font-family: var(--font-display);
   font-size: 22px;
   font-weight: 700;
-  color: var(--petrol-dark);
+  color: var(--accent-dark);
 }
 .stat .l {
   font-size: 9.5px;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: var(--ink-soft);
+  color: var(--muted);
 }
 
-.voice-stat { background: var(--paper-dim); padding: 8px 10px; text-align: center; }
+.voice-stat { background: var(--surface-dim); padding: 8px 10px; text-align: center; }
 .voice-stat .n {
   font-family: var(--font-display);
   font-size: 17px;
   font-weight: 700;
-  color: var(--petrol-dark);
+  color: var(--accent-dark);
   display: block;
 }
 .voice-stat .l {
   font-size: 8.5px;
   letter-spacing: 0.05em;
   text-transform: uppercase;
-  color: var(--ink-soft);
+  color: var(--muted);
 }
 
 /* ---- Pestañas de categoría ---- */
 .tabs {
   display: flex;
-  border: 1px solid var(--ink);
+  border: 1px solid var(--line);
   margin-bottom: 18px;
 }
 .tab {
@@ -61,13 +62,13 @@
   cursor: pointer;
   background: none;
   border: none;
-  border-right: 1px solid var(--ink);
-  color: var(--ink-soft);
+  border-right: 1px solid var(--line);
+  color: var(--muted);
 }
 .tab:last-child { border-right: none; }
 .tab.is-active {
-  background: var(--petrol);
-  color: var(--paper);
+  background: var(--accent);
+  color: var(--on-accent);
   font-weight: 700;
 }
 
@@ -87,12 +88,12 @@
 
 .check-btn {
   padding: 11px 16px;
-  background: var(--ink);
-  color: var(--paper);
+  background: var(--accent);
+  color: var(--on-accent);
   font-size: 11px;
   white-space: nowrap;
 }
-.check-btn:hover { background: var(--petrol); }
+.check-btn:hover { background: var(--accent); }
 .check-btn:disabled { background: var(--line); cursor: not-allowed; }
 
 .new-conv-btn,
@@ -100,25 +101,25 @@
   display: block;
   width: 100%;
   padding: 12px;
-  background: var(--petrol);
-  color: var(--paper);
+  background: var(--accent);
+  color: var(--on-accent);
   font-size: 12px;
 }
 .new-conv-btn:hover,
-.new-read-btn:hover { background: var(--petrol-dark); }
+.new-read-btn:hover { background: var(--accent-dark); }
 
 .add-btn {
   align-self: flex-start;
   padding: 9px 18px;
-  background: var(--petrol);
-  color: var(--paper);
+  background: var(--accent);
+  color: var(--on-accent);
   font-size: 11px;
 }
-.add-btn:hover { background: var(--petrol-dark); }
+.add-btn:hover { background: var(--accent-dark); }
 
 .reset-link {
   font-size: 10px;
-  color: var(--ink-soft);
+  color: var(--muted);
   text-decoration: underline;
   cursor: pointer;
   background: none;
@@ -132,14 +133,15 @@
   flex: 1;
   min-width: 0;
   padding: 11px 10px;
-  border: 1px solid var(--ink);
-  background: var(--paper-raised);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface-raised);
   font-family: inherit;
   font-size: 15px;
-  color: var(--ink);
+  color: var(--text);
 }
-.answer-input:focus { outline: 2px solid var(--petrol); outline-offset: -1px; }
-.answer-input:disabled { background: var(--paper-dim); }
+.answer-input:focus { outline: 2px solid var(--accent); outline-offset: -1px; }
+.answer-input:disabled { background: var(--surface-dim); }
 .answer-input-row,
 .conv-input-row { display: flex; gap: 8px; }
 .conv-input-row { margin-bottom: 8px; }
@@ -147,19 +149,20 @@
 /* ---- Micrófono / voz ---- */
 .mic-btn {
   padding: 11px 14px;
-  background: var(--paper);
-  color: var(--ink);
-  border: 1px solid var(--ink);
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
   font-family: inherit;
   font-size: 15px;
   cursor: pointer;
   white-space: nowrap;
 }
-.mic-btn:hover { background: var(--paper-dim); }
+.mic-btn:hover { background: var(--surface-dim); }
 .mic-btn.is-recording {
-  background: var(--bad);
-  color: #fff;
-  border-color: var(--bad);
+  background: var(--danger-surface);
+  color: var(--on-accent);
+  border-color: var(--danger);
   font-size: 11px;
   letter-spacing: 0.03em;
   text-transform: uppercase;
@@ -177,7 +180,7 @@
 
 .voice-msg {
   font-size: 11.5px;
-  color: var(--bad);
+  color: var(--danger);
   margin-top: 6px;
   line-height: 1.5;
 }
@@ -195,20 +198,20 @@
   border: 1px solid;
 }
 .feedback-banner.is-correct { color: var(--good); border-color: var(--good); background: var(--good-bg); }
-.feedback-banner.is-close { color: var(--amber); border-color: var(--amber); background: var(--amber-soft); }
-.feedback-banner.is-incorrect { color: var(--bad); border-color: var(--bad); background: var(--bad-bg); }
+.feedback-banner.is-close { color: var(--accent-2); border-color: var(--accent-2); background: var(--accent-2-soft); }
+.feedback-banner.is-incorrect { color: var(--danger); border-color: var(--danger); background: var(--danger-bg); }
 
 .error-box {
-  color: var(--bad);
+  color: var(--danger);
   font-size: 12px;
   padding: 10px;
-  border: 1px solid var(--bad);
+  border: 1px solid var(--danger);
   margin-bottom: 10px;
   line-height: 1.5;
 }
 
-.form-msg { font-size: 11px; color: var(--ink-soft); margin: 0; min-height: 14px; }
-.form-msg.is-error { color: var(--bad); }
+.form-msg { font-size: 11px; color: var(--muted); margin: 0; min-height: 14px; }
+.form-msg.is-error { color: var(--danger); }
 
 /* ---- Diff de palabras ---- */
 .diff-line {
@@ -220,24 +223,50 @@
 .diff-word { padding: 0 1px; }
 .diff-word.is-match { color: var(--good); }
 .diff-word.is-missing {
-  color: var(--petrol-dark);
-  background: var(--amber-soft);
+  color: var(--accent-dark);
+  background: var(--accent-2-soft);
   font-weight: 700;
   border-radius: var(--radius-sm);
   padding: 0 3px;
 }
-.diff-word.is-extra { color: var(--bad); text-decoration: line-through; opacity: 0.75; }
+.diff-word.is-extra { color: var(--danger); text-decoration: line-through; opacity: 0.75; }
+
+/* ---- Palabras marcables para el cuaderno ---- */
+/* Presente en Conversación, Lectura, Listening y Gramática: pulsar una palabra
+   la manda al cuaderno con traducción en contexto. */
+.clickable-word {
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+  padding: 0 1px;
+}
+.clickable-word:hover {
+  background: var(--surface-dim);
+  text-decoration: underline dotted var(--accent);
+}
+.clickable-word.is-marking { opacity: 0.4; cursor: wait; }
+
+.bubble-speak-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 12px;
+  padding: 0;
+  margin-left: 6px;
+  vertical-align: middle;
+  opacity: 0.75;
+}
+.bubble-speak-btn:hover { opacity: 1; }
 
 .empty-state {
   text-align: center;
   padding: 40px 20px;
-  color: var(--ink-soft);
+  color: var(--muted);
   font-size: 13px;
   line-height: 1.6;
 }
 .empty-state .big {
   font-family: var(--font-display);
   font-size: 17px;
-  color: var(--ink);
+  color: var(--text);
   margin-bottom: 6px;
 }

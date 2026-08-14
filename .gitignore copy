@@ -1,0 +1,38 @@
+# ── Secrets ───────────────────────────────────────────────────────────────────
+.env
+*.key
+*.pem
+*.p12
+*.pfx
+
+# ── OS / IDE / Tooling ────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+desktop.ini
+.idea/
+.vscode/
+.claude/
+*.sublime-project
+*.sublime-workspace
+
+# ── Dependencies / vendors ────────────────────────────────────────────────────
+vendor/
+node_modules/
+
+# ── Logs / temp ───────────────────────────────────────────────────────────────
+*.log
+*.tmp
+*.bak
+*.swp
+/tmp/
+
+# ── Uploads (no subir archivos de usuario al repo) ────────────────────────────
+/uploads/
+/storage/
+
+# ── Build output ──────────────────────────────────────────────────────────────
+/dist/
+/build/
+
+# ── Docker ────────────────────────────────────────────────────────────────────
+docker-compose.override.yml

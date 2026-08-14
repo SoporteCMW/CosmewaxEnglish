@@ -1,0 +1,167 @@
+/* ========================================
+   ESTILOS PARA INDICADOR DE COMPLETITUD
+   ======================================== */
+
+.status-complete {
+    color: #22c55e;
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.status-incomplete {
+    color: #ef4444;
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+/* ========================================
+   OPTIMIZAR BADGES YES/NO
+   ======================================== */
+
+.badge-yes,
+.badge-no {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    min-width: 45px;
+    text-align: center;
+}
+
+.badge-yes {
+    background: #c6f6d5;
+    color: #22543d;
+}
+
+.badge-no {
+    background: #fed7d7;
+    color: #742a2a;
+}
+
+/* Badge empty compacto */
+.badge-empty {
+    padding: 4px 8px;
+    font-size: 0.7rem;
+    min-width: 55px;
+}
+
+/* ========================================
+   ETIQUETAS DE DEPARTAMENTO - SIN PLANNING
+   ======================================== */
+
+/* Asegurar que la tabla mantenga el layout con colspan */
+.table {
+    table-layout: auto !important;
+    width: 100% !important;
+}
+
+.department-row th {
+    padding: 10px 6px !important;
+    font-weight: 700;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    border-bottom: 3px solid;
+    position: relative;
+    text-align: center !important;
+}
+
+.dept-label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    white-space: nowrap;
+}
+
+.dept-label i {
+    font-size: 0.85rem;
+    flex-shrink: 0;
+}
+
+.dept-label span {
+    font-size: 0.75rem;
+    line-height: 1.2;
+}
+
+/* Estándar - Gris */
+.dept-standard {
+    background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%) !important;
+    color: white !important;
+    border-bottom-color: #374151 !important;
+}
+
+.dept-standard .dept-label i {
+    color: #e5e7eb;
+}
+
+/* Logística (Inbound & Outbound) - Azul */
+.dept-logistica {
+    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%) !important;
+    color: white !important;
+    border-bottom-color: #1e40af !important;
+}
+
+.dept-logistica .dept-label i {
+    color: #dbeafe;
+}
+
+/* Product Coordination - Púrpura */
+.dept-coordination {
+    background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%) !important;
+    color: white !important;
+    border-bottom-color: #5b21b6 !important;
+}
+
+.dept-coordination .dept-label i {
+    color: #ede9fe;
+}
+
+/* Production - Naranja (ahora con 4 columnas) */
+.dept-production {
+    background: linear-gradient(135deg, #ea580c 0%, #c2410c 100%) !important;
+    color: white !important;
+    border-bottom-color: #9a3412 !important;
+}
+
+.dept-production .dept-label i {
+    color: #fed7aa;
+}
+
+/* Fila de encabezados de columnas */
+.column-headers th {
+    background: rgb(74, 98, 117) !important;
+    color: white !important;
+    text-align: center !important;
+    font-weight: 600 !important;
+    font-size: 0.8rem !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.5px !important;
+    border-top: none !important;
+}
+
+/* Códigos - Teal */
+.dept-codigos {
+    background: linear-gradient(135deg, #0d9488 0%, #0f766e 100%) !important;
+    color: white !important;
+    border-bottom-color: #115e59 !important;
+}
+
+.dept-codigos .dept-label i {
+    color: #ccfbf1;
+}
+
+/* Sticky headers - mantener ambas filas visibles al hacer scroll */
+.table thead tr.department-row {
+    position: sticky;
+    top: 0;
+    z-index: 12;
+}
+
+.table thead tr.column-headers {
+    position: sticky;
+    top: 46px; /* Altura ajustada de la fila de departamentos */
+    z-index: 11;
+}

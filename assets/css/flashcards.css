@@ -8,8 +8,9 @@
 
 .card {
   width: 100%;
-  border: 1px solid var(--ink);
-  background: var(--paper-raised);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface-raised);
   padding: 26px 24px 20px;
   position: relative;
 }
@@ -17,8 +18,8 @@
   position: absolute;
   top: -10px;
   left: 20px;
-  background: var(--petrol);
-  color: var(--paper);
+  background: var(--accent);
+  color: var(--on-accent);
   font-size: 9.5px;
   letter-spacing: 0.06em;
   padding: 2px 8px;
@@ -35,17 +36,17 @@
   width: 9px;
   height: 9px;
   border-radius: 50%;
-  border: 1px solid var(--ink);
+  border: 1px solid var(--line);
   background: transparent;
 }
-.dot.is-on { background: var(--amber); border-color: var(--amber); }
+.dot.is-on { background: var(--accent-2); border-color: var(--accent-2); }
 
 .prompt-label,
 .your-answer-label {
   font-size: 9.5px;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--ink-soft);
+  color: var(--muted);
   margin-bottom: 6px;
 }
 .prompt-text {
@@ -53,20 +54,20 @@
   font-size: 21px;
   line-height: 1.4;
   margin-bottom: 18px;
-  color: var(--ink);
+  color: var(--text);
 }
 .your-answer-label { margin-bottom: 3px; }
 .your-answer-text {
   font-family: var(--font-display);
   font-size: 15px;
-  color: var(--ink-soft);
+  color: var(--muted);
   margin-bottom: 14px;
   padding-bottom: 10px;
   border-bottom: 1px dashed var(--line);
 }
 .answer-note {
   font-size: 12px;
-  color: var(--ink-soft);
+  color: var(--muted);
   line-height: 1.5;
   margin-bottom: 10px;
 }
@@ -79,20 +80,21 @@
 }
 .rate-btn {
   padding: 11px 4px;
-  border: 1px solid var(--ink);
-  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
   font-family: inherit;
   font-size: 11px;
   letter-spacing: 0.03em;
   cursor: pointer;
   text-transform: uppercase;
 }
-.rate-btn.is-again { color: var(--bad); border-color: var(--bad); }
-.rate-btn.is-again:hover { background: var(--bad); color: #fff; }
-.rate-btn.is-good { color: var(--petrol-dark); border-color: var(--petrol-dark); }
-.rate-btn.is-good:hover { background: var(--petrol); color: #fff; }
-.rate-btn.is-easy { color: var(--amber); border-color: var(--amber); }
-.rate-btn.is-easy:hover { background: var(--amber); color: #fff; }
+.rate-btn.is-again { color: var(--danger); border-color: var(--danger); }
+.rate-btn.is-again:hover { background: var(--danger-surface); color: var(--on-accent); }
+.rate-btn.is-good { color: var(--accent-dark); border-color: var(--accent-dark); }
+.rate-btn.is-good:hover { background: var(--accent); color: var(--on-accent); }
+.rate-btn.is-easy { color: var(--accent-2); border-color: var(--accent-2); }
+.rate-btn.is-easy:hover { background: var(--accent-2-surface); color: var(--on-accent); }
 
 /* ---- Formulario de alta ---- */
 details.add-form {
@@ -105,8 +107,8 @@ details.add-form summary {
   letter-spacing: 0.05em;
   text-transform: uppercase;
   cursor: pointer;
-  background: var(--paper-dim);
-  color: var(--ink-soft);
+  background: var(--surface-dim);
+  color: var(--muted);
 }
 .add-form-inner {
   padding: 16px;
@@ -119,7 +121,7 @@ details.add-form summary {
   font-size: 10px;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: var(--ink-soft);
+  color: var(--muted);
   display: block;
   margin-bottom: 3px;
 }
@@ -129,9 +131,10 @@ details.add-form summary {
   width: 100%;
   padding: 8px;
   border: 1px solid var(--line);
-  background: var(--paper-raised);
+  border-radius: var(--radius);
+  background: var(--surface-raised);
   font-family: inherit;
   font-size: 13px;
-  color: var(--ink);
+  color: var(--text);
 }
 .add-form-inner textarea { resize: vertical; min-height: 40px; }

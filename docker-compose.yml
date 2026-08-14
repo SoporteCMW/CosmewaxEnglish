@@ -1,0 +1,64 @@
+version: '3.9'
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# ESQUELETIC PHP — Stack Docker
+#
+# Levanta todo:          docker compose up -d
+# Solo la app:           docker compose up -d app
+# Ver logs:              docker compose logs -f
+# Parar y borrar todo:   docker compose down -v
+#
+# Nota: en desarrollo con XAMPP local no hace falta Docker.
+# Este archivo existe para portar el proyecto a cualquier entorno Linux/servidor.
+# ═══════════════════════════════════════════════════════════════════════════════
+
+services:
+
+  # ─────────────────────────────────────────────────────────────────────────────
+  # APP — Aplicación PHP (Apache + PHP 8.2)
+  # Qué hace: sirve la aplicación web completa (login, dashboard, assets).
+  # Necesario para: cualquier uso del sistema.
+  # Se puede eliminar si: nunca (es el core del proyecto).
+  # ─────────────────────────────────────────────────────────────────────────────
+  app:
+    image: php:8.2-apache
+    container_name: ${APP_NAME:-esqueletic}
+    ports:
+      - "${APP_PORT:-8080}:80"
+    volumes:
+      # Código fuente de la aplicación
+      # Windows host:  .\:/var/www/html
+      # Linux/Mac:     ./:/var/www/html
+      - ./:/var/www/html
+    environment:
+      # Apache necesita ServerName para no emitir warnings
+      APACHE_SERVER_NAME: localhost
+    env_file:
+      - .env
+    extra_hosts:
+      # Permite que el contenedor resuelva el AD corporativo por nombre
+      # Ajustar si el DNS del contenedor no resuelve cosmewax.local
+      - "host-gateway:host-gateway"
+    command: >
+      bash -c "
+        docker-php-ext-install ldap &&
+        a2enmod rewrite &&
+        apache2-foreground
+      "
+    restart: unless-stopped
+
+# ─────────────────────────────────────────────────────────────────────────────
+# NOTAS DE DESPLIEGUE
+#
+# 1. El contenedor instala la extensión LDAP al arrancar. Para producción, crear
+#    un Dockerfile propio que lo haga en build time (más rápido y reproducible).
+#
+# 2. El AD (cosmewax.local:389) debe ser accesible desde la red del contenedor.
+#    Verificar rutas de red y firewalls.
+#
+# 3. Para HTTPS en producción, añadir un servicio nginx con certificado SSL
+#    delante de este contenedor.
+#
+# 4. El .env NO se sube al repo (.gitignore lo excluye). En CI/CD, inyectar
+#    las variables por secretos del pipeline.
+# ─────────────────────────────────────────────────────────────────────────────

@@ -1,0 +1,26 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# FotoPerfil — control de acceso por RED (Apache 2.4+, mod_authz_host)
+#
+# Único mecanismo de control de acceso del proyecto: solo se permite el acceso
+# desde localhost y las redes privadas internas. Todo lo demás queda denegado.
+#
+# AJUSTA los rangos a tu subred real (p. ej. Require ip 192.168.10.0/24) para
+# acotar más. Los de abajo cubren todo el espacio privado RFC1918.
+# ─────────────────────────────────────────────────────────────────────────────
+<RequireAny>
+    Require ip 127.0.0.1
+    Require ip ::1
+    Require ip 10.0.0.0/8
+    Require ip 172.16.0.0/12
+    Require ip 192.168.0.0/16
+</RequireAny>
+
+# Nunca servir el .env (contiene el CLIENT_SECRET). Denegado a todos.
+<Files ".env">
+    Require all denied
+</Files>
+
+# Tampoco servir config.php directamente por HTTP (se incluye por PHP, no se navega).
+<Files "config.php">
+    Require all denied
+</Files>

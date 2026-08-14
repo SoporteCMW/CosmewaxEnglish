@@ -1,0 +1,65 @@
+.notebook-entry {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface-raised);
+  padding: 16px 18px;
+  margin-bottom: 12px;
+  position: relative;
+}
+
+.notebook-source-tag {
+  position: absolute;
+  top: -9px;
+  right: 14px;
+  background: var(--accent);
+  color: var(--on-accent);
+  font-size: 9px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  padding: 2px 8px;
+}
+
+.notebook-word {
+  font-family: var(--font-display);
+  font-size: 19px;
+  font-weight: 700;
+  margin-bottom: 2px;
+}
+
+.notebook-translation {
+  font-size: 13.5px;
+  color: var(--accent-dark);
+  margin-bottom: 8px;
+}
+
+.notebook-example {
+  font-family: var(--font-display);
+  font-size: 14px;
+  color: var(--muted);
+  font-style: italic;
+  margin-bottom: 10px;
+  padding-top: 8px;
+  border-top: 1px dashed var(--line);
+}
+
+.notebook-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.notebook-actions button {
+  padding: 5px 10px;
+  background: var(--surface);
+  color: var(--muted);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  font-family: inherit;
+  font-size: 10.5px;
+  cursor: pointer;
+}
+.notebook-actions button:hover { border-color: var(--accent); color: var(--accent); }
+.notebook-actions button.is-promoted {
+  color: var(--good);
+  border-color: var(--good);
+}
+.notebook-actions button:disabled { cursor: default; }

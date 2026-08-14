@@ -1,4 +1,7 @@
 [
-  { "id": "cliente", "label": "📞 Llamadas de cliente — el interlocutor empieza", "whoLabel": "Cliente" },
-  { "id": "presentacion", "label": "🗣️ Presentación técnica — tú empiezas", "whoLabel": "Interlocutor" }
+  { "id": "cliente", "mode": "profesional", "label": "📞 Llamadas de cliente — el interlocutor empieza", "whoLabel": "Cliente" },
+  { "id": "presentacion", "mode": "profesional", "label": "🗣️ Presentación técnica — tú empiezas", "whoLabel": "Interlocutor" },
+  { "id": "generado", "mode": "profesional", "label": "🪄 Generados para tu perfil", "whoLabel": "Cliente" },
+  { "id": "cotidiano", "mode": "cotidiano", "label": "🌍 Situaciones de la vida diaria — el interlocutor empieza", "whoLabel": "Interlocutor" },
+  { "id": "generado-cotidiano", "mode": "cotidiano", "label": "🪄 Situaciones generadas", "whoLabel": "Interlocutor" }
 ]

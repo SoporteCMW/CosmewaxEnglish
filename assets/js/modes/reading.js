@@ -1,7 +1,7 @@
 import { content } from '../core/config.js';
 import { $, delegate, escapeHtml } from '../core/dom.js';
-import { capHistory } from '../core/storage.js';
 import { requestText } from '../core/api.js';
+import { capHistory } from '../core/storage.js';
 import {
   Dictation,
   cancelSpeech,
@@ -9,19 +9,20 @@ import {
   speak,
   speakSequence,
 } from '../core/speech.js';
+import { clickableWords } from '../core/ui.js';
 import { normalizeWord, splitWords, wordDiff } from '../lib/text.js';
 
 const KEY_STATS = 'read-stats';
 const TROUBLE_WORDS_SHOWN = 8;
 
 /**
- * Modo lectura: Claude genera un texto, el alumno lo lee en voz alta y se
+ * Modo lectura: la IA genera un texto, el alumno lo lee en voz alta y se
  * comparan palabra a palabra el original y lo que entendió el reconocedor.
  *
  * Las palabras que falla se acumulan en `troubleWords` entre sesiones, que es
  * lo que convierte el ejercicio en un plan de pronunciación y no en un juego.
  */
-export function createReadingMode({ store }) {
+export function createReadingMode({ store, profile, onActivity }) {
   const el = {
     stats: $('#readStatsRow'),
     body: $('#readBody'),
@@ -94,7 +95,7 @@ export function createReadingMode({ store }) {
         (topic) => `
           <button type="button" class="topic-btn" data-action="generate" data-topic="${escapeHtml(topic.id)}">
             <div class="stitle">${escapeHtml(topic.title)}</div>
-            <div class="sdesc">${escapeHtml(topic.desc)}</div>
+            <div class="sdesc">${escapeHtml(topicDesc(topic))}</div>
           </button>`
       )
       .join('');
@@ -104,11 +105,14 @@ export function createReadingMode({ store }) {
     return `${troubleBox}${error}${topics}`;
   }
 
-  function readingHtml() {
-    const passage = splitWords(state.passage)
-      .map((word) => `<span class="rword">${escapeHtml(word)}</span>`)
-      .join(' ');
+  function topicDesc(topic) {
+    // El tema "profesional" se adapta al perfil elegido; el resto no cambia.
+    return topic.id === 'pro'
+      ? `Un texto sobre el día a día de un perfil de ${profile.label()} en la industria cosmética.`
+      : topic.desc;
+  }
 
+  function readingHtml() {
     const listening = dictation.isListening;
     const liveText = listening
       ? 'Escuchando…'
@@ -120,7 +124,7 @@ export function createReadingMode({ store }) {
         : '';
 
     return `
-      <div class="reading-passage">${passage}</div>
+      <div class="reading-passage">${clickableWords(state.passage, state.passage)}</div>
       <div class="read-live-transcript" id="readLive">${escapeHtml(liveText)}</div>
       ${state.error ? `<div class="error-box">${escapeHtml(state.error)}</div>` : ''}
       <div class="read-mic-row">
@@ -133,11 +137,18 @@ export function createReadingMode({ store }) {
   }
 
   function resultHtml() {
+    // Se mantiene el diff, pero cada palabra sigue siendo marcable para el
+    // cuaderno: justo las que no se entendieron son las que interesa guardar.
     const passage = state.resultOps
-      .map(
-        (op) =>
-          `<span class="rword ${op.type === 'missing' ? 'is-missing' : 'is-match'}">${escapeHtml(op.word)}</span>`
-      )
+      .map((op) => {
+        const cls = op.type === 'missing' ? 'is-missing' : 'is-match';
+        const clean = op.word.replace(/^[^a-zA-Z']+/, '').replace(/[^a-zA-Z']+$/, '');
+        if (!clean) return `<span class="rword ${cls}">${escapeHtml(op.word)}</span>`;
+        return (
+          `<span class="rword ${cls} clickable-word" data-word="${escapeHtml(clean)}" ` +
+          `data-ctx="${escapeHtml(state.passage)}">${escapeHtml(op.word)}</span>`
+        );
+      })
       .join(' ');
 
     const total = state.resultOps.length;
@@ -157,7 +168,9 @@ export function createReadingMode({ store }) {
       ? `<div class="review-words-box">
            <div class="review-words-title">Palabras a repasar — pulsa 🔊 para escucharlas</div>
            ${chips}
-           <button type="button" class="check-btn" style="margin-top:10px;" data-action="say-all">🔊 Escuchar todas seguidas</button>
+           <button type="button" class="check-btn" style="margin-top:10px;" data-action="say-all">
+             🔊 Escuchar todas seguidas
+           </button>
          </div>`
       : '<div class="review-words-box">¡Lectura perfecta! No hay palabras pendientes de repasar en este texto.</div>';
 
@@ -210,7 +223,11 @@ export function createReadingMode({ store }) {
     render();
 
     try {
-      state.passage = (await requestText('reading.passage', { topicId })).trim();
+      const text = await requestText('reading.passage', {
+        topicId,
+        profileId: profile.id(),
+      });
+      state.passage = text.trim();
       state.transcriptFinal = '';
       state.transcriptInterim = '';
       state.phase = 'reading';
@@ -240,8 +257,8 @@ export function createReadingMode({ store }) {
     const originalWords = splitWords(state.passage);
     const spokenWords = splitWords(state.transcriptFinal);
 
-    // Nos quedamos con el orden del texto original: las inserciones que sólo
-    // existen en la transcripción (ruido del reconocedor) no se muestran.
+    // Se mantiene el orden del texto original: las inserciones que sólo existen
+    // en la transcripción (ruido del reconocedor) no se muestran.
     state.resultOps = wordDiff(spokenWords, originalWords).filter((op) => op.type !== 'extra');
 
     const missing = state.resultOps
@@ -267,6 +284,7 @@ export function createReadingMode({ store }) {
     state.phase = 'result';
     renderStats();
     render();
+    await onActivity();
   }
 
   // ---- Voz ----
@@ -320,6 +338,14 @@ export function createReadingMode({ store }) {
     hide() {
       dictation.stop();
       cancelSpeech();
+    },
+    sessionCount: () => state.stats.history.length,
+
+    async reset() {
+      state.stats = { history: [], troubleWords: {} };
+      await store.set(KEY_STATS, state.stats);
+      renderStats();
+      if (state.phase === 'pick') render();
     },
   };
 }

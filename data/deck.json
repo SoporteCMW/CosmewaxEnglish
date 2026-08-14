@@ -1,52 +1,1101 @@
 [
-  { "id": "c0",  "cat": "reunion", "es": "Perdona, ¿puedes repetir eso, por favor?", "en": "Sorry, could you say that again, please?", "note": "Frase directa para pedir repetición sin sonar torpe." },
-  { "id": "c1",  "cat": "reunion", "es": "Déjame pensarlo un segundo", "en": "Let me think about that for a second.", "note": "Sirve para ganar 2-3 segundos sin silencio incómodo." },
-  { "id": "c2",  "cat": "reunion", "es": "No estoy seguro de haber entendido bien", "en": "I'm not sure I followed that correctly.", "note": "" },
-  { "id": "c3",  "cat": "reunion", "es": "¿Puedes explicarlo con otras palabras?", "en": "Could you put that another way?", "note": "" },
-  { "id": "c4",  "cat": "reunion", "es": "Vuelvo sobre ese punto en un momento", "en": "I'll come back to that point in a moment.", "note": "Útil para aparcar algo sin perder el hilo." },
-  { "id": "c5",  "cat": "reunion", "es": "Eso tiene sentido", "en": "That makes sense.", "note": "" },
-  { "id": "c6",  "cat": "reunion", "es": "Buena pregunta, dame un segundo", "en": "Good question, give me a second.", "note": "Filler para ganar tiempo mostrando que escuchas." },
-  { "id": "c7",  "cat": "reunion", "es": "Lo que quiero decir es...", "en": "What I mean is...", "note": "" },
-  { "id": "c8",  "cat": "reunion", "es": "Corrígeme si me equivoco", "en": "Correct me if I'm wrong.", "note": "" },
-  { "id": "c9",  "cat": "reunion", "es": "En resumen...", "en": "To sum up...", "note": "" },
-  { "id": "c10", "cat": "reunion", "es": "¿Estamos de acuerdo en que...?", "en": "Are we in agreement that...?", "note": "" },
-  { "id": "c11", "cat": "reunion", "es": "Necesitaría confirmarlo internamente", "en": "I'd need to confirm that internally.", "note": "Frase de salvavidas cuando no tienes el dato." },
-  { "id": "c12", "cat": "reunion", "es": "Volvamos a lo que decías antes", "en": "Let's go back to what you were saying earlier.", "note": "" },
-  { "id": "c13", "cat": "reunion", "es": "No tengo ese dato ahora mismo, te lo confirmo por email", "en": "I don't have that figure on hand, I'll confirm it by email.", "note": "" },
-  { "id": "c14", "cat": "reunion", "es": "¿Podemos programar una llamada de seguimiento?", "en": "Can we schedule a follow-up call?", "note": "" },
-
-  { "id": "c15", "cat": "tecnico", "es": "cera depilatoria", "en": "depilatory wax", "note": "" },
-  { "id": "c16", "cat": "tecnico", "es": "punto de fusión", "en": "melting point", "note": "" },
-  { "id": "c17", "cat": "tecnico", "es": "resina", "en": "resin", "note": "" },
-  { "id": "c18", "cat": "tecnico", "es": "materia prima", "en": "raw material", "note": "" },
-  { "id": "c19", "cat": "tecnico", "es": "ficha técnica", "en": "technical data sheet (TDS)", "note": "" },
-  { "id": "c20", "cat": "tecnico", "es": "ficha de seguridad", "en": "safety data sheet (SDS)", "note": "" },
-  { "id": "c21", "cat": "tecnico", "es": "lote", "en": "batch", "note": "" },
-  { "id": "c22", "cat": "tecnico", "es": "escalado industrial", "en": "industrial scale-up", "note": "" },
-  { "id": "c23", "cat": "tecnico", "es": "estabilidad acelerada", "en": "accelerated stability testing", "note": "Distinto de \"real-time stability\" — acláralo siempre." },
-  { "id": "c24", "cat": "tecnico", "es": "estabilidad en tiempo real", "en": "real-time stability testing", "note": "" },
-  { "id": "c25", "cat": "tecnico", "es": "viscosidad", "en": "viscosity", "note": "" },
-  { "id": "c26", "cat": "tecnico", "es": "formulación", "en": "formulation", "note": "" },
-  { "id": "c27", "cat": "tecnico", "es": "principio activo", "en": "active ingredient", "note": "" },
-  { "id": "c28", "cat": "tecnico", "es": "conservante", "en": "preservative", "note": "" },
-  { "id": "c29", "cat": "tecnico", "es": "nombre INCI", "en": "INCI name", "note": "Se mantiene igual en inglés y español: INCI." },
-  { "id": "c30", "cat": "tecnico", "es": "informe de seguridad del producto cosmético", "en": "Cosmetic Product Safety Report (CPSR)", "note": "" },
-  { "id": "c31", "cat": "tecnico", "es": "sustancia clasificada como CMR", "en": "CMR-classified substance", "note": "Carcinogenic, Mutagenic, Reprotoxic." },
-  { "id": "c32", "cat": "tecnico", "es": "Reglamento CLP", "en": "CLP Regulation", "note": "Classification, Labelling and Packaging." },
-  { "id": "c33", "cat": "tecnico", "es": "anexo (del reglamento)", "en": "annex", "note": "" },
-  { "id": "c34", "cat": "tecnico", "es": "proveedor", "en": "supplier", "note": "" },
-  { "id": "c35", "cat": "tecnico", "es": "control de calidad", "en": "quality control (QC)", "note": "" },
-  { "id": "c36", "cat": "tecnico", "es": "vida útil", "en": "shelf life", "note": "" },
-  { "id": "c37", "cat": "tecnico", "es": "envase", "en": "packaging", "note": "" },
-  { "id": "c38", "cat": "tecnico", "es": "muestra de referencia", "en": "reference sample", "note": "" },
-
-  { "id": "c39", "cat": "comercial", "es": "plazo de entrega", "en": "lead time", "note": "" },
-  { "id": "c40", "cat": "comercial", "es": "presupuesto", "en": "quote", "note": "" },
-  { "id": "c41", "cat": "comercial", "es": "propuesta comercial", "en": "commercial proposal", "note": "" },
-  { "id": "c42", "cat": "comercial", "es": "muestra", "en": "sample", "note": "" },
-  { "id": "c43", "cat": "comercial", "es": "cliente", "en": "client / customer", "note": "" },
-  { "id": "c44", "cat": "comercial", "es": "hoja de ruta del proyecto", "en": "project roadmap", "note": "" },
-  { "id": "c45", "cat": "comercial", "es": "hito", "en": "milestone", "note": "" },
-  { "id": "c46", "cat": "comercial", "es": "retraso", "en": "delay", "note": "" },
-  { "id": "c47", "cat": "comercial", "es": "próximos pasos", "en": "next steps", "note": "" }
+  {
+    "id": "c0",
+    "cat": "reunion",
+    "es": "Perdona, ¿puedes repetir eso, por favor?",
+    "en": "Sorry, could you say that again, please?",
+    "note": "Frase directa para pedir repetición sin sonar torpe. Ejemplo: \"Sorry, could you say that again, please? I didn't catch the last part.\""
+  },
+  {
+    "id": "c1",
+    "cat": "reunion",
+    "es": "Déjame pensarlo un segundo",
+    "en": "Let me think about that for a second.",
+    "note": "Sirve para ganar 2-3 segundos sin silencio incómodo. Ejemplo: \"Let me think about that for a second before I answer.\""
+  },
+  {
+    "id": "c2",
+    "cat": "reunion",
+    "es": "No estoy seguro de haber entendido bien",
+    "en": "I'm not sure I followed that correctly.",
+    "note": "Ejemplo: \"I'm not sure I followed that correctly — could you clarify the batch numbers?\""
+  },
+  {
+    "id": "c3",
+    "cat": "reunion",
+    "es": "¿Puedes explicarlo con otras palabras?",
+    "en": "Could you put that another way?",
+    "note": "Ejemplo: \"Could you put that another way? I want to make sure I understand the specification.\""
+  },
+  {
+    "id": "c4",
+    "cat": "reunion",
+    "es": "Vuelvo sobre ese punto en un momento",
+    "en": "I'll come back to that point in a moment.",
+    "note": "Útil para aparcar algo sin perder el hilo. Ejemplo: \"I'll come back to that point in a moment, once we've covered the timeline.\""
+  },
+  {
+    "id": "c5",
+    "cat": "reunion",
+    "es": "Eso tiene sentido",
+    "en": "That makes sense.",
+    "note": "Ejemplo: \"That makes sense — so the delay is only affecting the second batch.\""
+  },
+  {
+    "id": "c6",
+    "cat": "reunion",
+    "es": "Buena pregunta, dame un segundo",
+    "en": "Good question, give me a second.",
+    "note": "Filler para ganar tiempo mostrando que escuchas. Ejemplo: \"Good question, give me a second to check the data sheet.\""
+  },
+  {
+    "id": "c7",
+    "cat": "reunion",
+    "es": "Lo que quiero decir es...",
+    "en": "What I mean is...",
+    "note": "Ejemplo: \"What I mean is, the viscosity needs to stay within spec even after scale up.\""
+  },
+  {
+    "id": "c8",
+    "cat": "reunion",
+    "es": "Corrígeme si me equivoco",
+    "en": "Correct me if I'm wrong.",
+    "note": "Ejemplo: \"Correct me if I'm wrong, but the sample was tested at room temperature, right?\""
+  },
+  {
+    "id": "c9",
+    "cat": "reunion",
+    "es": "En resumen...",
+    "en": "To sum up...",
+    "note": "Ejemplo: \"To sum up, we need three more weeks to finish the stability testing.\""
+  },
+  {
+    "id": "c10",
+    "cat": "reunion",
+    "es": "¿Estamos de acuerdo en que...?",
+    "en": "Are we in agreement that...?",
+    "note": "Ejemplo: \"Are we in agreement that the new formula is ready for the next stage?\""
+  },
+  {
+    "id": "c11",
+    "cat": "reunion",
+    "es": "Necesitaría confirmarlo internamente",
+    "en": "I'd need to confirm that internally.",
+    "note": "Frase de salvavidas cuando no tienes el dato. Ejemplo: \"I'd need to confirm that internally before giving you a final date.\""
+  },
+  {
+    "id": "c12",
+    "cat": "reunion",
+    "es": "Volvamos a lo que decías antes",
+    "en": "Let's go back to what you were saying earlier.",
+    "note": "Ejemplo: \"Let's go back to what you were saying earlier about the packaging.\""
+  },
+  {
+    "id": "c13",
+    "cat": "reunion",
+    "es": "No tengo ese dato ahora mismo, te lo confirmo por email",
+    "en": "I don't have that figure on hand, I'll confirm it by email.",
+    "note": "Ejemplo: \"I don't have that figure on hand, I'll confirm it by email this afternoon.\""
+  },
+  {
+    "id": "c14",
+    "cat": "reunion",
+    "es": "¿Podemos programar una llamada de seguimiento?",
+    "en": "Can we schedule a follow-up call?",
+    "note": "Ejemplo: \"Can we schedule a follow-up call for next week to review the results?\""
+  },
+  {
+    "id": "c15",
+    "cat": "tecnico",
+    "es": "cera depilatoria",
+    "en": "depilatory wax",
+    "note": "Ejemplo: \"This depilatory wax has a lower melting point than our previous formula.\""
+  },
+  {
+    "id": "c16",
+    "cat": "tecnico",
+    "es": "punto de fusión",
+    "en": "melting point",
+    "note": "Ejemplo: \"The melting point of this resin is around 65 degrees Celsius.\""
+  },
+  {
+    "id": "c17",
+    "cat": "tecnico",
+    "es": "resina",
+    "en": "resin",
+    "note": "Ejemplo: \"We're testing a new resin to improve the wax's flexibility.\""
+  },
+  {
+    "id": "c18",
+    "cat": "tecnico",
+    "es": "materia prima",
+    "en": "raw material",
+    "note": "Ejemplo: \"The price of this raw material has gone up significantly this quarter.\""
+  },
+  {
+    "id": "c19",
+    "cat": "tecnico",
+    "es": "ficha técnica",
+    "en": "technical data sheet (TDS)",
+    "note": "Ejemplo: \"Can you send me the technical data sheet for this batch?\""
+  },
+  {
+    "id": "c20",
+    "cat": "tecnico",
+    "es": "ficha de seguridad",
+    "en": "safety data sheet (SDS)",
+    "note": "Ejemplo: \"The safety data sheet lists all the hazard classifications for this ingredient.\""
+  },
+  {
+    "id": "c21",
+    "cat": "tecnico",
+    "es": "lote",
+    "en": "batch",
+    "note": "Ejemplo: \"This batch didn't pass the viscosity test, so we need to rework it.\""
+  },
+  {
+    "id": "c22",
+    "cat": "tecnico",
+    "es": "escalado industrial",
+    "en": "industrial scale-up",
+    "note": "Ejemplo: \"We're planning the industrial scale-up for next month.\""
+  },
+  {
+    "id": "c23",
+    "cat": "tecnico",
+    "es": "estabilidad acelerada",
+    "en": "accelerated stability testing",
+    "note": "Distinto de \"real-time stability\" — acláralo siempre. Ejemplo: \"We ran accelerated stability testing at 45 degrees for four weeks.\""
+  },
+  {
+    "id": "c24",
+    "cat": "tecnico",
+    "es": "estabilidad en tiempo real",
+    "en": "real-time stability testing",
+    "note": "Ejemplo: \"Real-time stability testing takes much longer, but gives more reliable results.\""
+  },
+  {
+    "id": "c25",
+    "cat": "tecnico",
+    "es": "viscosidad",
+    "en": "viscosity",
+    "note": "Ejemplo: \"The viscosity increased after we added the new thickening agent.\""
+  },
+  {
+    "id": "c26",
+    "cat": "tecnico",
+    "es": "formulación",
+    "en": "formulation",
+    "note": "Ejemplo: \"This formulation includes three new active ingredients.\""
+  },
+  {
+    "id": "c27",
+    "cat": "tecnico",
+    "es": "principio activo",
+    "en": "active ingredient",
+    "note": "Ejemplo: \"The active ingredient needs to be listed on the INCI name.\""
+  },
+  {
+    "id": "c28",
+    "cat": "tecnico",
+    "es": "conservante",
+    "en": "preservative",
+    "note": "Ejemplo: \"We had to increase the preservative concentration slightly.\""
+  },
+  {
+    "id": "c29",
+    "cat": "tecnico",
+    "es": "nombre INCI",
+    "en": "INCI name",
+    "note": "Se mantiene igual en inglés y español: INCI. Ejemplo: \"Every ingredient must have its INCI name listed on the label.\""
+  },
+  {
+    "id": "c30",
+    "cat": "tecnico",
+    "es": "informe de seguridad del producto cosmético",
+    "en": "Cosmetic Product Safety Report (CPSR)",
+    "note": "Ejemplo: \"The CPSR needs to be updated before we can sell this product in the EU.\""
+  },
+  {
+    "id": "c31",
+    "cat": "tecnico",
+    "es": "sustancia clasificada como CMR",
+    "en": "CMR-classified substance",
+    "note": "Carcinogenic, Mutagenic, Reprotoxic. Ejemplo: \"This substance can't be used because it's CMR-classified.\""
+  },
+  {
+    "id": "c32",
+    "cat": "tecnico",
+    "es": "Reglamento CLP",
+    "en": "CLP Regulation",
+    "note": "Classification, Labelling and Packaging. Ejemplo: \"Under the CLP Regulation, this ingredient requires a specific hazard label.\""
+  },
+  {
+    "id": "c33",
+    "cat": "tecnico",
+    "es": "anexo (del reglamento)",
+    "en": "annex",
+    "note": "Ejemplo: \"The maximum concentration is listed in Annex III of the regulation.\""
+  },
+  {
+    "id": "c34",
+    "cat": "tecnico",
+    "es": "proveedor",
+    "en": "supplier",
+    "note": "Ejemplo: \"We're looking for a new supplier for this raw material.\""
+  },
+  {
+    "id": "c35",
+    "cat": "tecnico",
+    "es": "control de calidad",
+    "en": "quality control (QC)",
+    "note": "Ejemplo: \"Quality control rejected this batch due to an odor issue.\""
+  },
+  {
+    "id": "c36",
+    "cat": "tecnico",
+    "es": "vida útil",
+    "en": "shelf life",
+    "note": "Ejemplo: \"The shelf life of this product is 24 months unopened.\""
+  },
+  {
+    "id": "c37",
+    "cat": "tecnico",
+    "es": "envase",
+    "en": "packaging",
+    "note": "Ejemplo: \"We need to update the packaging to include the new safety warning.\""
+  },
+  {
+    "id": "c38",
+    "cat": "tecnico",
+    "es": "muestra de referencia",
+    "en": "reference sample",
+    "note": "Ejemplo: \"Compare this batch against the reference sample before approving it.\""
+  },
+  {
+    "id": "c39",
+    "cat": "comercial",
+    "es": "plazo de entrega",
+    "en": "lead time",
+    "note": "Ejemplo: \"What's the lead time on this order?\""
+  },
+  {
+    "id": "c40",
+    "cat": "comercial",
+    "es": "presupuesto",
+    "en": "quote",
+    "note": "Ejemplo: \"Can you send me a quote for 500 kilograms?\""
+  },
+  {
+    "id": "c41",
+    "cat": "comercial",
+    "es": "propuesta comercial",
+    "en": "commercial proposal",
+    "note": "Ejemplo: \"I'll send you a commercial proposal by the end of the week.\""
+  },
+  {
+    "id": "c42",
+    "cat": "comercial",
+    "es": "muestra",
+    "en": "sample",
+    "note": "Ejemplo: \"We'd like to request a sample before placing the full order.\""
+  },
+  {
+    "id": "c43",
+    "cat": "comercial",
+    "es": "cliente",
+    "en": "client / customer",
+    "note": "Ejemplo: \"This client has been with us for over five years.\""
+  },
+  {
+    "id": "c44",
+    "cat": "comercial",
+    "es": "hoja de ruta del proyecto",
+    "en": "project roadmap",
+    "note": "Ejemplo: \"Here's the project roadmap for the next three months.\""
+  },
+  {
+    "id": "c45",
+    "cat": "comercial",
+    "es": "hito",
+    "en": "milestone",
+    "note": "Ejemplo: \"We've reached the first milestone ahead of schedule.\""
+  },
+  {
+    "id": "c46",
+    "cat": "comercial",
+    "es": "retraso",
+    "en": "delay",
+    "note": "Ejemplo: \"We're expecting a short delay due to a supplier issue.\""
+  },
+  {
+    "id": "c47",
+    "cat": "comercial",
+    "es": "próximos pasos",
+    "en": "next steps",
+    "note": "Ejemplo: \"Let's go over the next steps before we end the call.\""
+  },
+  {
+    "id": "c48",
+    "cat": "tecnico",
+    "es": "punto de gota (de la cera)",
+    "en": "drop point",
+    "note": "Distinto de melting point — es el parámetro estándar en ceras, no confundir. Ejemplo: \"The drop point of this batch is 2°C lower than spec.\""
+  },
+  {
+    "id": "c49",
+    "cat": "tecnico",
+    "es": "índice de acidez",
+    "en": "acid value",
+    "note": "Ejemplo: \"The acid value confirms the resin hasn't degraded during storage.\""
+  },
+  {
+    "id": "c50",
+    "cat": "tecnico",
+    "es": "índice de yodo",
+    "en": "iodine value",
+    "note": "Ejemplo: \"A higher iodine value indicates more unsaturation in the wax.\""
+  },
+  {
+    "id": "c51",
+    "cat": "tecnico",
+    "es": "índice de saponificación",
+    "en": "saponification value",
+    "note": "Ejemplo: \"The saponification value helps us estimate the average molecular weight.\""
+  },
+  {
+    "id": "c52",
+    "cat": "tecnico",
+    "es": "penetración con aguja",
+    "en": "needle penetration",
+    "note": "Mide dureza/consistencia de la cera. Ejemplo: \"Needle penetration at 25°C tells us how hard the wax will feel to the user.\""
+  },
+  {
+    "id": "c53",
+    "cat": "tecnico",
+    "es": "punto de enturbiamiento",
+    "en": "cloud point",
+    "note": "Ejemplo: \"The oil showed an unexpectedly high cloud point at low temperature.\""
+  },
+  {
+    "id": "c54",
+    "cat": "tecnico",
+    "es": "fase oleosa",
+    "en": "oil phase",
+    "note": "Ejemplo: \"Add the preservative once the oil phase has cooled below 40°C.\""
+  },
+  {
+    "id": "c55",
+    "cat": "tecnico",
+    "es": "fase acuosa",
+    "en": "water/aqueous phase",
+    "note": "Ejemplo: \"The aqueous phase is heated separately before emulsification.\""
+  },
+  {
+    "id": "c56",
+    "cat": "tecnico",
+    "es": "tensioactivo",
+    "en": "surfactant",
+    "note": "Ejemplo: \"We're testing a milder surfactant to reduce skin irritation.\""
+  },
+  {
+    "id": "c57",
+    "cat": "tecnico",
+    "es": "agente espesante",
+    "en": "thickening agent",
+    "note": "Ejemplo: \"The thickening agent increases viscosity without affecting spreadability.\""
+  },
+  {
+    "id": "c58",
+    "cat": "tecnico",
+    "es": "certificado de análisis",
+    "en": "certificate of analysis (CoA)",
+    "note": "Ejemplo: \"Can you send the CoA for this raw material lot?\""
+  },
+  {
+    "id": "c59",
+    "cat": "tecnico",
+    "es": "especificación técnica",
+    "en": "technical specification",
+    "note": "Ejemplo: \"The technical specification defines the acceptable viscosity range.\""
+  },
+  {
+    "id": "c60",
+    "cat": "tecnico",
+    "es": "no conformidad",
+    "en": "non-conformance",
+    "note": "Ejemplo: \"We logged a non-conformance after the batch failed the stability test.\""
+  },
+  {
+    "id": "c61",
+    "cat": "tecnico",
+    "es": "acción correctiva y preventiva",
+    "en": "corrective and preventive action (CAPA)",
+    "note": "Ejemplo: \"The CAPA outlines how we'll prevent this deviation from recurring.\""
+  },
+  {
+    "id": "c62",
+    "cat": "tecnico",
+    "es": "validación de proceso",
+    "en": "process validation",
+    "note": "Ejemplo: \"Process validation is required before we scale up to full production.\""
+  },
+  {
+    "id": "c63",
+    "cat": "tecnico",
+    "es": "Persona Responsable",
+    "en": "Responsible Person (RP)",
+    "note": "Concepto del Reglamento (CE) 1223/2009. Ejemplo: \"The Responsible Person must approve the CPSR before market placement.\""
+  },
+  {
+    "id": "c64",
+    "cat": "tecnico",
+    "es": "expediente de información del producto",
+    "en": "Product Information File (PIF)",
+    "note": "Art. 11 del Reglamento 1223/2009. Ejemplo: \"The PIF must be kept available for ten years after the last batch is placed on the market.\""
+  },
+  {
+    "id": "c65",
+    "cat": "tecnico",
+    "es": "notificación CPNP",
+    "en": "CPNP notification",
+    "note": "Cosmetic Products Notification Portal. Ejemplo: \"The CPNP notification has to be submitted before the product is sold in the EU.\""
+  },
+  {
+    "id": "c66",
+    "cat": "tecnico",
+    "es": "alérgeno de fragancia",
+    "en": "fragrance allergen",
+    "note": "Relevante para etiquetado según Anexo III. Ejemplo: \"Linalool is a fragrance allergen that must be listed if above the threshold.\""
+  },
+  {
+    "id": "c67",
+    "cat": "tecnico",
+    "es": "prueba de reto (conservación)",
+    "en": "preservative efficacy test (challenge test)",
+    "note": "Ejemplo: \"The challenge test confirms the preservative system controls microbial growth.\""
+  },
+  {
+    "id": "c68",
+    "cat": "tecnico",
+    "es": "ensayo de compatibilidad con envase",
+    "en": "packaging compatibility test",
+    "note": "Ejemplo: \"We run a packaging compatibility test to rule out interaction with the plastic container.\""
+  },
+  {
+    "id": "c69",
+    "cat": "tecnico",
+    "es": "lote piloto",
+    "en": "pilot batch",
+    "note": "Ejemplo: \"Let's run a pilot batch before committing to full-scale production.\""
+  },
+  {
+    "id": "c70",
+    "cat": "tecnico",
+    "es": "registro de lote",
+    "en": "batch record",
+    "note": "Ejemplo: \"Every step of the process must be documented in the batch record.\""
+  },
+  {
+    "id": "c71",
+    "cat": "tecnico",
+    "es": "muestra de retención",
+    "en": "retention sample",
+    "note": "Ejemplo: \"Retention samples are kept for stability monitoring after the batch ships.\""
+  },
+  {
+    "id": "c72",
+    "cat": "tecnico",
+    "es": "periodo tras apertura",
+    "en": "Period After Opening (PAO)",
+    "note": "El símbolo del bote abierto en el envase. Ejemplo: \"The PAO symbol shows 12M, meaning the product is safe to use for twelve months after opening.\""
+  },
+  {
+    "id": "c73",
+    "cat": "comercial",
+    "es": "pedido mínimo",
+    "en": "minimum order quantity (MOQ)",
+    "note": "Ejemplo: \"Our MOQ for this formulation is 500 kilograms.\""
+  },
+  {
+    "id": "c74",
+    "cat": "comercial",
+    "es": "desarrollo de marca privada",
+    "en": "private label development",
+    "note": "Ejemplo: \"We're kicking off a private label development project for a new client.\""
+  },
+  {
+    "id": "c75",
+    "cat": "comercial",
+    "es": "marca blanca",
+    "en": "white label",
+    "note": "Ejemplo: \"This is a white label product they'll sell under their own brand.\""
+  },
+  {
+    "id": "c76",
+    "cat": "comercial",
+    "es": "exclusividad de producto",
+    "en": "product exclusivity",
+    "note": "Ejemplo: \"They're asking for product exclusivity in the Nordic market.\""
+  },
+  {
+    "id": "c77",
+    "cat": "comercial",
+    "es": "condiciones de pago",
+    "en": "payment terms",
+    "note": "Ejemplo: \"Our standard payment terms are 30 days net.\""
+  },
+  {
+    "id": "c78",
+    "cat": "comercial",
+    "es": "descuento por volumen",
+    "en": "volume discount",
+    "note": "Ejemplo: \"We can offer a volume discount above two tonnes per order.\""
+  },
+  {
+    "id": "c79",
+    "cat": "comercial",
+    "es": "fecha de lanzamiento",
+    "en": "launch date",
+    "note": "Ejemplo: \"The launch date has been pushed back to next quarter.\""
+  },
+  {
+    "id": "c80",
+    "cat": "comercial",
+    "es": "ficha de producto terminado",
+    "en": "finished product spec sheet",
+    "note": "Ejemplo: \"I'll send over the finished product spec sheet along with the quote.\""
+  },
+  {
+    "id": "c81",
+    "cat": "comercial",
+    "es": "competencia directa",
+    "en": "direct competitor",
+    "note": "Ejemplo: \"That formulation is aimed at a direct competitor's product line.\""
+  },
+  {
+    "id": "c82",
+    "cat": "comercial",
+    "es": "cuota de mercado",
+    "en": "market share",
+    "note": "Ejemplo: \"We're trying to grow our market share in the sensitive-skin segment.\""
+  },
+  {
+    "id": "c83",
+    "cat": "comercial",
+    "es": "ciclo de vida del producto",
+    "en": "product lifecycle",
+    "note": "Ejemplo: \"This product is nearing the end of its lifecycle.\""
+  },
+  {
+    "id": "c84",
+    "cat": "comercial",
+    "es": "oportunidad de negocio",
+    "en": "business opportunity",
+    "note": "Ejemplo: \"This client represents a real business opportunity for next year.\""
+  },
+  {
+    "id": "c85",
+    "cat": "comercial",
+    "es": "renovación de contrato",
+    "en": "contract renewal",
+    "note": "Ejemplo: \"The contract renewal is due for discussion next month.\""
+  },
+  {
+    "id": "c86",
+    "cat": "comercial",
+    "es": "acuerdo de confidencialidad",
+    "en": "non-disclosure agreement (NDA)",
+    "note": "Ejemplo: \"We'll need an NDA in place before sharing the formulation details.\""
+  },
+  {
+    "id": "c87",
+    "cat": "comercial",
+    "es": "objeción de precio",
+    "en": "price objection",
+    "note": "Útil para roleplays de negociación. Ejemplo: \"Let's prepare a response to the likely price objection.\""
+  },
+  {
+    "id": "c88",
+    "cat": "comercial",
+    "es": "cartera de clientes",
+    "en": "client portfolio",
+    "note": "Ejemplo: \"This account would strengthen our client portfolio in that region.\""
+  },
+  {
+    "id": "c89",
+    "cat": "reunion",
+    "es": "Perdona la interrupción, pero...",
+    "en": "Sorry to interrupt, but...",
+    "note": "Ejemplo: \"Sorry to interrupt, but could you clarify that last figure?\""
+  },
+  {
+    "id": "c90",
+    "cat": "reunion",
+    "es": "Vale, tiene sentido lo que dices",
+    "en": "Okay, that makes sense",
+    "note": "Ejemplo: \"Okay, that makes sense — thanks for explaining.\""
+  },
+  {
+    "id": "c91",
+    "cat": "reunion",
+    "es": "Voy a compartir pantalla",
+    "en": "I'll share my screen",
+    "note": "Ejemplo: \"I'll share my screen so you can see the data sheet.\""
+  },
+  {
+    "id": "c92",
+    "cat": "reunion",
+    "es": "¿Me estás oyendo bien?",
+    "en": "Can you hear me okay?",
+    "note": "Ejemplo: \"Can you hear me okay? The connection seems a bit unstable.\""
+  },
+  {
+    "id": "c93",
+    "cat": "reunion",
+    "es": "Se me ha cortado un momento, ¿puedes repetir la última parte?",
+    "en": "I lost you for a second, could you repeat the last part?",
+    "note": "Ejemplo: \"I lost you for a second, could you repeat the last part about the delivery date?\""
+  },
+  {
+    "id": "c94",
+    "cat": "reunion",
+    "es": "Antes de seguir, ¿alguna pregunta hasta aquí?",
+    "en": "Before we move on, any questions so far?",
+    "note": "Ejemplo: \"Before we move on, any questions so far?\""
+  },
+  {
+    "id": "c95",
+    "cat": "reunion",
+    "es": "Lo dejamos aparcado y seguimos por email",
+    "en": "Let's park that and follow up by email",
+    "note": "Ejemplo: \"Let's park that and follow up by email once I have the figures.\""
+  },
+  {
+    "id": "c96",
+    "cat": "reunion",
+    "es": "Para cerrar, ¿quedamos así?",
+    "en": "To wrap up, are we agreed on this?",
+    "note": "Ejemplo: \"To wrap up, are we agreed on this delivery schedule?\""
+  },
+  {
+    "id": "c97",
+    "cat": "reunion",
+    "es": "Te lo mando por escrito para que quede constancia",
+    "en": "I'll send that in writing so we have it on record",
+    "note": "Ejemplo: \"I'll send that in writing so we have it on record.\""
+  },
+  {
+    "id": "c98",
+    "cat": "reunion",
+    "es": "Disculpa, se me ha ido el hilo",
+    "en": "Sorry, I've lost my train of thought",
+    "note": "Ejemplo: \"Sorry, I've lost my train of thought — where were we?\""
+  },
+  {
+    "id": "c99",
+    "cat": "reunion",
+    "es": "Quiero asegurarme de que estamos alineados",
+    "en": "I want to make sure we're aligned",
+    "note": "Ejemplo: \"I want to make sure we're aligned before the client call tomorrow.\""
+  },
+  {
+    "id": "c100",
+    "cat": "reunion",
+    "es": "¿Podríamos aplazar esta reunión unos días?",
+    "en": "Could we push this meeting back a few days?",
+    "note": "Ejemplo: \"Could we push this meeting back a few days? I need more data first.\""
+  },
+  {
+    "id": "c101",
+    "cat": "tecnico",
+    "es": "visita de auditoría",
+    "en": "audit visit",
+    "note": "Ejemplo: \"The audit visit is scheduled for the second week of March.\""
+  },
+  {
+    "id": "c102",
+    "cat": "tecnico",
+    "es": "auditor",
+    "en": "auditor",
+    "note": "Ejemplo: \"The auditor asked to see the batch records from the last six months.\""
+  },
+  {
+    "id": "c103",
+    "cat": "tecnico",
+    "es": "rastro de auditoría",
+    "en": "audit trail",
+    "note": "Ejemplo: \"We keep a full audit trail for every formulation change.\""
+  },
+  {
+    "id": "c104",
+    "cat": "tecnico",
+    "es": "certificado GMP",
+    "en": "GMP certificate",
+    "note": "Ejemplo: \"Our GMP certificate is valid until next year, so it will cover the audit.\""
+  },
+  {
+    "id": "c105",
+    "cat": "tecnico",
+    "es": "cumplimiento normativo",
+    "en": "compliance",
+    "note": "Ejemplo: \"Compliance with the CLP Regulation is checked before every launch.\""
+  },
+  {
+    "id": "c106",
+    "cat": "comercial",
+    "es": "pedido urgente",
+    "en": "rush order",
+    "note": "Ejemplo: \"Can you confirm if a rush order is even feasible with our current capacity?\""
+  },
+  {
+    "id": "c107",
+    "cat": "comercial",
+    "es": "acelerar (un pedido o envío)",
+    "en": "to expedite",
+    "note": "Ejemplo: \"We can expedite the shipment, but it will cost extra.\""
+  },
+  {
+    "id": "c108",
+    "cat": "comercial",
+    "es": "pico de demanda",
+    "en": "spike in demand",
+    "note": "Ejemplo: \"A sudden spike in demand caught their production line off guard.\""
+  },
+  {
+    "id": "c109",
+    "cat": "tecnico",
+    "es": "capacidad de producción",
+    "en": "production capacity",
+    "note": "Ejemplo: \"Our production capacity is limited this month due to scheduled maintenance.\""
+  },
+  {
+    "id": "c110",
+    "cat": "comercial",
+    "es": "retener a un cliente",
+    "en": "to retain a client",
+    "note": "Ejemplo: \"We offered a small discount to retain the client.\""
+  },
+  {
+    "id": "c111",
+    "cat": "comercial",
+    "es": "abordar una preocupación",
+    "en": "to address a concern",
+    "note": "Ejemplo: \"Let's address your concern about the delivery delays directly.\""
+  },
+  {
+    "id": "c112",
+    "cat": "tecnico",
+    "es": "causa raíz",
+    "en": "root cause",
+    "note": "Ejemplo: \"We identified the root cause of the quality issue last week.\""
+  },
+  {
+    "id": "c113",
+    "cat": "comercial",
+    "es": "descuento de fidelización",
+    "en": "loyalty discount",
+    "note": "Ejemplo: \"We could offer a loyalty discount to keep the account.\""
+  },
+  {
+    "id": "c114",
+    "cat": "comercial",
+    "es": "compromiso de volumen",
+    "en": "volume commitment",
+    "note": "Ejemplo: \"The new contract includes a higher volume commitment.\""
+  },
+  {
+    "id": "c115",
+    "cat": "comercial",
+    "es": "cláusula de exclusividad",
+    "en": "exclusivity clause",
+    "note": "Ejemplo: \"They asked to extend the exclusivity clause for another year.\""
+  },
+  {
+    "id": "c116",
+    "cat": "comercial",
+    "es": "cláusula de rescisión",
+    "en": "termination clause",
+    "note": "Ejemplo: \"The termination clause requires ninety days' notice.\""
+  },
+  {
+    "id": "c117",
+    "cat": "tecnico",
+    "es": "reformulación",
+    "en": "reformulation",
+    "note": "Ejemplo: \"The reformulation was needed after the ingredient was restricted.\""
+  },
+  {
+    "id": "c118",
+    "cat": "tecnico",
+    "es": "retirada progresiva (de un ingrediente)",
+    "en": "to phase out",
+    "note": "Ejemplo: \"This ingredient will need to be phased out by next year.\""
+  },
+  {
+    "id": "c119",
+    "cat": "tecnico",
+    "es": "reetiquetar",
+    "en": "to relabel",
+    "note": "Ejemplo: \"We may need to relabel the product once the new ingredient list is approved.\""
+  },
+  {
+    "id": "c120",
+    "cat": "tecnico",
+    "es": "plazo regulatorio",
+    "en": "regulatory deadline",
+    "note": "Ejemplo: \"The regulatory deadline for this change is the end of the quarter.\""
+  },
+  {
+    "id": "c121",
+    "cat": "tecnico",
+    "es": "de origen sostenible",
+    "en": "sustainably sourced",
+    "note": "Ejemplo: \"All our palm-derived ingredients are sustainably sourced.\""
+  },
+  {
+    "id": "c122",
+    "cat": "tecnico",
+    "es": "trazabilidad",
+    "en": "traceability",
+    "note": "Ejemplo: \"Traceability across the supply chain is now a client requirement.\""
+  },
+  {
+    "id": "c123",
+    "cat": "tecnico",
+    "es": "huella de carbono",
+    "en": "carbon footprint",
+    "note": "Ejemplo: \"We're measuring the carbon footprint of this product line.\""
+  },
+  {
+    "id": "c124",
+    "cat": "tecnico",
+    "es": "envase reciclable",
+    "en": "recyclable packaging",
+    "note": "Ejemplo: \"We switched to recyclable packaging for this product.\""
+  },
+  {
+    "id": "c125",
+    "cat": "tecnico",
+    "es": "certificación de sostenibilidad",
+    "en": "sustainability certification",
+    "note": "Ejemplo: \"They're asking whether we have any sustainability certification.\""
+  },
+  {
+    "id": "c126",
+    "cat": "tecnico",
+    "es": "disyuntiva (compensación entre dos factores)",
+    "en": "trade-off / trade off",
+    "note": "Ejemplo: \"There's a trade-off between shelf life and using fewer preservatives.\""
+  },
+  {
+    "id": "c127",
+    "cat": "tecnico",
+    "es": "prueba de concepto",
+    "en": "proof of concept",
+    "note": "Ejemplo: \"We ran a proof of concept before committing to full development.\""
+  },
+  {
+    "id": "c128",
+    "cat": "tecnico",
+    "es": "caso límite",
+    "en": "edge case",
+    "note": "Ejemplo: \"This is an edge case — it only happens at very low temperatures.\""
+  },
+  {
+    "id": "c129",
+    "cat": "tecnico",
+    "es": "justificar una afirmación",
+    "en": "to substantiate a claim",
+    "note": "Ejemplo: \"We need data to substantiate that claim before the launch.\""
+  },
+  {
+    "id": "c130",
+    "cat": "tecnico",
+    "es": "mitigación de riesgo",
+    "en": "risk mitigation",
+    "note": "Ejemplo: \"Risk mitigation was a big part of the discussion.\""
+  },
+  {
+    "id": "c131",
+    "cat": "reunion",
+    "es": "En mi opinión...",
+    "en": "In my opinion...",
+    "note": "Ejemplo: \"In my opinion, we should prioritize stability testing before scaling up.\""
+  },
+  {
+    "id": "c132",
+    "cat": "reunion",
+    "es": "Tal y como yo lo veo...",
+    "en": "The way I see it...",
+    "note": "Ejemplo: \"The way I see it, the bigger risk is the delivery timeline, not the price.\""
+  },
+  {
+    "id": "c133",
+    "cat": "reunion",
+    "es": "Estoy totalmente de acuerdo",
+    "en": "I completely agree.",
+    "note": "Ejemplo: \"I completely agree — that's the safer option.\""
+  },
+  {
+    "id": "c134",
+    "cat": "reunion",
+    "es": "Es un buen punto",
+    "en": "That's a fair point.",
+    "note": "Ejemplo: \"That's a fair point, I hadn't considered the packaging cost.\""
+  },
+  {
+    "id": "c135",
+    "cat": "reunion",
+    "es": "Entiendo tu punto, pero...",
+    "en": "I see your point, but...",
+    "note": "Ejemplo: \"I see your point, but I think the client will push back on that.\""
+  },
+  {
+    "id": "c136",
+    "cat": "reunion",
+    "es": "No estoy del todo de acuerdo con eso",
+    "en": "I'm not sure I'd agree with that.",
+    "note": "Ejemplo: \"I'm not sure I'd agree with that, the data seems to suggest otherwise.\""
+  },
+  {
+    "id": "c137",
+    "cat": "reunion",
+    "es": "Eso es cierto hasta cierto punto, pero...",
+    "en": "That's true to some extent, but...",
+    "note": "Ejemplo: \"That's true to some extent, but the volumes are quite different this time.\""
+  },
+  {
+    "id": "c138",
+    "cat": "reunion",
+    "es": "¿Tú qué opinas de esto?",
+    "en": "What's your take on this?",
+    "note": "Ejemplo: \"What's your take on this? Do you think it's worth the extra cost?\""
+  },
+  {
+    "id": "c139",
+    "cat": "reunion",
+    "es": "Qué interesante, cuéntame más",
+    "en": "That's interesting, tell me more.",
+    "note": "Ejemplo: \"That's interesting, tell me more about how you tested it.\""
+  },
+  {
+    "id": "c140",
+    "cat": "reunion",
+    "es": "¿En serio? No me lo esperaba",
+    "en": "Really? I wasn't expecting that.",
+    "note": "Ejemplo: \"Really? I wasn't expecting that at all.\""
+  },
+  {
+    "id": "c141",
+    "cat": "reunion",
+    "es": "Por ejemplo...",
+    "en": "For instance...",
+    "note": "Ejemplo: \"For instance, we could offer a smaller trial batch first.\""
+  },
+  {
+    "id": "c142",
+    "cat": "reunion",
+    "es": "Pongamos que...",
+    "en": "Let's say...",
+    "note": "Ejemplo: \"Let's say the price goes up ten percent, how would that affect the margin?\""
+  },
+  {
+    "id": "c143",
+    "cat": "reunion",
+    "es": "Cambiando de tema...",
+    "en": "On a different note...",
+    "note": "Ejemplo: \"On a different note, have you heard back from the lab yet?\""
+  },
+  {
+    "id": "c144",
+    "cat": "reunion",
+    "es": "Hablando de eso...",
+    "en": "Speaking of which...",
+    "note": "Ejemplo: \"Speaking of which, did the samples arrive yet?\""
+  },
+  {
+    "id": "c145",
+    "cat": "reunion",
+    "es": "¿Tiene sentido lo que digo?",
+    "en": "Does that make sense?",
+    "note": "Ejemplo: \"Does that make sense, or should I go over it again?\""
+  },
+  {
+    "id": "c146",
+    "cat": "reunion",
+    "es": "¿Me sigues hasta aquí?",
+    "en": "Are you with me so far?",
+    "note": "Ejemplo: \"Are you with me so far, or do you need me to slow down?\""
+  },
+  {
+    "id": "c147",
+    "cat": "reunion",
+    "es": "Avísame si algo no queda claro",
+    "en": "Let me know if that's unclear.",
+    "note": "Ejemplo: \"Let me know if that's unclear and I'll explain it differently.\""
+  },
+  {
+    "id": "c148",
+    "cat": "reunion",
+    "es": "Continúa, por favor",
+    "en": "Please, go on.",
+    "note": "Ejemplo: \"Please, go on — I didn't mean to interrupt.\""
+  },
+  {
+    "id": "c149",
+    "cat": "reunion",
+    "es": "¿Qué tal va todo por tu lado?",
+    "en": "How's everything going on your end?",
+    "note": "Ejemplo: \"How's everything going on your end with the new supplier?\""
+  },
+  {
+    "id": "c150",
+    "cat": "reunion",
+    "es": "Bueno, volviendo al tema",
+    "en": "Anyway, back to business.",
+    "note": "Ejemplo: \"Anyway, back to business — where were we?\""
+  },
+  {
+    "id": "c151",
+    "cat": "reunion",
+    "es": "No estoy 100% seguro, pero...",
+    "en": "I'm not 100% sure, but...",
+    "note": "Ejemplo: \"I'm not 100% sure, but I think the batch passed the test.\""
+  },
+  {
+    "id": "c152",
+    "cat": "reunion",
+    "es": "Si lo he entendido bien...",
+    "en": "So if I understand correctly...",
+    "note": "Ejemplo: \"So if I understand correctly, you need the samples before Friday?\""
+  },
+  {
+    "id": "c153",
+    "cat": "reunion",
+    "es": "Entiendo lo que dices, pero...",
+    "en": "I hear what you're saying, but...",
+    "note": "Ejemplo: \"I hear what you're saying, but the timeline is really tight.\""
+  },
+  {
+    "id": "c154",
+    "cat": "reunion",
+    "es": "¿Podrías desarrollar eso un poco más?",
+    "en": "Could you expand on that?",
+    "note": "Ejemplo: \"Could you expand on that? I want to make sure I understand the risk.\""
+  },
+  {
+    "id": "c155",
+    "cat": "reunion",
+    "es": "¿Puedo añadir algo aquí?",
+    "en": "Can I just add something here?",
+    "note": "Ejemplo: \"Can I just add something here before we move on?\""
+  },
+  {
+    "id": "c156",
+    "cat": "reunion",
+    "es": "Exacto, es justo eso",
+    "en": "Absolutely, that's exactly it.",
+    "note": "Ejemplo: \"Absolutely, that's exactly it — well put.\""
+  }
 ]

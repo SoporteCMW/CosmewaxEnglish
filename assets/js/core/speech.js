@@ -152,8 +152,25 @@ export class Dictation {
   }
 }
 
+/**
+ * Locución en curso. Cualquier cosa que interrumpa la síntesis —hablar otra vez
+ * o cancelar— invalida la anterior.
+ *
+ * Lo necesita speakTracked(): un pasaje largo se dice en varias locuciones
+ * encadenadas, y `cancel()` dispara el `onend` de la que suena en ese momento.
+ * Sin este contador, detener el audio arrancaría el trozo siguiente en lugar de
+ * callarse.
+ */
+let speechRun = 0;
+
+function startRun() {
+  speechRun += 1;
+  return speechRun;
+}
+
 export function speak(text, { rate = 0.95, lang = 'en-US' } = {}) {
   if (!isSynthesisSupported() || !text) return;
+  startRun();
   window.speechSynthesis.cancel();
   const utterance = new SpeechSynthesisUtterance(text);
   utterance.lang = lang;
@@ -161,9 +178,78 @@ export function speak(text, { rate = 0.95, lang = 'en-US' } = {}) {
   window.speechSynthesis.speak(utterance);
 }
 
+/**
+ * Parte un texto largo en trozos de frase entera, sin cortar palabras.
+ *
+ * Una frase más larga que el tope se queda entera: partirla por la mitad se
+ * oiría peor que decirla de una vez.
+ */
+function splitForSpeech(text, maxChars = 220) {
+  const sentences = text.match(/[^.!?]+[.!?]*\s*/g) || [text];
+  const chunks = [];
+  let current = '';
+
+  sentences.forEach((sentence) => {
+    if (current !== '' && (current + sentence).length > maxChars) {
+      chunks.push(current.trim());
+      current = sentence;
+    } else {
+      current += sentence;
+    }
+  });
+  if (current.trim() !== '') chunks.push(current.trim());
+
+  return chunks;
+}
+
+/**
+ * Como speak(), pero avisa al terminar y aguanta textos largos.
+ *
+ * Lo necesita el modo Listening para saber cuándo el "audio" ha acabado y volver
+ * a poner el botón en "Reproducir". `onEnd` se llama también en error: si no, un
+ * fallo de la síntesis dejaría el botón congelado en "Detener" para siempre.
+ *
+ * El pasaje se dice por frases, no de una sola vez: desde que dura varios
+ * minutos (largo de examen B2) una única locución no llega al final —Chrome
+ * corta la síntesis a los pocos segundos— y el alumno se quedaba sin la mitad
+ * del audio del que luego le preguntan. El corte entre trozos es inaudible y
+ * `onEnd` sigue llegando una sola vez, al acabar el último.
+ */
+export function speakTracked(text, { rate = 0.95, lang = 'en-US', onEnd } = {}) {
+  if (!isSynthesisSupported() || !text) {
+    if (onEnd) onEnd();
+    return;
+  }
+
+  const run = startRun();
+  window.speechSynthesis.cancel();
+  const chunks = splitForSpeech(text);
+
+  const sayChunk = (index) => {
+    // Otra locución (o una cancelación) ha tomado el relevo: aquí no se sigue.
+    if (run !== speechRun) return;
+    if (index >= chunks.length) {
+      if (onEnd) onEnd();
+      return;
+    }
+
+    const utterance = new SpeechSynthesisUtterance(chunks[index]);
+    utterance.lang = lang;
+    utterance.rate = rate;
+    utterance.onend = () => sayChunk(index + 1);
+    utterance.onerror = () => {
+      if (run === speechRun && onEnd) onEnd();
+    };
+    window.speechSynthesis.speak(utterance);
+  };
+
+  sayChunk(0);
+}
+
 /** Encola varias palabras con una pausa entre ellas (repaso de pronunciación). */
 export function speakSequence(words, { rate = 0.85, gapMs = 900, lang = 'en-US' } = {}) {
   if (!isSynthesisSupported() || !words.length) return;
+  startRun();
   window.speechSynthesis.cancel();
   words.forEach((word, index) => {
     const utterance = new SpeechSynthesisUtterance(word);
@@ -174,5 +260,7 @@ export function speakSequence(words, { rate = 0.85, gapMs = 900, lang = 'en-US' 
 }
 
 export function cancelSpeech() {
-  if (isSynthesisSupported()) window.speechSynthesis.cancel();
+  if (!isSynthesisSupported()) return;
+  startRun();
+  window.speechSynthesis.cancel();
 }

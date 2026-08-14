@@ -1,0 +1,157 @@
+/* Topbar corporativa. Misma estructura y medidas que `css/index.css` del
+   esqueleto EsqueleticPHP, reescrita sobre los tokens de `tokens.css` para que
+   siga al tema claro/oscuro en lugar de traer su propia paleta.
+
+   La topbar es siempre oscura en ambos temas —igual que en el resto de
+   aplicaciones de la casa—, así que su contenido usa blancos con alfa y no los
+   tokens de texto: --text sería ilegible aquí en tema claro. */
+
+.topbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 14px 24px;
+  background: var(--topbar-bg);
+  backdrop-filter: var(--topbar-blur);
+  -webkit-backdrop-filter: var(--topbar-blur);
+  color: #fff;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12);
+  transition: background 0.3s;
+}
+
+.topbar-logo {
+  display: flex;
+  align-items: center;
+  padding-right: 20px;
+  border-right: 1px solid rgba(255, 255, 255, 0.25);
+}
+.topbar-logo-img {
+  display: block;
+  height: 38px;
+  width: auto;
+  flex-shrink: 0;
+}
+
+.topbar-section {
+  flex: 1;
+  font-size: 16px;
+  letter-spacing: 0.3px;
+}
+
+.topbar-meta {
+  font-size: 12px;
+  letter-spacing: 0.5px;
+  opacity: 0.85;
+}
+
+/* ── Badge de entorno ─────────────────────────────────────────────────────── */
+.env-badge {
+  display: inline-block;
+  padding: 2px 7px;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  line-height: 1.6;
+}
+.env-dev {
+  background: rgba(251, 191, 36, 0.2);
+  border-color: rgba(251, 191, 36, 0.45);
+  color: #fbbf24;
+}
+.env-staging {
+  background: rgba(139, 92, 246, 0.2);
+  border-color: rgba(139, 92, 246, 0.45);
+  color: #c4b5fd;
+}
+.env-prod {
+  background: rgba(16, 185, 129, 0.2);
+  border-color: rgba(16, 185, 129, 0.35);
+  color: #6ee7b7;
+}
+
+/* ── Usuario ──────────────────────────────────────────────────────────────── */
+.topbar-user {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  white-space: nowrap;
+  opacity: 0.9;
+}
+.topbar-avatar {
+  width: 30px;
+  height: 30px;
+  flex-shrink: 0;
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.15);
+  object-fit: cover;
+}
+.topbar-avatar-fallback {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+}
+.topbar-user-info {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.15;
+}
+.topbar-user-name { font-size: 12px; font-weight: 600; }
+.topbar-user-role { font-size: 10px; font-weight: 400; opacity: 0.75; }
+
+.topbar-logout {
+  color: rgba(255, 255, 255, 0.85);
+  text-decoration: none;
+  transition: opacity 0.15s;
+}
+.topbar-logout:hover { opacity: 1; text-decoration: underline; }
+
+/* ── Botón de tema ────────────────────────────────────────────────────────── */
+.topbar-theme-btn {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: var(--radius);
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+  font-size: 13px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.topbar-theme-btn:hover { background: rgba(255, 255, 255, 0.22); }
+/* Se muestra el icono del tema ACTIVO, no el del destino: es lo que hace el
+   esqueleto y lo que ya conocen los usuarios de las otras aplicaciones. */
+.topbar-theme-btn .icon-moon { display: none; }
+.topbar-theme-btn .icon-sun { display: inline-block; }
+html[data-theme="dark"] .topbar-theme-btn .icon-moon { display: inline-block; }
+html[data-theme="dark"] .topbar-theme-btn .icon-sun { display: none; }
+
+/* Deja hueco a la topbar fija. */
+.app-shell { padding-top: 78px; }
+
+@media (max-width: 720px) {
+  .topbar {
+    gap: 12px;
+    padding: 10px 14px;
+    flex-wrap: wrap;
+  }
+  .topbar-logo { padding-right: 12px; }
+  .topbar-logo-img { height: 30px; }
+  .topbar-section { flex-basis: 100%; order: 3; font-size: 14px; }
+  .topbar-user-info { display: none; }
+  .app-shell { padding-top: 104px; }
+}

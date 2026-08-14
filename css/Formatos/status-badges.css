@@ -1,0 +1,57 @@
+/* Badges de Estado de Producción */
+
+.badge-status {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-align: center;
+    white-space: normal; /* Permitir múltiples líneas */
+    letter-spacing: 0.3px;
+    transition: all 0.2s ease;
+    line-height: 1.3;
+    max-width: 100%;
+}
+
+/* Planificado (Scheduled) - Azul */
+.status-scheduled {
+    background-color: #dbeafe;
+    color: #1e40af;
+    border: 1px solid #93c5fd;
+}
+
+/* Liberado (Released) - Verde claro */
+.status-released {
+    background-color: #d1fae5;
+    color: #065f46;
+    border: 1px solid #6ee7b7;
+}
+
+/* Empezado (StartedUp) - Naranja */
+.status-startedup {
+    background-color: #fed7aa;
+    color: #c2410c;
+    border: 1px solid #fdba74;
+}
+
+/* Notificado como terminado (ReportedFinished) - Verde oscuro */
+.status-reportedfinished {
+    background-color: #bbf7d0;
+    color: #166534;
+    border: 1px solid #86efac;
+}
+
+/* Hover effect */
+.badge-status:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Responsive - Tablets y móviles */
+@media (max-width: 768px) {
+    .badge-status {
+        font-size: 0.7rem;
+        padding: 3px 8px;
+    }
+}

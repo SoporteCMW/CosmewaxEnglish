@@ -1,13 +1,24 @@
-import { categoryLabel, content } from '../core/config.js';
+import { categoryLabel, content, profileLabel } from '../core/config.js';
 import { $, delegate, escapeHtml } from '../core/dom.js';
 import { capHistory } from '../core/storage.js';
-import { Dictation, dictationUnavailableReason } from '../core/speech.js';
+import { requestTask } from '../core/api.js';
+import { Dictation, dictationUnavailableReason, speak } from '../core/speech.js';
+import { showToast } from '../core/ui.js';
 import { evaluateAnswer } from '../lib/text.js';
 import { applyGrade, buildQueue, isDue, newEntry, todayStr, MAX_BOX } from '../lib/srs.js';
 
 const KEY_DECK = 'deck';
 const KEY_SRS = 'srs';
 const KEY_VOICE = 'voice-stats';
+
+/**
+ * Prefijo de las pestañas que filtran por perfil profesional.
+ *
+ * Las tarjetas generadas guardan el perfil con el que se pidieron, y con eso el
+ * mazo se puede mirar por perfil sin tocar la categoría de cada tarjeta: una
+ * palabra sigue siendo "técnica" o "comercial" aunque se generase para I+D.
+ */
+const PROFILE_PREFIX = 'profile:';
 
 const RESULT_LABELS = {
   correct: ['✓ Correcto', 'is-correct'],
@@ -18,9 +29,10 @@ const RESULT_LABELS = {
 /**
  * Modo tarjetas: recall activo con repetición espaciada (Leitner).
  *
- * Es el único modo que funciona sin API key, así que no depende de `core/api`.
+ * Funciona entero sin IA. Sólo el botón de generar vocabulario a medida del
+ * perfil necesita el servidor, y su fallo no afecta al resto del modo.
  */
-export function createFlashcardsMode({ store }) {
+export function createFlashcardsMode({ store, profile, onActivity }) {
   const el = {
     stats: $('#statsRow'),
     voicePanel: $('#voicePanel'),
@@ -29,7 +41,8 @@ export function createFlashcardsMode({ store }) {
     form: $('#addCardForm'),
     catSelect: $('#newCat'),
     formMsg: $('#addCardMsg'),
-    reset: $('#resetProgress'),
+    resetLabel: $('#resetCatLabel'),
+    generateBtn: $('#generateVocabBtn'),
   };
 
   const state = {
@@ -42,26 +55,23 @@ export function createFlashcardsMode({ store }) {
     phase: 'answer', // 'answer' | 'checked'
     lastResult: null,
     pendingLatencyMs: null,
+    generating: false,
   };
 
-  const dictation = new Dictation({ continuous: false, interim: false });
+  const dictation = new Dictation();
 
   async function init() {
     await loadState();
     renderCategoryOptions();
     bindEvents();
-    renderStats();
-    renderVoicePanel();
     renderTabs();
     rebuildQueue();
-    renderCard();
   }
 
   async function loadState() {
     const stored = await store.get(KEY_DECK, null);
     state.deck = mergeSeed(Array.isArray(stored) ? stored : [], content.deck);
     if (!Array.isArray(stored) || state.deck.length !== stored.length) {
-      // Primera ejecución, o el mazo semilla de `data/deck.json` ha crecido.
       await store.set(KEY_DECK, state.deck);
     }
 
@@ -79,12 +89,27 @@ export function createFlashcardsMode({ store }) {
     state.voiceStats = voice && Array.isArray(voice.history) ? voice : { history: [] };
   }
 
-  /** Conserva las tarjetas del alumno y añade las nuevas del mazo del servidor. */
+  /**
+   * Conserva las tarjetas del alumno y sincroniza con el mazo del servidor.
+   *
+   * Se compara por el campo `en` y no por `id`: el mazo semilla se regenera al
+   * ampliarlo y los ids se desplazan, así que emparejar por id duplicaría
+   * tarjetas. Además refresca la nota de referencia, que es donde están los
+   * ejemplos de uso, sin tocar el progreso Leitner ni las tarjetas propias.
+   */
   function mergeSeed(storedDeck, seedDeck) {
     if (storedDeck.length === 0) return seedDeck.map((card) => ({ ...card }));
-    const known = new Set(storedDeck.map((card) => card.id));
-    const additions = seedDeck.filter((card) => !known.has(card.id)).map((card) => ({ ...card }));
-    return [...storedDeck, ...additions];
+
+    const notesByEn = new Map(seedDeck.map((card) => [card.en, card.note]));
+    const merged = storedDeck.map((card) => {
+      const seedNote = notesByEn.get(card.en);
+      return seedNote !== undefined && seedNote !== card.note ? { ...card, note: seedNote } : card;
+    });
+
+    const known = new Set(merged.map((card) => card.en));
+    const additions = seedDeck.filter((card) => !known.has(card.en)).map((card) => ({ ...card }));
+
+    return [...merged, ...additions];
   }
 
   function bindEvents() {
@@ -97,6 +122,9 @@ export function createFlashcardsMode({ store }) {
       if (action === 'check') checkAnswer();
       if (action === 'mic') toggleDictation();
       if (action === 'rate') rate(target.dataset.grade);
+      if (action === 'say-answer' && state.lastResult) {
+        speak(state.lastResult.correctAlt, { rate: 0.85 });
+      }
     });
 
     el.zone.addEventListener('keydown', (event) => {
@@ -108,15 +136,20 @@ export function createFlashcardsMode({ store }) {
 
     el.form.addEventListener('submit', (event) => {
       event.preventDefault();
-      addCard();
+      addFromForm();
     });
 
-    el.reset.addEventListener('click', resetProgress);
+    if (el.generateBtn) {
+      el.generateBtn.addEventListener('click', generateVocab);
+    }
   }
 
   function renderCategoryOptions() {
     el.catSelect.innerHTML = content.categories
-      .map((cat) => `<option value="${escapeHtml(cat.id)}">${escapeHtml(cat.formLabel || cat.label)}</option>`)
+      .map(
+        (cat) =>
+          `<option value="${escapeHtml(cat.id)}">${escapeHtml(cat.formLabel || cat.label)}</option>`
+      )
       .join('');
   }
 
@@ -127,19 +160,43 @@ export function createFlashcardsMode({ store }) {
     const mastered = state.deck.filter((card) => (state.srs[card.id]?.box ?? 1) >= MAX_BOX).length;
 
     el.stats.innerHTML = [
-      statCell(total, 'Total'),
-      statCell(due, 'Para hoy'),
-      statCell(mastered, 'Dominadas'),
-      statCell(total - mastered, 'En curso'),
-    ].join('');
+      ['Total', total],
+      ['Para hoy', due],
+      ['Dominadas', mastered],
+      ['En curso', total - mastered],
+    ]
+      .map(
+        ([label, value]) =>
+          `<div class="stat"><div class="n">${value}</div><div class="l">${label}</div></div>`
+      )
+      .join('');
   }
 
-  function statCell(value, label) {
-    return `<div class="stat"><div class="n">${escapeHtml(value)}</div><div class="l">${escapeHtml(label)}</div></div>`;
+  /** Etiqueta de una pestaña, sea "todas", una categoría o un perfil. */
+  function tabLabel(id) {
+    if (id === 'all') return 'Todas';
+    if (id.startsWith(PROFILE_PREFIX)) return `🪄 ${profileLabel(id.slice(PROFILE_PREFIX.length))}`;
+    return categoryLabel(id);
+  }
+
+  /**
+   * Una pestaña por cada perfil con vocabulario generado en el mazo.
+   *
+   * Sólo aparecen los perfiles que tienen tarjetas: quien no ha generado nada
+   * ve exactamente las pestañas de siempre.
+   */
+  function profileTabs() {
+    const ids = [...new Set(state.deck.map((card) => card.profile).filter(Boolean))];
+    return ids.map((id) => ({ id: `${PROFILE_PREFIX}${id}`, label: tabLabel(`${PROFILE_PREFIX}${id}`) }));
   }
 
   function renderTabs() {
-    const tabs = [{ id: 'all', label: 'Todas' }, ...content.categories];
+    // Las de perfil van justo antes del cuaderno, que cierra siempre la fila:
+    // es el cajón de las palabras propias y no una categoría más del catálogo.
+    const catalogue = content.categories.filter((cat) => cat.id !== 'personal');
+    const notebook = content.categories.filter((cat) => cat.id === 'personal');
+    const tabs = [{ id: 'all', label: 'Todas' }, ...catalogue, ...profileTabs(), ...notebook];
+
     el.tabs.innerHTML = tabs
       .map(
         (tab) =>
@@ -166,9 +223,12 @@ export function createFlashcardsMode({ store }) {
   }
 
   function currentCards() {
-    return state.category === 'all'
-      ? state.deck
-      : state.deck.filter((card) => card.cat === state.category);
+    if (state.category === 'all') return state.deck;
+    if (state.category.startsWith(PROFILE_PREFIX)) {
+      const profileId = state.category.slice(PROFILE_PREFIX.length);
+      return state.deck.filter((card) => card.profile === profileId);
+    }
+    return state.deck.filter((card) => card.cat === state.category);
   }
 
   function rebuildQueue() {
@@ -184,14 +244,17 @@ export function createFlashcardsMode({ store }) {
     state.category = category;
     rebuildQueue();
     renderTabs();
-    renderCard();
+    render();
+    if (el.resetLabel) {
+      el.resetLabel.textContent = tabLabel(category);
+    }
   }
 
-  function renderCard() {
+  function render() {
     if (state.queue.length === 0) {
       el.zone.innerHTML = emptyState(
         'No hay tarjetas en esta categoría',
-        'Añade alguna con el formulario de abajo.'
+        'Añade alguna con el formulario de abajo, o genera un lote para tu perfil.'
       );
       return;
     }
@@ -210,15 +273,13 @@ export function createFlashcardsMode({ store }) {
       (_, i) => `<div class="dot ${i < box ? 'is-on' : ''}"></div>`
     ).join('');
 
-    const body = state.phase === 'answer' ? answerFormHtml() : resultHtml(card);
-
     el.zone.innerHTML = `
       <div class="card">
         <div class="card-tag">${escapeHtml(categoryLabel(card.cat))}</div>
         <div class="card-box">${dots}</div>
         <div class="prompt-label">Traduce al inglés</div>
         <div class="prompt-text">${escapeHtml(card.es)}</div>
-        ${body}
+        ${state.phase === 'answer' ? answerFormHtml() : resultHtml(card)}
       </div>`;
 
     if (state.phase === 'answer') {
@@ -258,10 +319,14 @@ export function createFlashcardsMode({ store }) {
 
     if (card.note) html += `<div class="answer-note">${escapeHtml(card.note)}</div>`;
     if (result.latencyMs) {
-      html += `<div class="answer-note">🎙 Tiempo hasta responder: <strong>${(result.latencyMs / 1000).toFixed(1)}s</strong></div>`;
+      html += `<div class="answer-note">🎙 Tiempo hasta responder:
+        <strong>${(result.latencyMs / 1000).toFixed(1)}s</strong></div>`;
     }
 
     return `${html}
+      <button type="button" class="check-btn" style="margin-bottom:10px;" data-action="say-answer">
+        🔊 Escuchar pronunciación
+      </button>
       <div class="rate-row">
         <button type="button" class="rate-btn is-again" data-action="rate" data-grade="again">Otra vez</button>
         <button type="button" class="rate-btn is-good" data-action="rate" data-grade="good">Bien</button>
@@ -338,17 +403,14 @@ export function createFlashcardsMode({ store }) {
       return;
     }
 
-    const card = state.queue[state.index];
-    state.lastResult = evaluateAnswer(value, card);
-
+    state.lastResult = evaluateAnswer(value, state.queue[state.index]);
     if (state.pendingLatencyMs !== null) {
       state.lastResult.latencyMs = state.pendingLatencyMs;
       recordVoiceStat(state.lastResult.classification, state.pendingLatencyMs);
       state.pendingLatencyMs = null;
     }
-
     state.phase = 'checked';
-    renderCard();
+    render();
   }
 
   async function rate(grade) {
@@ -362,25 +424,47 @@ export function createFlashcardsMode({ store }) {
     state.phase = 'answer';
     state.lastResult = null;
     renderStats();
-    renderCard();
+    render();
+    await onActivity();
   }
 
-  async function addCard() {
-    const cat = el.catSelect.value;
+  /**
+   * Añade una tarjeta al mazo y la deja lista para repasar hoy.
+   *
+   * `profile` sólo lo traen las tarjetas generadas por la IA: es el perfil con
+   * el que se pidieron, y de ahí sale su pestaña.
+   */
+  async function addCard({ cat, es, en, note, profile: profileId }) {
+    const card = {
+      id: `u${Date.now()}${Math.floor(Math.random() * 1000)}`,
+      cat,
+      es,
+      en,
+      note: note || '',
+      ...(profileId ? { profile: profileId } : {}),
+    };
+    state.deck.push(card);
+    state.srs[card.id] = newEntry();
+    await store.set(KEY_DECK, state.deck);
+    await store.set(KEY_SRS, state.srs);
+
+    return card;
+  }
+
+  async function addFromForm() {
     const es = $('#newEs').value.trim();
     const en = $('#newEn').value.trim();
-    const note = $('#newNote').value.trim();
-
     if (!es || !en) {
       setFormMessage('Rellena al menos el español y el inglés.', true);
       return;
     }
 
-    const card = { id: `u${Date.now()}`, cat, es, en, note };
-    state.deck.push(card);
-    state.srs[card.id] = newEntry();
-    await store.set(KEY_DECK, state.deck);
-    await store.set(KEY_SRS, state.srs);
+    await addCard({
+      cat: el.catSelect.value,
+      es,
+      en,
+      note: $('#newNote').value.trim(),
+    });
 
     $('#newEs').value = '';
     $('#newEn').value = '';
@@ -389,7 +473,7 @@ export function createFlashcardsMode({ store }) {
 
     renderStats();
     rebuildQueue();
-    renderCard();
+    render();
   }
 
   function setFormMessage(message, isError) {
@@ -397,20 +481,50 @@ export function createFlashcardsMode({ store }) {
     el.formMsg.classList.toggle('is-error', Boolean(isError));
   }
 
-  async function resetProgress() {
-    const confirmed = window.confirm(
-      'Esto reinicia el nivel de todas las tarjetas a 1, pero no las borra. ¿Continuar?'
-    );
-    if (!confirmed) return;
+  /** Lote de vocabulario a medida del perfil activo. Requiere IA. */
+  async function generateVocab() {
+    if (state.generating) return;
+    state.generating = true;
+    if (el.generateBtn) el.generateBtn.disabled = true;
+    showToast(`Generando vocabulario para ${profile.label()}… puede tardar un minuto.`, 20000);
 
-    Object.keys(state.srs).forEach((id) => {
-      state.srs[id] = newEntry();
-    });
-    await store.set(KEY_SRS, state.srs);
+    try {
+      const data = await requestTask('vocab.generate', {
+        profileId: profile.id(),
+        existingTerms: state.deck.map((card) => card.en),
+      });
 
-    renderStats();
-    rebuildQueue();
-    renderCard();
+      const known = new Set(state.deck.map((card) => card.en.toLowerCase()));
+      let added = 0;
+      for (const item of data.items) {
+        if (known.has(item.en.toLowerCase())) continue;
+        known.add(item.en.toLowerCase());
+        // eslint-disable-next-line no-await-in-loop
+        await addCard({ ...item, profile: profile.id() });
+        added += 1;
+      }
+
+      renderStats();
+      if (added > 0) {
+        // Deja delante la pestaña del perfil, que acaba de nacer o de crecer:
+        // buscar a mano dónde han caído treinta palabras nuevas no tiene gracia.
+        setCategory(`${PROFILE_PREFIX}${profile.id()}`);
+      } else {
+        rebuildQueue();
+        render();
+      }
+      showToast(
+        added > 0
+          ? `${added} palabras nuevas añadidas para ${profile.label()}. ` +
+              'Puedes pulsar el botón otra vez para generar más.'
+          : 'No había nada nuevo que añadir: ya tienes todo ese vocabulario.'
+      );
+    } catch (err) {
+      showToast(`No se pudo generar el vocabulario: ${err.message}`);
+    } finally {
+      state.generating = false;
+      if (el.generateBtn) el.generateBtn.disabled = false;
+    }
   }
 
   return {
@@ -418,9 +532,40 @@ export function createFlashcardsMode({ store }) {
     show() {
       renderStats();
       renderVoicePanel();
+      render();
     },
     hide() {
       dictation.stop();
+    },
+
+    addCard,
+    deckSize: () => state.deck.length,
+    masteredCount: () =>
+      state.deck.filter((card) => (state.srs[card.id]?.box ?? 1) >= MAX_BOX).length,
+
+    /** Reinicia el progreso de la categoría visible. Devuelve su descripción. */
+    async reset() {
+      const ids =
+        state.category === 'all'
+          ? Object.keys(state.srs)
+          : currentCards().map((card) => card.id);
+      ids.forEach((id) => {
+        state.srs[id] = newEntry();
+      });
+      await store.set(KEY_SRS, state.srs);
+
+      renderStats();
+      rebuildQueue();
+      render();
+
+      return state.category === 'all' ? 'todas las categorías' : `"${tabLabel(state.category)}"`;
+    },
+
+    /** Refresca tras una promoción del cuaderno. */
+    refresh() {
+      renderStats();
+      rebuildQueue();
+      render();
     },
   };
 }

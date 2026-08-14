@@ -1,8 +1,21 @@
+/* Bloque del selector: inglés de trabajo o de la vida diaria. */
+.scenario-mode-heading {
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--on-accent);
+  background: var(--accent);
+  border-radius: var(--radius);
+  padding: 8px 12px;
+  margin: 22px 0 10px;
+}
+.scenario-mode-heading:first-of-type { margin-top: 6px; }
+
 .scenario-group-label {
   font-size: 10.5px;
   letter-spacing: 0.05em;
   text-transform: uppercase;
-  color: var(--ink-soft);
+  color: var(--muted);
   margin: 16px 0 8px;
   border-bottom: 1px solid var(--line);
   padding-bottom: 4px;
@@ -13,14 +26,29 @@
   display: block;
   width: 100%;
   text-align: left;
-  border: 1px solid var(--ink);
-  background: var(--paper-raised);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface-raised);
   padding: 14px 16px;
   margin-bottom: 10px;
   cursor: pointer;
   font-family: inherit;
 }
-.scenario-card:hover { background: var(--paper-dim); }
+.scenario-card:hover { background: var(--surface-dim); }
+.scenario-card:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* Papelera de un escenario generado. Va dentro del botón de la tarjeta, así que
+   el JS detiene la propagación del clic para no arrancar la conversación. */
+.scenario-delete {
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  font-size: 12px;
+  line-height: 1;
+  opacity: 0.6;
+  cursor: pointer;
+}
+.scenario-delete:hover { opacity: 1; }
 .scenario-card .stitle,
 .conv-header .stitle {
   font-family: var(--font-display);
@@ -30,7 +58,7 @@
 }
 .scenario-card .sdesc {
   font-size: 11.5px;
-  color: var(--ink-soft);
+  color: var(--muted);
   line-height: 1.5;
 }
 
@@ -42,8 +70,9 @@
 .duration-btn {
   flex: 1;
   padding: 9px;
-  border: 1px solid var(--ink);
-  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
   font-family: inherit;
   font-size: 11.5px;
   letter-spacing: 0.03em;
@@ -51,9 +80,9 @@
   text-align: center;
 }
 .duration-btn.is-active {
-  background: var(--petrol);
-  color: var(--paper);
-  border-color: var(--petrol);
+  background: var(--accent);
+  color: var(--on-accent);
+  border-color: var(--accent);
 }
 
 .tts-toggle-row {
@@ -61,7 +90,7 @@
   align-items: center;
   gap: 6px;
   font-size: 11px;
-  color: var(--ink-soft);
+  color: var(--muted);
   margin-bottom: 16px;
 }
 
@@ -70,7 +99,7 @@
   justify-content: space-between;
   align-items: center;
   gap: 10px;
-  border-bottom: 1px solid var(--ink);
+  border-bottom: 1px solid var(--line);
   padding-bottom: 8px;
   margin-bottom: 12px;
 }
@@ -79,16 +108,17 @@
   font-family: var(--font-body);
   font-size: 15px;
   font-weight: 700;
-  color: var(--petrol-dark);
-  border: 1px solid var(--petrol-dark);
+  color: var(--accent-dark);
+  border: 1px solid var(--accent-dark);
   padding: 2px 8px;
   white-space: nowrap;
 }
-.conv-timer.is-urgent { color: var(--bad); border-color: var(--bad); }
+.conv-timer.is-urgent { color: var(--danger); border-color: var(--danger); }
 
 .chat-window {
   border: 1px solid var(--line);
-  background: var(--paper-raised);
+  border-radius: var(--radius);
+  background: var(--surface-raised);
   min-height: 280px;
   max-height: 420px;
   overflow-y: auto;
@@ -104,13 +134,13 @@
   border-radius: var(--radius-sm);
 }
 .bubble.is-assistant {
-  background: var(--paper-dim);
-  border-left: 3px solid var(--petrol);
+  background: var(--surface-dim);
+  border-left: 3px solid var(--accent);
   margin-right: auto;
 }
 .bubble.is-user {
-  background: var(--amber-soft);
-  border-right: 3px solid var(--amber);
+  background: var(--accent-2-soft);
+  border-right: 3px solid var(--accent-2);
   margin-left: auto;
   text-align: right;
 }
@@ -118,29 +148,82 @@
   font-size: 9px;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: var(--ink-soft);
+  color: var(--muted);
   margin-bottom: 3px;
 }
-.bubble.is-thinking { font-style: italic; color: var(--ink-soft); }
+.bubble.is-thinking { font-style: italic; color: var(--muted); }
+
+/* Aviso de envío automático tras dictar. La barra inferior es el margen que
+   queda para cancelar: sin ella el envío parece repentino. */
+.conv-autosend-banner {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  background: var(--accent-2-soft);
+  border: 1px solid var(--accent-2);
+  border-radius: var(--radius);
+  padding: 8px 12px;
+  margin-bottom: 8px;
+  font-size: 11.5px;
+  color: var(--text);
+}
+.conv-autosend-banner button {
+  flex-shrink: 0;
+  padding: 4px 8px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 10.5px;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.conv-autosend-banner button:hover { background: var(--accent); color: var(--on-accent); }
+.conv-autosend-track {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--line);
+}
+.conv-autosend-bar {
+  height: 100%;
+  width: 100%;
+  background: var(--accent-2);
+  animation: convAutosendShrink 1.8s linear forwards;
+}
+@keyframes convAutosendShrink {
+  from { width: 100%; }
+  to { width: 0%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .conv-autosend-bar { animation: none; }
+}
 
 .conv-end-btn {
   display: block;
   width: 100%;
   padding: 9px;
-  background: var(--paper);
-  color: var(--bad);
-  border: 1px solid var(--bad);
+  background: var(--surface);
+  color: var(--danger);
+  border: 1px solid var(--danger);
   font-family: inherit;
   font-size: 11px;
   text-transform: uppercase;
   letter-spacing: 0.03em;
   cursor: pointer;
 }
-.conv-end-btn:hover { background: var(--bad); color: #fff; }
+.conv-end-btn:hover { background: var(--danger-surface); color: var(--on-accent); }
 
 .feedback-box {
-  border: 1px solid var(--ink);
-  background: var(--paper-raised);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface-raised);
   padding: 18px;
   margin-bottom: 14px;
   font-size: 13.5px;

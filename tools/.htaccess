@@ -1,0 +1,10 @@
+# Scripts de despliegue. instalar_bd.php ya rechaza ejecutarse por web, pero
+# mejor que ni se alcance.
+
+<IfModule mod_authz_core.c>
+  Require all denied
+</IfModule>
+<IfModule !mod_authz_core.c>
+  Order allow,deny
+  Deny from all
+</IfModule>

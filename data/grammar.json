@@ -1,0 +1,262 @@
+[
+  {
+    "id": "g0",
+    "level": "B2",
+    "title": "Voz pasiva en informes",
+    "explanation": "Se usa para describir procesos o resultados sin decir quién lo hizo — muy común en informes técnicos y actualizaciones de proyecto.",
+    "examples": [
+      "The samples were tested last week.",
+      "Three formulations have been developed so far.",
+      "The report will be sent by Friday."
+    ],
+    "exercisePrompt": "Transforma a voz pasiva: \"Alguien probó las muestras ayer.\"",
+    "exerciseAnswer": "The samples were tested yesterday."
+  },
+  {
+    "id": "g1",
+    "level": "B2",
+    "title": "Estilo indirecto (reported speech)",
+    "explanation": "Sirve para trasladar en una reunión lo que dijo un cliente o compañero, sin citarlo literalmente.",
+    "examples": [
+      "She said the order would arrive on Monday.",
+      "He told us the price had increased.",
+      "They mentioned they were considering other suppliers."
+    ],
+    "exercisePrompt": "Pasa a estilo indirecto: El cliente dijo: \"We need the samples by Friday.\"",
+    "exerciseAnswer": "The client said they needed the samples by Friday."
+  },
+  {
+    "id": "g2",
+    "level": "B2",
+    "title": "Primer condicional",
+    "explanation": "Para condiciones reales o probables en el futuro — muy útil al negociar plazos o condiciones.",
+    "examples": [
+      "If the batch fails the test, we'll need to rework the formula.",
+      "We'll ship the order if the payment clears today.",
+      "If you send the data sheet, I'll review it this afternoon."
+    ],
+    "exercisePrompt": "Completa: \"If the client ___ (agree) to the new price, we ___ (start) production next week.\"",
+    "exerciseAnswer": "agrees, we will start"
+  },
+  {
+    "id": "g3",
+    "level": "B2",
+    "title": "Segundo condicional",
+    "explanation": "Para situaciones hipotéticas o improbables en el presente/futuro — útil para plantear escenarios en una reunión.",
+    "examples": [
+      "If we had a bigger budget, we would test more formulations.",
+      "I would call the supplier if I were you.",
+      "If the price dropped, we would order more."
+    ],
+    "exercisePrompt": "Traduce: \"Si tuviéramos más tiempo, probaríamos otra fórmula.\"",
+    "exerciseAnswer": "If we had more time, we would test another formula."
+  },
+  {
+    "id": "g4",
+    "level": "B2",
+    "title": "Tercer condicional",
+    "explanation": "Para hipótesis sobre el pasado (lo que habría pasado si...) — muy común al analizar errores o incidencias ya cerradas.",
+    "examples": [
+      "If we had tested it earlier, we would have caught the issue.",
+      "She wouldn't have called if it hadn't been urgent.",
+      "If the shipment had left on time, it would have arrived by now."
+    ],
+    "exercisePrompt": "Traduce: \"Si hubiéramos revisado la ficha técnica, habríamos visto el error.\"",
+    "exerciseAnswer": "If we had checked the data sheet, we would have seen the error."
+  },
+  {
+    "id": "g5",
+    "level": "B2",
+    "title": "Oraciones de relativo",
+    "explanation": "Para añadir información sobre algo o alguien sin abrir una frase nueva — hace tu inglés menos entrecortado.",
+    "examples": [
+      "The client who called yesterday wants a bigger discount.",
+      "This is the formula that failed the stability test.",
+      "The supplier whose prices increased is based in Germany."
+    ],
+    "exercisePrompt": "Combina en una frase: \"The batch failed. The batch was tested last week.\"",
+    "exerciseAnswer": "The batch that was tested last week failed."
+  },
+  {
+    "id": "g6",
+    "level": "B2",
+    "title": "Deducción presente (must/might/can't)",
+    "explanation": "Para expresar lo probable en el presente sin afirmar con certeza — clave para sonar natural especulando en una reunión.",
+    "examples": [
+      "The line isn't ready, they must still be testing it.",
+      "She might be in another meeting.",
+      "That can't be right — the numbers don't add up."
+    ],
+    "exercisePrompt": "Traduce: \"Seguramente todavía están probando el lote.\"",
+    "exerciseAnswer": "They must still be testing the batch."
+  },
+  {
+    "id": "g7",
+    "level": "B2",
+    "title": "Deducción pasada (must/might/can't + have)",
+    "explanation": "La misma idea de deducción, pero sobre algo que ya pasó — muy usada al analizar qué pudo haber fallado.",
+    "examples": [
+      "The batch must have failed during transport.",
+      "They might have missed the email.",
+      "He can't have seen the report yet."
+    ],
+    "exercisePrompt": "Traduce: \"No pueden haber probado todas las muestras tan rápido.\"",
+    "exerciseAnswer": "They can't have tested all the samples that fast."
+  },
+  {
+    "id": "g8",
+    "level": "B2",
+    "title": "used to / would (hábitos pasados)",
+    "explanation": "Para hablar de cómo se hacían las cosas antes, en contraste con ahora — útil al explicar procesos que han cambiado.",
+    "examples": [
+      "We used to test everything manually before we got the new equipment.",
+      "He would always double-check the formula before sending it.",
+      "They didn't use to require a CoA for this ingredient."
+    ],
+    "exercisePrompt": "Traduce: \"Antes solíamos usar otro proveedor.\"",
+    "exerciseAnswer": "We used to use a different supplier."
+  },
+  {
+    "id": "g9",
+    "level": "B2",
+    "title": "Comparativos avanzados (the more..., by far)",
+    "explanation": "Para reforzar comparaciones de forma más natural que \"very\" o \"more\" sueltos.",
+    "examples": [
+      "The more we test, the more confident we are in the formula.",
+      "This is by far the most stable version we've developed.",
+      "The sooner we confirm, the better."
+    ],
+    "exercisePrompt": "Traduce: \"Cuanto antes confirmemos el pedido, antes podremos enviarlo.\"",
+    "exerciseAnswer": "The sooner we confirm the order, the sooner we can ship it."
+  },
+  {
+    "id": "g10",
+    "level": "C1",
+    "title": "Inversión enfática",
+    "explanation": "Anteponer palabras como \"Not only\", \"Never\" o \"Rarely\" invierte el orden sujeto-verbo y da un tono más formal y enfático — muy C1.",
+    "examples": [
+      "Not only did the batch fail, but the report was also late.",
+      "Never have we faced such a delay.",
+      "Rarely does a client change the spec this late."
+    ],
+    "exercisePrompt": "Traduce con inversión: \"No solo se retrasó el envío, sino que también llegó dañado.\"",
+    "exerciseAnswer": "Not only was the shipment delayed, but it also arrived damaged."
+  },
+  {
+    "id": "g11",
+    "level": "C1",
+    "title": "Cleft sentences (It was... / What...)",
+    "explanation": "Sirven para poner el foco en una parte concreta de la frase — muy útil para dejar clara la causa de un problema.",
+    "examples": [
+      "It was the supplier who caused the delay.",
+      "What we need is a faster approval process.",
+      "It's the packaging that's causing the issue."
+    ],
+    "exercisePrompt": "Traduce: \"Lo que necesitamos es más tiempo para las pruebas.\"",
+    "exerciseAnswer": "What we need is more time for testing."
+  },
+  {
+    "id": "g12",
+    "level": "C1",
+    "title": "Condicionales mixtos",
+    "explanation": "Mezclan una condición pasada con una consecuencia presente (o viceversa) — muy natural al hablar de errores con efectos actuales.",
+    "examples": [
+      "If we had tested it properly, we wouldn't be dealing with this now.",
+      "If she were more experienced, she would have caught the error.",
+      "If the formula were more stable, we wouldn't have had to recall it."
+    ],
+    "exercisePrompt": "Traduce: \"Si hubiéramos elegido otro proveedor, no tendríamos este problema ahora.\"",
+    "exerciseAnswer": "If we had chosen a different supplier, we wouldn't have this problem now."
+  },
+  {
+    "id": "g13",
+    "level": "C1",
+    "title": "Oraciones de participio (Having.../Given that...)",
+    "explanation": "Permiten condensar dos frases en una de forma elegante — suena mucho más fluido que encadenar \"and\" o \"because\".",
+    "examples": [
+      "Having finished the stability tests, we can move to scale-up.",
+      "Given that the results are positive, we'll proceed with production.",
+      "Having reviewed the data, I think we're ready to launch."
+    ],
+    "exercisePrompt": "Traduce: \"Habiendo completado las pruebas, podemos pasar a la siguiente fase.\"",
+    "exerciseAnswer": "Having completed the tests, we can move to the next phase."
+  },
+  {
+    "id": "g14",
+    "level": "C1",
+    "title": "Matización (hedging)",
+    "explanation": "Frases para suavizar una opinión sin sonar tajante — imprescindible en negociación y feedback delicado.",
+    "examples": [
+      "It could be argued that the price is too high for this market.",
+      "I'd tend to say the formula needs more work.",
+      "Arguably, this is our strongest product yet."
+    ],
+    "exercisePrompt": "Traduce con matización: \"Podría decirse que el precio es demasiado alto.\"",
+    "exerciseAnswer": "It could be argued that the price is too high."
+  },
+  {
+    "id": "g15",
+    "level": "C1",
+    "title": "do/does/did enfático",
+    "explanation": "Añadir \"do/does/did\" delante del verbo da énfasis a algo que se pone en duda — muy útil para defender algo con firmeza sin subir el tono.",
+    "examples": [
+      "We do understand your concerns about the delay.",
+      "The formula did pass the stability test, despite the delay.",
+      "I did send the report yesterday."
+    ],
+    "exercisePrompt": "Traduce con énfasis: \"Sí que enviamos la muestra la semana pasada.\"",
+    "exerciseAnswer": "We did send the sample last week."
+  },
+  {
+    "id": "g16",
+    "level": "C1",
+    "title": "Futuro perfecto y continuo",
+    "explanation": "Para proyectar en qué punto estará algo en una fecha futura concreta — muy usado en reuniones de seguimiento de proyecto.",
+    "examples": [
+      "By next month, we will have finished the stability testing.",
+      "This time next week, we'll be presenting the results to the client.",
+      "By the time you arrive, we'll have already started the meeting."
+    ],
+    "exercisePrompt": "Traduce: \"Para el viernes, habremos terminado el informe.\"",
+    "exerciseAnswer": "By Friday, we will have finished the report."
+  },
+  {
+    "id": "g17",
+    "level": "C1",
+    "title": "wish / if only",
+    "explanation": "Para expresar deseo o arrepentimiento sobre el presente o el pasado — útil para reconocer un fallo con matiz humano, no solo técnico.",
+    "examples": [
+      "I wish we had tested this formula earlier.",
+      "If only the supplier had warned us about the delay.",
+      "I wish the price were lower."
+    ],
+    "exercisePrompt": "Traduce: \"Ojalá hubiéramos revisado esto antes.\"",
+    "exerciseAnswer": "I wish we had reviewed this earlier."
+  },
+  {
+    "id": "g18",
+    "level": "C1",
+    "title": "Causativo (have/get something done)",
+    "explanation": "Para expresar que otra persona o empresa hace algo por encargo tuyo — frecuente al hablar de laboratorios externos o subcontratas.",
+    "examples": [
+      "We had the samples tested by an external lab.",
+      "They got the packaging redesigned last quarter.",
+      "We need to have this formula approved before launch."
+    ],
+    "exercisePrompt": "Traduce: \"Vamos a hacer que analicen las muestras externamente.\"",
+    "exerciseAnswer": "We are going to have the samples analyzed externally."
+  },
+  {
+    "id": "g19",
+    "level": "C1",
+    "title": "Marcadores de discurso avanzados",
+    "explanation": "Conectores como \"That being said\" o \"Notwithstanding\" dan un tono más formal y estructurado a tus intervenciones.",
+    "examples": [
+      "That being said, we still need to confirm the timeline.",
+      "Having said that, the client seemed satisfied with the proposal.",
+      "Notwithstanding the delay, the quality remained consistent."
+    ],
+    "exercisePrompt": "Traduce: \"Dicho esto, seguimos necesitando confirmar el plazo.\"",
+    "exerciseAnswer": "That being said, we still need to confirm the deadline."
+  }
+]
