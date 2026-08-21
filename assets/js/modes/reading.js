@@ -37,6 +37,10 @@ export function createReadingMode({ store, profile, onActivity }) {
     resultOps: null,
     missingWords: [],
     error: '',
+    /** El alumno quiere el micrófono abierto (lo apaga él, no el navegador). */
+    micWanted: false,
+    /** Reanudaciones seguidas sin oír nada: ver MAX_SILENT_RESUMES. */
+    silentResumes: 0,
     stats: { history: [], troubleWords: {} },
   };
 
@@ -239,6 +243,7 @@ export function createReadingMode({ store, profile, onActivity }) {
   }
 
   function backToPicker() {
+    state.micWanted = false;
     dictation.stop();
     cancelSpeech();
     state.phase = 'pick';
@@ -252,6 +257,7 @@ export function createReadingMode({ store, profile, onActivity }) {
   }
 
   async function finishReading() {
+    state.micWanted = false;
     dictation.stop();
 
     const originalWords = splitWords(state.passage);
@@ -297,17 +303,36 @@ export function createReadingMode({ store, profile, onActivity }) {
       return;
     }
     if (dictation.isListening) {
+      // Parada deliberada: es la única que cierra el micrófono para siempre.
+      state.micWanted = false;
       dictation.stop();
       return;
     }
 
+    // Lectura nueva: lo dicho antes ya no cuenta. Reanudar no pasa por aquí.
     state.transcriptFinal = '';
     state.transcriptInterim = '';
     state.error = '';
+    state.micWanted = true;
+    state.silentResumes = 0;
 
-    const started = dictation.start({
+    if (listenToReading()) render();
+  }
+
+  /**
+   * Abre el micrófono conservando lo transcrito hasta ahora.
+   *
+   * El reconocedor de Chrome se cierra solo cada pocos minutos y también en
+   * cuanto hay un silencio, y un texto de 350-400 palabras se lee en varios
+   * minutos con pausas. Antes eso terminaba la lectura a media página y volver
+   * a pulsar el micrófono empezaba de cero, así que se reanuda solo y el
+   * borrador se mantiene: para el alumno es una sola grabación.
+   */
+  function listenToReading() {
+    return dictation.start({
       onFinal: (chunk) => {
         state.transcriptFinal += chunk;
+        state.silentResumes = 0;
         updateLiveTranscript();
       },
       onInterim: (chunk) => {
@@ -315,12 +340,39 @@ export function createReadingMode({ store, profile, onActivity }) {
         updateLiveTranscript();
       },
       onError: (code, message) => {
+        // Un silencio no es un fallo que deba interrumpir la lectura: lo trata
+        // la reanudación de onEnd. El resto (permiso, micrófono, red) sí.
+        if (code === 'no-speech') return;
+        state.micWanted = false;
         state.error = message;
         render();
       },
-      onEnd: render,
+      onEnd: resumeOrStop,
     });
-    if (started) render();
+  }
+
+  /**
+   * Reanuda salvo que el alumno haya parado o lleve un rato sin decir nada.
+   *
+   * El tope evita que el micrófono se quede abierto en bucle si se levanta de
+   * la mesa a media lectura.
+   */
+  function resumeOrStop() {
+    const MAX_SILENT_RESUMES = 3;
+
+    if (!state.micWanted || state.silentResumes >= MAX_SILENT_RESUMES) {
+      state.micWanted = false;
+      render();
+      return;
+    }
+
+    state.silentResumes += 1;
+    // Con un respiro: arrancar el reconocedor dentro de su propio `onend` lo
+    // deja a medio cerrar y el navegador rechaza el arranque.
+    window.setTimeout(() => {
+      if (!state.micWanted) return;
+      if (!listenToReading()) render();
+    }, 250);
   }
 
   function updateLiveTranscript() {
@@ -336,6 +388,7 @@ export function createReadingMode({ store, profile, onActivity }) {
       render();
     },
     hide() {
+      state.micWanted = false;
       dictation.stop();
       cancelSpeech();
     },

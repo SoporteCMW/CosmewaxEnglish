@@ -56,6 +56,22 @@ export function confirmThenRun(button, action) {
 }
 
 /**
+ * Pinta el feedback de la IA resaltando el fallo concreto.
+ *
+ * La corrección llega con la palabra o expresión errónea entre asteriscos
+ * dobles: lo pide el prompt en el servidor (la constante HIGHLIGHT de
+ * PromptRegistry). Así el alumno ve QUÉ estaba mal y no sólo que algo lo estaba.
+ *
+ * Se escapa primero y se sustituye después, en ese orden: escapar no produce
+ * asteriscos, así que el único `<strong>` que puede salir de aquí es este y el
+ * texto del modelo nunca llega crudo al DOM. Un asterisco desparejado se queda
+ * tal cual, visible, que es preferible a comerse texto del feedback.
+ */
+export function formatFeedbackHtml(text) {
+  return escapeHtml(text).replace(/\*\*(.+?)\*\*/g, '<strong class="feedback-error">$1</strong>');
+}
+
+/**
  * Envuelve cada palabra de un texto en un span marcable para el cuaderno.
  *
  * Se conserva la puntuación en pantalla pero se guarda la palabra limpia en

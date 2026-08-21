@@ -9,7 +9,7 @@ import {
   isSynthesisSupported,
   speakTracked,
 } from '../core/speech.js';
-import { clickableWords } from '../core/ui.js';
+import { clickableWords, formatFeedbackHtml } from '../core/ui.js';
 
 const KEY_STATS = 'listen-stats';
 
@@ -197,7 +197,7 @@ export function createListeningMode({ store, profile, onActivity }) {
             <div class="feedback-banner ${cls}" style="display:inline-flex;">${label}</div>
             <div class="listen-result-q">${i + 1}. ${escapeHtml(answer.question)}</div>
             <div class="listen-result-a">Tu respuesta: "${escapeHtml(answer.userAnswer)}"</div>
-            <div class="listen-result-a">${escapeHtml(answer.feedback)}</div>
+            <div class="listen-result-a">${formatFeedbackHtml(answer.feedback)}</div>
           </div>`;
       })
       .join('');

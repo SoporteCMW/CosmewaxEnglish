@@ -1,9 +1,9 @@
 import { categoryLabel, content, profileLabel } from '../core/config.js';
 import { $, delegate, escapeHtml } from '../core/dom.js';
 import { capHistory } from '../core/storage.js';
-import { requestTask } from '../core/api.js';
+import { aiAvailable, requestTask } from '../core/api.js';
 import { Dictation, dictationUnavailableReason, speak } from '../core/speech.js';
-import { showToast } from '../core/ui.js';
+import { formatFeedbackHtml, showToast } from '../core/ui.js';
 import { evaluateAnswer } from '../lib/text.js';
 import { applyGrade, buildQueue, isDue, newEntry, todayStr, MAX_BOX } from '../lib/srs.js';
 
@@ -29,8 +29,13 @@ const RESULT_LABELS = {
 /**
  * Modo tarjetas: recall activo con repetición espaciada (Leitner).
  *
- * Funciona entero sin IA. Sólo el botón de generar vocabulario a medida del
- * perfil necesita el servidor, y su fallo no afecta al resto del modo.
+ * La corrección la juzga la IA por sentido, no por coincidencia de texto: el
+ * diff sólo sabía comparar contra el campo `en` de la ficha y daba por fallado
+ * cualquier sinónimo válido, que es media respuesta buena de un B2. Ese diff
+ * sigue ahí como respaldo y se usa tal cual si la IA está apagada o no responde,
+ * así que el modo nunca se queda sin corregir; lo que se pierde en ese caso es
+ * la flexibilidad, y se avisa en pantalla para que un "incorrecto" injusto se
+ * entienda. Generar vocabulario a medida del perfil también necesita IA.
  */
 export function createFlashcardsMode({ store, profile, onActivity }) {
   const el = {
@@ -52,11 +57,33 @@ export function createFlashcardsMode({ store, profile, onActivity }) {
     category: 'all',
     queue: [],
     index: 0,
-    phase: 'answer', // 'answer' | 'checked'
+    phase: 'answer', // 'answer' | 'grading' | 'checked'
     lastResult: null,
     pendingLatencyMs: null,
     generating: false,
+    /**
+     * Corrección en curso. Corregir es ahora una llamada de red, y mientras
+     * vuelve se puede cambiar de pestaña o reiniciar la categoría: el token
+     * descarta la respuesta que ya no corresponde a lo que hay en pantalla, en
+     * lugar de pintar el resultado de una ficha que se dejó atrás.
+     */
+    checkId: 0,
+    /**
+     * Fallos seguidos de la corrección con IA.
+     *
+     * `aiAvailable()` sólo dice si el servidor la tiene configurada, no si
+     * responde. Con el sidecar caído y la configuración puesta, cada tarjeta
+     * lanzaría una llamada condenada, y si el servicio cuelga en lugar de
+     * rechazar la conexión son 45 segundos de espera por ficha. A los tres
+     * fallos seguidos se deja de intentar durante el resto de la sesión y se
+     * repasa con el diff: un acierto vuelve a poner el contador a cero, así que
+     * un 429 puntual o un timeout aislado no apagan nada.
+     */
+    aiFailures: 0,
   };
+
+  /** Tres fallos seguidos y se deja de llamar hasta recargar la página. */
+  const MAX_AI_FAILURES = 3;
 
   const dictation = new Dictation();
 
@@ -234,6 +261,7 @@ export function createFlashcardsMode({ store, profile, onActivity }) {
   function rebuildQueue() {
     dictation.stop();
     state.pendingLatencyMs = null;
+    state.checkId += 1;
     state.queue = buildQueue(currentCards(), state.srs);
     state.index = 0;
     state.phase = 'answer';
@@ -279,13 +307,19 @@ export function createFlashcardsMode({ store, profile, onActivity }) {
         <div class="card-box">${dots}</div>
         <div class="prompt-label">Traduce al inglés</div>
         <div class="prompt-text">${escapeHtml(card.es)}</div>
-        ${state.phase === 'answer' ? answerFormHtml() : resultHtml(card)}
+        ${phaseHtml(card)}
       </div>`;
 
     if (state.phase === 'answer') {
       const input = $('#answerInput', el.zone);
       if (input) input.focus();
     }
+  }
+
+  function phaseHtml(card) {
+    if (state.phase === 'answer') return answerFormHtml();
+    if (state.phase === 'grading') return '<div class="loading">Corrigiendo con IA…</div>';
+    return resultHtml(card);
   }
 
   function answerFormHtml() {
@@ -307,14 +341,33 @@ export function createFlashcardsMode({ store, profile, onActivity }) {
       <div class="your-answer-label">Escribiste</div>
       <div class="your-answer-text">${escapeHtml(result.userAnswer)}</div>`;
 
-    if (result.classification === 'correct') {
-      html += `<div class="diff-line"><span class="diff-word is-match">${escapeHtml(result.correctAlt)}</span></div>`;
+    if (result.aiGraded) {
+      // Sin diff de palabras: la respuesta puede ser válida y no parecerse a la
+      // de la ficha, y entonces un diff sólo señalaría diferencias que no son
+      // fallos. Lo que hace falta es la forma buena y las otras que valen.
+      if (result.feedback) {
+        html += `<div class="answer-note">${formatFeedbackHtml(result.feedback)}</div>`;
+      }
+      html += `<div class="answer-note">✓ Forma más adecuada:
+        <strong>${escapeHtml(result.correctAlt)}</strong></div>`;
+      if (result.alternatives.length) {
+        html += `<div class="answer-note">También válido: ${result.alternatives
+          .map((alt) => `<em>"${escapeHtml(alt)}"</em>`)
+          .join(', ')}</div>`;
+      }
     } else {
-      const diff = result.diffOps
-        .map((op) => `<span class="diff-word is-${op.type}">${escapeHtml(op.word)}</span>`)
-        .join(' ');
-      html += `<div class="diff-line">${diff}</div>
-        <div class="answer-note">Respuesta esperada: <strong>${escapeHtml(result.correctAlt)}</strong></div>`;
+      if (result.feedback) {
+        html += `<div class="answer-note is-warning">${escapeHtml(result.feedback)}</div>`;
+      }
+      if (result.classification === 'correct') {
+        html += `<div class="diff-line"><span class="diff-word is-match">${escapeHtml(result.correctAlt)}</span></div>`;
+      } else {
+        const diff = result.diffOps
+          .map((op) => `<span class="diff-word is-${op.type}">${escapeHtml(op.word)}</span>`)
+          .join(' ');
+        html += `<div class="diff-line">${diff}</div>
+          <div class="answer-note">Respuesta esperada: <strong>${escapeHtml(result.correctAlt)}</strong></div>`;
+      }
     }
 
     if (card.note) html += `<div class="answer-note">${escapeHtml(card.note)}</div>`;
@@ -395,7 +448,9 @@ export function createFlashcardsMode({ store, profile, onActivity }) {
 
   // ---- Acciones ----
 
-  function checkAnswer() {
+  async function checkAnswer() {
+    if (state.phase !== 'answer') return;
+
     const input = $('#answerInput', el.zone);
     const value = input ? input.value.trim() : '';
     if (!value) {
@@ -403,14 +458,81 @@ export function createFlashcardsMode({ store, profile, onActivity }) {
       return;
     }
 
-    state.lastResult = evaluateAnswer(value, state.queue[state.index]);
-    if (state.pendingLatencyMs !== null) {
-      state.lastResult.latencyMs = state.pendingLatencyMs;
-      recordVoiceStat(state.lastResult.classification, state.pendingLatencyMs);
-      state.pendingLatencyMs = null;
+    const card = state.queue[state.index];
+    // El tiempo de respuesta oral se aparta antes de esperar a la corrección: lo
+    // que mide es lo que tardó el alumno en hablar, no lo que tarda la IA.
+    const latencyMs = state.pendingLatencyMs;
+    state.pendingLatencyMs = null;
+    dictation.stop();
+
+    state.checkId += 1;
+    const checkId = state.checkId;
+    state.phase = 'grading';
+    render();
+
+    const result = await gradeAnswer(value, card);
+    if (checkId !== state.checkId) return;
+
+    state.lastResult = result;
+    if (latencyMs !== null) {
+      result.latencyMs = latencyMs;
+      recordVoiceStat(result.classification, latencyMs);
     }
     state.phase = 'checked';
     render();
+  }
+
+  /**
+   * Corrige con IA y, si no hay, con el diff de texto de siempre.
+   *
+   * Con la IA apagada en el servidor no se avisa de nada: es la configuración
+   * elegida, no una avería, y un cartel en cada tarjeta sería ruido. Si la IA
+   * está encendida pero falla, sí se dice — porque entonces la corrección es
+   * menos flexible de lo que el alumno espera y conviene que lo sepa antes de
+   * discutir con un "incorrecto".
+   */
+  async function gradeAnswer(value, card) {
+    if (!aiAvailable()) {
+      return { ...evaluateAnswer(value, card), aiGraded: false, feedback: '' };
+    }
+    if (state.aiFailures >= MAX_AI_FAILURES) {
+      return {
+        ...evaluateAnswer(value, card),
+        aiGraded: false,
+        feedback:
+          'El servidor de IA no responde, así que se ha dejado de intentar en esta sesión: ' +
+          'se corrige comparando el texto palabra a palabra, que es menos flexible con las ' +
+          'alternativas válidas. Recarga la página para volver a probar.',
+      };
+    }
+
+    try {
+      const graded = await requestTask('flashcards.grade', {
+        spanish: card.es,
+        target: card.en,
+        note: card.note || '',
+        answer: value,
+      });
+      state.aiFailures = 0;
+      return {
+        classification: graded.classification,
+        correctAlt: graded.bestAnswer,
+        alternatives: graded.alternatives,
+        feedback: graded.feedback,
+        diffOps: null,
+        userAnswer: value,
+        aiGraded: true,
+      };
+    } catch (err) {
+      state.aiFailures += 1;
+      return {
+        ...evaluateAnswer(value, card),
+        aiGraded: false,
+        feedback:
+          `No se pudo corregir con IA (${err.message}). Se ha comparado el texto palabra ` +
+          'a palabra, que es menos flexible con las alternativas válidas.',
+      };
+    }
   }
 
   async function rate(grade) {

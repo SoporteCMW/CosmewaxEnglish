@@ -149,23 +149,10 @@ function e(string $value): string
       <select id="profileSelect" class="global-select"
               title="El contenido generado (vocabulario, escenarios, lecturas, audios) se adapta a este perfil"></select>
       <span class="streak-badge" id="streakBadge"></span>
-      <button type="button" class="global-btn" id="exportProgressBtn"
-              title="Descargar una copia de tu progreso en un fichero JSON">📤 Exportar</button>
-      <button type="button" class="global-btn" id="importProgressBtn"
-              title="Restaurar el progreso desde un fichero exportado antes">📥 Importar</button>
-      <input type="file" id="importProgressFile" accept=".json,application/json" hidden>
     </div>
   </div>
 
   <div class="app-toast" id="appToast" role="status" hidden></div>
-
-  <div class="import-confirm-banner" id="importConfirmBanner" role="alertdialog" hidden>
-    <span id="importConfirmMsg"></span>
-    <div class="import-confirm-actions">
-      <button type="button" class="global-btn" data-import-action="apply">Sí, sobrescribir</button>
-      <button type="button" class="global-btn" data-import-action="cancel">Cancelar</button>
-    </div>
-  </div>
 
   <?php if ($bootError !== null): ?>
     <div class="alert alert-error">

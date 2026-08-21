@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<!-- English Unblocked — v13, regenerado el 2026-08-14 05:06 -->
+<!-- English Unblocked — v20, regenerado el 2026-08-20 07:20 -->
 <meta charset="UTF-8">
 <title>English Unblocked</title>
 <style>
@@ -252,6 +252,13 @@
     font-size:12px;
     color:var(--ink-soft);
     line-height:1.5;
+  }
+  .feedback-error{
+    font-weight:700;
+    text-decoration:underline;
+    text-decoration-color:var(--bad);
+    text-decoration-thickness:2px;
+    color:var(--bad);
   }
 
   .show-btn{
@@ -1547,7 +1554,7 @@ let voiceStats = { history: [] };
 let currentCat = 'all';
 let currentQueue = [];
 let currentIdx = 0;
-let phase = 'answer'; // 'answer' | 'checked'
+let phase = 'answer'; // 'answer' | 'grading' | 'checked'
 let lastResult = null; // {classification, diffHtml, userAnswer, correctAlt}
 
 let appMode = 'flashcards'; // 'flashcards' | 'conversation'
@@ -1632,7 +1639,7 @@ let convError = '';
 let convAutoSendTimeoutId = null;
 let convAutoSendPending = false;
 let convPendingTranscript = '';
-let ttsEnabled = false;
+let ttsEnabled = true;
 let convStats = { history: [] };
 
 // ---- Grammar mode ----
@@ -1825,7 +1832,7 @@ let grammarSrs = {};
 let currentGrammarLevel = 'all';
 let grammarQueue = [];
 let grammarIdx = 0;
-let grammarPhase = 'answer'; // 'answer' | 'checked'
+let grammarPhase = 'answer'; // 'answer' | 'grading' | 'checked'
 let lastGrammarResult = null;
 let lastGrammarLatencyMs = null;
 
@@ -2189,7 +2196,16 @@ function renderStats(){
 
 function renderTabs(){
   const tabsEl = document.getElementById('tabs');
-  const cats = [['all','Todas'], ['reunion',CATS.reunion], ['tecnico',CATS.tecnico], ['comercial',CATS.comercial], ['personal',CATS.personal]];
+  const profileIdsInDeck = [...new Set(deck.filter(c=>c.profile).map(c=>c.profile))];
+  const profileTabs = profileIdsInDeck.map(pid=>{
+    const label = (PROFILES.find(p=>p.id===pid) || {label:pid}).label;
+    return [`profile:${pid}`, `🪄 ${label}`];
+  });
+  const cats = [
+    ['all','Todas'], ['reunion',CATS.reunion], ['tecnico',CATS.tecnico], ['comercial',CATS.comercial],
+    ...profileTabs,
+    ['personal',CATS.personal]
+  ];
   tabsEl.innerHTML = cats.map(([key,label])=>
     `<div class="tab ${currentCat===key?'active':''}" onclick="setCat('${key}')">${label}</div>`
   ).join('');
@@ -2302,18 +2318,23 @@ function renderConversation(){
         <div class="sdesc">${escapeHtml(s.desc)}${s.profileLabel ? ` <em>(${escapeHtml(s.profileLabel)})</em>` : ''}</div>
       </div>
     `;
-    const genProCards = generatedScenarios.filter(s => (s.mode||'profesional')==='profesional').map(genCardHtml).join('');
     const genEverydayCards = generatedScenarios.filter(s => s.mode==='cotidiano').map(genCardHtml).join('');
-    const profileLabel = (PROFILES.find(p=>p.id===currentProfile) || PROFILES[0]).label;
+
+    // Agrupar los escenarios profesionales generados por el perfil con el que se crearon,
+    // no por el perfil actualmente seleccionado en el desplegable.
+    const proGenerated = generatedScenarios.filter(s => (s.mode||'profesional')==='profesional');
+    const profileIdsWithScenarios = [...new Set(proGenerated.map(s=>s.profileId))];
+    const genProGroupsHtml = profileIdsWithScenarios.map(pid => {
+      const label = (PROFILES.find(p=>p.id===pid) || {label: pid || 'Sin perfil'}).label;
+      const cards = proGenerated.filter(s=>s.profileId===pid).map(genCardHtml).join('');
+      return `<div class="scenario-group-label">🪄 Generados para ${escapeHtml(label)}</div>${cards}`;
+    }).join('');
+
     body.innerHTML = `
       <div class="duration-row">
         <div class="duration-btn ${convDurationSec===300?'active':''}" onclick="setConvDuration(300)">5 minutos</div>
         <div class="duration-btn ${convDurationSec===900?'active':''}" onclick="setConvDuration(900)">15 minutos</div>
         <div class="duration-btn ${convDurationSec===1800?'active':''}" onclick="setConvDuration(1800)">30 minutos</div>
-      </div>
-      <div class="tts-toggle-row">
-        <input type="checkbox" id="ttsCheckbox" ${ttsEnabled?'checked':''} onchange="toggleTts()">
-        <label for="ttsCheckbox">🔊 Leer en voz alta las frases del interlocutor</label>
       </div>
 
       <div class="scenario-mode-heading">💼 Modo profesional</div>
@@ -2321,8 +2342,7 @@ function renderConversation(){
       ${clientCards}
       <div class="scenario-group-label">🗣️ Presentación técnica — tú empiezas</div>
       ${presentCards}
-      <div class="scenario-group-label">🪄 Generados para tu perfil (${escapeHtml(profileLabel)})</div>
-      ${genProCards}
+      ${genProGroupsHtml}
       <button class="new-conv-btn" onclick="generateProfileScenario()">🪄 Generar un escenario para mi perfil</button>
 
       <div class="scenario-mode-heading">🌍 Modo cotidiano</div>
@@ -2385,7 +2405,7 @@ function renderConversation(){
 
   if(convState === 'feedback'){
     body.innerHTML = `
-      <div class="feedback-box">${escapeHtml(convFeedbackText)}</div>
+      <div class="feedback-box">${formatFeedbackHtml(convFeedbackText)}</div>
       <button class="new-conv-btn" onclick="backToScenarios()">Nueva conversación</button>
     `;
     return;
@@ -2557,7 +2577,7 @@ async function endConversation(){
   const vocabLine = convScenario.category === 'cotidiano'
     ? '1) Vocabulario cotidiano bien empleado.'
     : '1) Vocabulario técnico/comercial bien empleado.';
-  const feedbackSystem = `You are an expert, rigorous English teacher reviewing ${feedbackContext}. Give honest, specific, non-sycophantic feedback in Spanish — do not be complacent or overly encouraging if performance was weak; identify concrete gaps. Structure the feedback in 4 short labeled paragraphs, plain text, no markdown symbols: ${vocabLine} 2) Errores concretos (cita 2-3 frases exactas del alumno señalando el fallo y la corrección). 3) Fluidez y naturalidad (muletillas, calcos del español, frases demasiado literales). 4) Una recomendación concreta y accionable para la próxima sesión. Máximo 150 palabras en total.`;
+  const feedbackSystem = `You are an expert, rigorous English teacher reviewing ${feedbackContext}. Give honest, specific, non-sycophantic feedback in Spanish — do not be complacent or overly encouraging if performance was weak; identify concrete gaps. Structure the feedback in 4 short labeled paragraphs, plain text: no markdown symbols EXCEPT that in paragraph 2, each specific wrong word or phrase quoted from the student must be wrapped in double asterisks like **this** so it can be highlighted (the surrounding text and the other paragraphs stay plain, no other markdown). ${vocabLine} 2) Errores concretos (cita 2-3 frases exactas del alumno, marcando con **asteriscos** solo la parte errónea de cada cita, y da la corrección). 3) Fluidez y naturalidad (muletillas, calcos del español, frases demasiado literales). 4) Una recomendación concreta y accionable para la próxima sesión. Máximo 150 palabras en total.`;
 
   try{
     const feedback = await callClaude(feedbackSystem, [{ role:'user', content: transcript }]);
@@ -2704,7 +2724,7 @@ function renderReading(){
     } else if(readAnalysis && readAnalysis.error){
       analysisHtml = `<div class="conv-error">No se pudo generar el análisis de pronunciación (fallo de red o de la API).</div>`;
     } else if(readAnalysis){
-      const patternsHtml = (readAnalysis.patterns || []).map(p => `<li>${escapeHtml(p)}</li>`).join('');
+      const patternsHtml = (readAnalysis.patterns || []).map(p => `<li>${formatFeedbackHtml(p)}</li>`).join('');
       analysisHtml = `
         <div class="listen-score-line">${readAnalysis.score}/100 — valoración de Claude</div>
         <div class="feedback-box">
@@ -2869,7 +2889,7 @@ async function finishReading(){
 
 async function analyzeReadingPronunciation(){
   const spoken = readTranscriptFinal.trim();
-  const systemPrompt = `You are an English pronunciation coach reviewing a reading-aloud exercise for a Spanish-speaking learner. You cannot hear the audio directly — you only have the original text and what a speech-recognition engine transcribed from the learner's voice. Original text: "${readingText}" What the speech recognizer transcribed: "${spoken}" Based on the differences between these two, identify likely pronunciation patterns (specific sounds, word endings, or word types that seem to cause recognition failures) — but stay appropriately cautious, since recognition mismatches can also come from background noise or recognizer limitations, not only pronunciation. Give a score from 0 to 100 reflecting how closely the transcript matched the original text. Be honest and specific, not falsely encouraging if the result was poor. Return ONLY valid JSON, no markdown fences, in exactly this shape: {"score":85,"patterns":["...","..."],"recommendation":"..."} Write all text values in Spanish.`;
+  const systemPrompt = `You are an English pronunciation coach reviewing a reading-aloud exercise for a Spanish-speaking learner. You cannot hear the audio directly — you only have the original text and what a speech-recognition engine transcribed from the learner's voice. Original text: "${readingText}" What the speech recognizer transcribed: "${spoken}" Based on the differences between these two, identify likely pronunciation patterns (specific sounds, word endings, or word types that seem to cause recognition failures) — but stay appropriately cautious, since recognition mismatches can also come from background noise or recognizer limitations, not only pronunciation. Give a score from 0 to 100 reflecting how closely the transcript matched the original text. Be honest and specific, not falsely encouraging if the result was poor. In each pattern, wrap ONLY the specific sound or word type being flagged in double asterisks like **this** so it can be highlighted. Return ONLY valid JSON, no markdown fences, in exactly this shape: {"score":85,"patterns":["...","..."],"recommendation":"..."} Write all text values in Spanish.`;
 
   try{
     const raw = await callClaude(systemPrompt, [{ role:'user', content:'Analyze this reading now.' }]);
@@ -2975,6 +2995,10 @@ function renderGrammar(){
       </div>
       <div class="voice-msg" id="grammarVoiceMsg" style="display:none;"></div>
     `;
+  } else if(grammarPhase === 'grading'){
+    html += `<div class="exercise-label">Ejercicio de práctica</div>
+             <div class="exercise-prompt">${escapeHtml(item.exercisePrompt)}</div>
+             <div class="loading">Corrigiendo con IA…</div>`;
   } else {
     const r = lastGrammarResult;
     const labelMap = {
@@ -2989,16 +3013,22 @@ function renderGrammar(){
     html += `<div class="your-answer-label">Escribiste</div>
              <div class="your-answer-text">${escapeHtml(r.userAnswer)}</div>`;
 
-    if(r.classification === 'correct'){
-      html += `<div class="diff-line"><span class="diff-word match">${escapeHtml(r.correctAlt)}</span></div>`;
+    if(r.aiGraded){
+      if(r.feedback) html += `<div class="answer-note" style="margin-bottom:10px;">${formatFeedbackHtml(r.feedback)}</div>`;
+      html += `<div class="answer-note" style="margin-bottom:10px;">Respuesta de referencia: <strong>${escapeHtml(r.correctAlt)}</strong></div>`;
     } else {
-      const diffHtml = r.diffOps.map(op=>{
-        if(op.type==='match') return `<span class="diff-word match">${escapeHtml(op.word)}</span>`;
-        if(op.type==='missing') return `<span class="diff-word missing">${escapeHtml(op.word)}</span>`;
-        return `<span class="diff-word extra">${escapeHtml(op.word)}</span>`;
-      }).join(' ');
-      html += `<div class="diff-line">${diffHtml}</div>`;
-      html += `<div class="answer-note" style="margin-bottom:10px;">Respuesta esperada: <strong>${escapeHtml(r.correctAlt)}</strong></div>`;
+      html += `<div class="answer-note" style="margin-bottom:10px; color:var(--bad);">${escapeHtml(r.feedback)}</div>`;
+      if(r.classification === 'correct'){
+        html += `<div class="diff-line"><span class="diff-word match">${escapeHtml(r.correctAlt)}</span></div>`;
+      } else {
+        const diffHtml = r.diffOps.map(op=>{
+          if(op.type==='match') return `<span class="diff-word match">${escapeHtml(op.word)}</span>`;
+          if(op.type==='missing') return `<span class="diff-word missing">${escapeHtml(op.word)}</span>`;
+          return `<span class="diff-word extra">${escapeHtml(op.word)}</span>`;
+        }).join(' ');
+        html += `<div class="diff-line">${diffHtml}</div>`;
+        html += `<div class="answer-note" style="margin-bottom:10px;">Respuesta esperada: <strong>${escapeHtml(r.correctAlt)}</strong></div>`;
+      }
     }
     if(r.latencyMs){
       html += `<div class="answer-note" style="margin-bottom:10px;">🎙 Tiempo hasta responder: <strong>${(r.latencyMs/1000).toFixed(1)}s</strong></div>`;
@@ -3029,16 +3059,36 @@ function speakGrammarAnswer(){
   if(lastGrammarResult && lastGrammarResult.correctAlt) speakWordAlways(lastGrammarResult.correctAlt);
 }
 
-function checkGrammarAnswer(){
+async function checkGrammarAnswer(){
   const inp = document.getElementById('grammarInput');
   const val = inp ? inp.value.trim() : '';
   if(!val){ inp.focus(); return; }
   const item = grammarQueue[grammarIdx];
-  lastGrammarResult = evaluateAnswer(val, { en: item.exerciseAnswer });
-  if(lastLatencyMs !== null){
-    lastGrammarResult.latencyMs = lastLatencyMs;
-    lastLatencyMs = null;
+  const latency = lastLatencyMs;
+  lastLatencyMs = null;
+
+  grammarPhase = 'grading';
+  renderGrammar();
+
+  const systemPrompt = `You are an expert English grammar teacher grading a Spanish-speaking B2-C1 learner's attempt at a grammar production exercise. Grammar structure being practiced: "${item.title}" — ${item.explanation} Exercise instruction given to the student: "${item.exercisePrompt}" A reference answer using the target structure is: "${item.exerciseAnswer}" — but other grammatically correct answers that also use the target structure validly (including different valid modal verbs, synonyms, or word order) must ALSO be accepted as correct; do not penalize a valid alternative just for not matching the reference word-for-word. Student's answer: "${val}" Judge whether the student's answer correctly and naturally uses the target grammar structure. Return ONLY valid JSON, no markdown fences, in exactly this shape: {"classification":"correct" or "close" or "incorrect","correctAnswer":"a valid natural example answer using the target structure","feedback":"one short, specific sentence in Spanish explaining what was right or wrong — if there was a mistake, wrap ONLY the specific wrong word or phrase in double asterisks like **this** so it can be highlighted; if fully correct, no asterisks needed"}`;
+
+  try{
+    const raw = await callClaude(systemPrompt, [{ role:'user', content:'Grade this answer now.' }]);
+    const cleaned = raw.trim().replace(/^```json\s*/i,'').replace(/^```\s*/,'').replace(/```\s*$/,'');
+    const data = JSON.parse(cleaned);
+    lastGrammarResult = {
+      classification: ['correct','close','incorrect'].includes(data.classification) ? data.classification : 'incorrect',
+      correctAlt: data.correctAnswer || item.exerciseAnswer,
+      feedback: data.feedback || '',
+      userAnswer: val,
+      aiGraded: true
+    };
+  }catch(err){
+    lastGrammarResult = evaluateAnswer(val, { en: item.exerciseAnswer });
+    lastGrammarResult.aiGraded = false;
+    lastGrammarResult.feedback = 'No se pudo contactar con la IA para corregir (fallo de red o de la API) — se ha usado una comparación de texto básica como respaldo, menos fiable para esta estructura.';
   }
+  if(latency !== null) lastGrammarResult.latencyMs = latency;
   grammarPhase = 'checked';
   renderGrammar();
 }
@@ -3173,7 +3223,7 @@ function renderListening(){
         </div>
         <div class="listen-result-q">${i+1}. ${escapeHtml(a.question)}</div>
         <div class="listen-result-a">Tu respuesta: "${escapeHtml(a.userAnswer)}"</div>
-        <div class="listen-result-a">${escapeHtml(a.feedback)}</div>
+        <div class="listen-result-a">${formatFeedbackHtml(a.feedback)}</div>
       </div>
     `).join('');
     body.innerHTML = `
@@ -3224,7 +3274,7 @@ async function generateListeningPassage(topicId){
   listenTextVisible = false;
   renderListening();
 
-  const systemPrompt = `Generate a short English listening passage (100-130 words) for an intermediate (B1-B2) Spanish-speaking professional practicing listening comprehension. Topic: ${getTopicPrompt(listenTopic)}. Write it as natural spoken-style English, as if narrated aloud, avoiding hyphenated compound words. Then write exactly 4 short comprehension questions in English that check whether a listener understood the key content of the passage (not vocabulary or grammar trivia) — each answerable in a short sentence. Return ONLY valid JSON, no markdown code fences, no commentary, in exactly this shape: {"passage":"...","questions":["...","...","...","..."]}`;
+  const systemPrompt = `Generate an English listening passage (500-600 words, matching the length of a Cambridge B2 First Reading Part 5 text) for an intermediate (B1-B2) Spanish-speaking professional practicing listening comprehension. Topic: ${getTopicPrompt(listenTopic)}. Write it as natural spoken-style English, as if narrated aloud, organized in a few clear stages or paragraphs, avoiding hyphenated compound words. Then write exactly 6 short comprehension questions in English that check whether a listener understood the key content of the passage (not vocabulary or grammar trivia), spread across different parts of the passage — each answerable in a short sentence. Return ONLY valid JSON, no markdown code fences, no commentary, in exactly this shape: {"passage":"...","questions":["...","...","...","...","...","..."]}`;
 
   try{
     const raw = await callClaude(systemPrompt, [{ role:'user', content:'Generate the passage and questions now.' }]);
@@ -3262,7 +3312,7 @@ async function submitListenAnswer(){
   listenError = '';
   renderListening();
 
-  const gradingSystem = `You are grading a listening comprehension answer from a Spanish-speaking English learner. They listened to (but cannot currently see) this passage: "${listenPassage}" Question: "${question}" Student's answer: "${val}" Judge ONLY whether their answer shows they understood the relevant content — the answer may be in English or Spanish and does not need to be grammatically perfect; focus on comprehension, not language production. Respond ONLY with valid JSON, no markdown fences: {"classification":"correct" or "partial" or "incorrect","feedback":"one short sentence in Spanish explaining why"}`;
+  const gradingSystem = `You are grading a listening comprehension answer from a Spanish-speaking English learner. They listened to (but cannot currently see) this passage: "${listenPassage}" Question: "${question}" Student's answer: "${val}" Judge ONLY whether their answer shows they understood the relevant content — the answer may be in English or Spanish and does not need to be grammatically perfect; focus on comprehension, not language production. Respond ONLY with valid JSON, no markdown fences: {"classification":"correct" or "partial" or "incorrect","feedback":"one short sentence in Spanish explaining why — if the answer missed or misunderstood something specific, wrap ONLY that specific misunderstood detail in double asterisks like **this** so it can be highlighted"}`;
 
   try{
     const raw = await callClaude(gradingSystem, [{ role:'user', content:'Grade this answer now.' }]);
@@ -3514,11 +3564,26 @@ function checkPronProduction(){
   const target = pair[pronProdTarget];
   const other = pair[pronProdTarget === 'a' ? 'b' : 'a'];
   const normVal = normalize(val);
+  const normTarget = normalize(target);
+  const normOther = normalize(other);
+
+  // Un pequeño margen absorbe ruido trivial de transcripción (una letra de más o
+  // de menos), pero solo si eso te acerca claramente a una de las dos palabras
+  // del par — así seguimos detectando la confusión real de sonido sin penalizar
+  // erratas menores del reconocedor de voz.
+  const distTarget = levenshtein(normVal, normTarget);
+  const distOther = levenshtein(normVal, normOther);
+  const tolTarget = Math.max(1, Math.floor(normTarget.length * 0.2));
+  const tolOther = Math.max(1, Math.floor(normOther.length * 0.2));
 
   let classification;
-  if(normVal === normalize(target)) classification = 'correct';
-  else if(normVal === normalize(other)) classification = 'confusion';
-  else classification = 'unclear';
+  if(distTarget <= tolTarget && distTarget <= distOther){
+    classification = 'correct';
+  } else if(distOther <= tolOther && distOther < distTarget){
+    classification = 'confusion';
+  } else {
+    classification = 'unclear';
+  }
 
   pronProdResult = { classification, target, other };
   pronSessionScore.prodTotal++;
@@ -3665,20 +3730,33 @@ async function resetPronProgress(){
   showToast('Progreso de pronunciación reiniciado.');
 }
 
+function catLabel(cat){
+  if(cat === 'all') return 'Todas';
+  if(cat.startsWith('profile:')){
+    const pid = cat.slice(8);
+    return '🪄 ' + (PROFILES.find(p=>p.id===pid) || {label:pid}).label;
+  }
+  return CATS[cat] || cat;
+}
+
 function setCat(cat){
   currentCat = cat;
   buildQueue();
   renderTabs();
   renderCard();
   const lbl = document.getElementById('resetCatLabel');
-  if(lbl) lbl.textContent = cat === 'all' ? 'Todas' : CATS[cat];
+  if(lbl) lbl.textContent = catLabel(cat);
 }
 
 function buildQueue(){
   if(recognizing && recognition){ recognition.stop(); }
   lastLatencyMs = null;
   const today = todayStr();
-  let pool = deck.filter(c => currentCat==='all' || c.cat===currentCat);
+  let pool = deck.filter(c => {
+    if(currentCat === 'all') return true;
+    if(currentCat.startsWith('profile:')) return c.profile === currentCat.slice(8);
+    return c.cat === currentCat;
+  });
   // due first, sorted by due date; if none due, show earliest-due upcoming as review-ahead
   let due = pool.filter(c => srs[c.id].due <= today);
   if(due.length === 0){
@@ -3717,6 +3795,8 @@ function renderCard(){
       <button class="check-btn" onclick="checkAnswer()">Corregir</button>
     </div>
     <div class="voice-msg" id="voiceMsg" style="display:none;"></div>`;
+  } else if(phase === 'grading'){
+    html += `<div class="loading">Corrigiendo con IA…</div>`;
   } else {
     const r = lastResult;
     const labelMap = {
@@ -3729,16 +3809,25 @@ function renderCard(){
     html += `<div class="your-answer-label">Escribiste</div>
              <div class="your-answer-text">${escapeHtml(r.userAnswer)}</div>`;
 
-    if(r.classification === 'correct'){
-      html += `<div class="diff-line"><span class="diff-word match">${escapeHtml(r.correctAlt)}</span></div>`;
+    if(r.aiGraded){
+      if(r.feedback) html += `<div class="answer-note" style="margin-bottom:10px;">${formatFeedbackHtml(r.feedback)}</div>`;
+      html += `<div class="answer-note" style="margin-bottom:6px;">✓ Forma más adecuada: <strong>${escapeHtml(r.correctAlt)}</strong></div>`;
+      if(r.alternatives && r.alternatives.length){
+        html += `<div class="answer-note" style="margin-bottom:10px;">También válido: ${r.alternatives.map(a=>`<em>"${escapeHtml(a)}"</em>`).join(', ')}</div>`;
+      }
     } else {
-      const diffHtml = r.diffOps.map(op=>{
-        if(op.type==='match') return `<span class="diff-word match">${escapeHtml(op.word)}</span>`;
-        if(op.type==='missing') return `<span class="diff-word missing">${escapeHtml(op.word)}</span>`;
-        return `<span class="diff-word extra">${escapeHtml(op.word)}</span>`;
-      }).join(' ');
-      html += `<div class="diff-line">${diffHtml}</div>`;
-      html += `<div class="answer-note" style="margin-bottom:10px;">Respuesta esperada: <strong>${escapeHtml(r.correctAlt)}</strong></div>`;
+      html += `<div class="answer-note" style="margin-bottom:10px; color:var(--bad);">${escapeHtml(r.feedback)}</div>`;
+      if(r.classification === 'correct'){
+        html += `<div class="diff-line"><span class="diff-word match">${escapeHtml(r.correctAlt)}</span></div>`;
+      } else {
+        const diffHtml = r.diffOps.map(op=>{
+          if(op.type==='match') return `<span class="diff-word match">${escapeHtml(op.word)}</span>`;
+          if(op.type==='missing') return `<span class="diff-word missing">${escapeHtml(op.word)}</span>`;
+          return `<span class="diff-word extra">${escapeHtml(op.word)}</span>`;
+        }).join(' ');
+        html += `<div class="diff-line">${diffHtml}</div>`;
+        html += `<div class="answer-note" style="margin-bottom:10px;">Respuesta esperada: <strong>${escapeHtml(r.correctAlt)}</strong></div>`;
+      }
     }
     if(card.note) html += `<div class="answer-note" style="margin-bottom:10px;">${escapeHtml(card.note)}</div>`;
     if(r.latencyMs){
@@ -3766,16 +3855,46 @@ function escapeHtml(s){
   return d.innerHTML;
 }
 
-function checkAnswer(){
+// La IA marca el fallo concreto envolviéndolo en **asteriscos dobles**;
+// aquí lo convertimos en negrita + subrayado real (tras escapar el HTML,
+// para que no se pueda inyectar nada a través del texto generado).
+function formatFeedbackHtml(text){
+  return escapeHtml(text || '').replace(/\*\*(.+?)\*\*/g, '<strong class="feedback-error">$1</strong>');
+}
+
+async function checkAnswer(){
   const inp = document.getElementById('answerInput');
   const val = inp ? inp.value.trim() : '';
   if(!val){ inp.focus(); return; }
   const card = currentQueue[currentIdx];
-  lastResult = evaluateAnswer(val, card);
-  if(lastLatencyMs !== null){
-    lastResult.latencyMs = lastLatencyMs;
-    recordVoiceStat(lastResult.classification, lastLatencyMs);
-    lastLatencyMs = null;
+  const latency = lastLatencyMs;
+  lastLatencyMs = null;
+
+  phase = 'grading';
+  renderCard();
+
+  const systemPrompt = `You are grading a vocabulary/phrase flashcard for a Spanish-speaking B2-C1 professional practicing business English. Spanish prompt: "${card.es}" Expected English target: "${card.en}"${card.note ? ' Additional context or example: "' + card.note + '"' : ''} Student's answer: "${val}" Judge whether the student's answer is a valid, natural way to express the same meaning in English — not just whether it matches the target word-for-word. Accept minor synonyms, valid alternate phrasings, and equally correct terminology as correct, even if they differ from the exact target, as long as the meaning and register are right. If the answer is vague, wrong, or misses the specific meaning required, mark it incorrect. Also list other valid ways to express the same meaning in this context, if there genuinely are natural alternatives (there often are for full phrases, less often for single fixed technical terms). Return ONLY valid JSON, no markdown fences, in exactly this shape: {"classification":"correct" or "close" or "incorrect","bestAnswer":"the single most natural or standard way to say this in this context","alternatives":["other valid phrasing 1","other valid phrasing 2"],"feedback":"one short sentence in Spanish — if there was a mistake, wrap ONLY the specific wrong word or phrase in double asterisks like **this** so it can be highlighted, and mention the correction; if the answer was fully correct, no asterisks are needed"}`;
+
+  try{
+    const raw = await callClaude(systemPrompt, [{ role:'user', content:'Grade this answer now.' }]);
+    const cleaned = raw.trim().replace(/^```json\s*/i,'').replace(/^```\s*/,'').replace(/```\s*$/,'');
+    const data = JSON.parse(cleaned);
+    lastResult = {
+      classification: ['correct','close','incorrect'].includes(data.classification) ? data.classification : 'incorrect',
+      correctAlt: data.bestAnswer || card.en,
+      alternatives: Array.isArray(data.alternatives) ? data.alternatives.filter(a => a && a.trim()) : [],
+      feedback: data.feedback || '',
+      userAnswer: val,
+      aiGraded: true
+    };
+  }catch(err){
+    lastResult = evaluateAnswer(val, card);
+    lastResult.aiGraded = false;
+    lastResult.feedback = 'No se pudo contactar con la IA para corregir (fallo de red o de la API) — se ha usado una comparación de texto básica como respaldo, menos flexible con alternativas válidas.';
+  }
+  if(latency !== null){
+    lastResult.latencyMs = latency;
+    recordVoiceStat(lastResult.classification, latency);
   }
   phase = 'checked';
   renderCard();
@@ -3853,7 +3972,7 @@ async function generateProfileVocab(){
   showToast(`Generando vocabulario para ${profile.label}…`, 8000);
 
   const existingTerms = deck.map(c=>c.en.toLowerCase());
-  const systemPrompt = `Generate 15 English vocabulary terms or short phrases for a Spanish-speaking professional working as: ${profile.vocabHint}. For each one provide: the Spanish translation (es), the English term (en), a short natural example sentence in English (note, formatted as: Ejemplo: "..."), and a category that must be exactly one of "reunion" (meeting/conversational phrases), "tecnico" (technical/domain-specific terms), or "comercial" (business/commercial terms). Avoid these terms that are already in the user's deck: ${existingTerms.slice(0,150).join(', ')}. Return ONLY valid JSON, no markdown fences, as an array in exactly this shape: [{"es":"...","en":"...","note":"Ejemplo: \\"...\\"","cat":"reunion"}, ...]`;
+  const systemPrompt = `Generate 30 English vocabulary terms or short phrases for a Spanish-speaking professional working as: ${profile.vocabHint}. For each one provide: the Spanish translation (es), the English term (en), a short natural example sentence in English (note, formatted as: Ejemplo: "..."), and a category that must be exactly one of "reunion" (meeting/conversational phrases), "tecnico" (technical/domain-specific terms), or "comercial" (business/commercial terms). Avoid these terms that are already in the user's deck: ${existingTerms.slice(0,150).join(', ')}. Return ONLY valid JSON, no markdown fences, as an array in exactly this shape: [{"es":"...","en":"...","note":"Ejemplo: \\"...\\"","cat":"reunion"}, ...]`;
 
   try{
     const raw = await callClaude(systemPrompt, [{ role:'user', content:'Generate the vocabulary batch now.' }]);
@@ -3867,18 +3986,24 @@ async function generateProfileVocab(){
       if(!it.en || existingSet.has(it.en.toLowerCase())) return;
       const cat = ['reunion','tecnico','comercial'].includes(it.cat) ? it.cat : 'tecnico';
       const id = 'c' + Date.now() + i;
-      deck.push({ id, cat, es: it.es || '', en: it.en, note: it.note || '' });
+      deck.push({ id, cat, es: it.es || '', en: it.en, note: it.note || '', profile: currentProfile });
       srs[id] = { box:1, due: todayStr(), reps:0 };
       existingSet.add(it.en.toLowerCase());
       added++;
     });
     await saveDeck();
     await saveSrs();
+    if(added > 0){
+      currentCat = `profile:${currentProfile}`;
+    }
     renderStats();
+    renderTabs();
     buildQueue();
     renderCard();
     renderGlobalSummary();
-    showToast(`${added} palabras nuevas añadidas para ${profile.label}.`);
+    const lbl = document.getElementById('resetCatLabel');
+    if(lbl) lbl.textContent = catLabel(currentCat);
+    showToast(`${added} palabras nuevas añadidas para ${profile.label}. Puedes pulsar el botón otra vez para generar más.`);
   }catch(err){
     showToast('No se pudo generar el vocabulario (fallo de red, de la API, o de formato). Inténtalo de nuevo.');
   }
@@ -4096,10 +4221,10 @@ async function confirmImportYes(){
 }
 
 async function resetProgress(){
-  const label = currentCat === 'all' ? 'todas las categorías' : `la categoría "${CATS[currentCat]}"`;
+  const label = currentCat === 'all' ? 'todas las categorías' : `"${catLabel(currentCat)}"`;
   const idsToReset = currentCat === 'all'
     ? Object.keys(srs)
-    : deck.filter(c => c.cat === currentCat).map(c => c.id);
+    : deck.filter(c => currentCat.startsWith('profile:') ? c.profile === currentCat.slice(8) : c.cat === currentCat).map(c => c.id);
   idsToReset.forEach(id=>{ srs[id] = {box:1, due: todayStr(), reps:0}; });
   await saveSrs();
   renderStats();

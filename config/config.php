@@ -71,7 +71,9 @@ return [
             'max_tokens' => 8000,
         ],
         'reading.passage' => [
-            'timeout' => 60,
+            // Un texto de 350-400 palabras: se lee en voz alta durante varios
+            // minutos, así que también tarda más en generarse que el de antes.
+            'timeout' => 120,
             'model' => Env::get('MODEL_READING', ''),
             'effort' => Env::get('EFFORT_READING', 'low'),
             'max_tokens' => 8000,
@@ -80,6 +82,13 @@ return [
         // bastante más texto que el resto de generaciones, de ahí el margen.
         'listening.passage' => ['timeout' => 150, 'effort' => 'low', 'max_tokens' => 8000],
         'listening.grade' => ['timeout' => 60, 'effort' => 'low', 'max_tokens' => 4000],
+        // Corregir una tarjeta o un ejercicio de gramática: una frase de entrada y
+        // otra de salida. Son las llamadas más cortas de la app y también, de
+        // lejos, las más frecuentes — una por cada respuesta repasada —, así que el
+        // timeout es corto a propósito: si el servidor de IA no contesta en 45 s,
+        // el modo cae al diff de texto y sigue repasando en lugar de esperar.
+        'flashcards.grade' => ['timeout' => 45, 'effort' => 'low', 'max_tokens' => 2000],
+        'grammar.grade' => ['timeout' => 45, 'effort' => 'low', 'max_tokens' => 2000],
         'notebook.lookup' => ['timeout' => 45, 'effort' => 'low', 'max_tokens' => 2000],
         // 30 términos con ejemplo: es la llamada más larga de la app.
         'vocab.generate' => ['timeout' => 150, 'effort' => 'low', 'max_tokens' => 8000],

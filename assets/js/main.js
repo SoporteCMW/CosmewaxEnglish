@@ -7,7 +7,6 @@ import { confirmThenRun, showToast } from './core/ui.js';
 import { createProfile } from './core/profile.js';
 import { createStreak } from './core/streak.js';
 import { createNotebookService } from './core/notebook-service.js';
-import { createProgressTransfer } from './core/progress-transfer.js';
 import { createFlashcardsMode } from './modes/flashcards.js';
 import { createConversationMode } from './modes/conversation.js';
 import { createReadingMode } from './modes/reading.js';
@@ -27,7 +26,6 @@ const store = createStore();
 const profile = createProfile({ store });
 const streak = createStreak({ store });
 const notebook = createNotebookService({ store });
-const transfer = createProgressTransfer({ store });
 
 /** Cualquier modo que complete algo llama aquí: alimenta racha y resumen. */
 async function onActivity() {
@@ -133,80 +131,6 @@ function wireGlobalBar() {
       }
     });
   }
-  wireProgressTransfer();
-}
-
-/**
- * Exportar e importar el progreso.
- *
- * La importación pide confirmación en un banner y, al aceptar, **recarga la
- * página**: cada modo lee su estado al iniciarse, así que reinyectarlo en los
- * siete en caliente sería reimplementar el arranque. Recargar usa el que ya hay.
- */
-function wireProgressTransfer() {
-  const exportBtn = $('#exportProgressBtn');
-  const importBtn = $('#importProgressBtn');
-  const fileInput = $('#importProgressFile');
-  const banner = $('#importConfirmBanner');
-  const message = $('#importConfirmMsg');
-
-  if (exportBtn) {
-    exportBtn.addEventListener('click', () => {
-      const keys = transfer.download();
-      showToast(
-        keys === 0
-          ? 'Todavía no hay progreso que exportar.'
-          : `Progreso exportado (${keys} apartados). Los escenarios generados no van en el fichero: ` +
-              'viven en el servidor y ya te siguen.'
-      );
-    });
-  }
-
-  if (importBtn && fileInput) {
-    importBtn.addEventListener('click', () => fileInput.click());
-
-    fileInput.addEventListener('change', async (event) => {
-      const file = event.target.files[0];
-      // Se limpia siempre: sin esto, volver a elegir el mismo fichero no dispara
-      // otro `change` y el segundo intento parecería no hacer nada.
-      event.target.value = '';
-      if (!file) return;
-
-      try {
-        const { keys, exportedAt } = await transfer.read(file);
-        const when = exportedAt ? new Date(exportedAt).toLocaleString('es-ES') : 'fecha desconocida';
-        if (message) {
-          message.textContent =
-            `Fichero válido (exportado: ${when}) con ${keys.length} apartados de progreso. ` +
-            'Esto sobrescribirá tu progreso actual. ¿Continuar?';
-        }
-        if (banner) banner.hidden = false;
-      } catch (err) {
-        showToast(`No se pudo importar: ${err.message}.`);
-      }
-    });
-  }
-
-  delegate(document, 'click', '[data-import-action]', async (event, target) => {
-    if (banner) banner.hidden = true;
-    if (target.dataset.importAction === 'cancel') {
-      transfer.cancel();
-      showToast('Importación cancelada. Tu progreso no se ha tocado.');
-      return;
-    }
-    if (!transfer.hasPending) return;
-
-    const saved = await transfer.apply();
-    if (saved.length === 0) {
-      showToast(
-        'El servidor no pudo guardar el progreso importado. Recarga la página para volver ' +
-          'al progreso que sí está guardado.'
-      );
-      return;
-    }
-    showToast('Progreso importado. Recargando…');
-    window.setTimeout(() => window.location.reload(), 1200);
-  });
 }
 
 // ---- Acciones de reinicio, con confirmación en dos clics ----

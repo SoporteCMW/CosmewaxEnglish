@@ -9,7 +9,7 @@ import {
   speak,
 } from '../core/speech.js';
 import { showToast } from '../core/ui.js';
-import { normalize } from '../lib/text.js';
+import { levenshtein, normalize } from '../lib/text.js';
 
 const KEY_STATS = 'pron-stats';
 const KEY_GENERATED = 'generated-pairs';
@@ -388,10 +388,35 @@ export function createPronunciationMode({ store, onActivity }) {
     const target = pair[state.prodTarget];
     const other = pair[state.prodTarget === 'a' ? 'b' : 'a'];
     const said = normalize(value);
+    const wantTarget = normalize(target);
+    const wantOther = normalize(other);
+
+    // Antes esto exigía coincidencia exacta, y el reconocedor de voz devuelve
+    // "shipp" por "ship" con bastante alegría: una errata suya se contaba como
+    // un fallo de pronunciación. Un margen del 20% de la palabra absorbe ese
+    // ruido; lo que no se parece a ninguna de las dos palabras sigue siendo "no
+    // se ha entendido".
+    //
+    // El tope de `pairDistance - 1` es lo que mantiene el ejercicio en pie. Las
+    // dos palabras de un par mínimo se distinguen por muy poco —27 de los 45
+    // pares del catálogo, por una sola letra— y una tolerancia que llegue a esa
+    // distancia da por bueno cualquier desliz, incluido el del sonido que se
+    // está examinando: con "van" de objetivo, decir "fan" quedaría a 1 de las
+    // dos palabras y pasaría por acierto. En esos pares no hay margen que dar y
+    // la comparación vuelve a ser exacta, como antes; el margen se aplica donde
+    // sí cabe ("ship"/"sheep", "collection"/"correction").
+    const pairDistance = levenshtein(wantTarget, wantOther);
+    const margin = (word) =>
+      Math.min(Math.max(1, Math.floor(word.length * 0.2)), Math.max(0, pairDistance - 1));
+
+    const toTarget = levenshtein(said, wantTarget);
+    const toOther = levenshtein(said, wantOther);
+    const tolTarget = margin(wantTarget);
+    const tolOther = margin(wantOther);
 
     let classification = 'unclear';
-    if (said === normalize(target)) classification = 'correct';
-    else if (said === normalize(other)) classification = 'confusion';
+    if (toTarget <= tolTarget && toTarget <= toOther) classification = 'correct';
+    else if (toOther <= tolOther && toOther < toTarget) classification = 'confusion';
 
     state.prodResult = { classification, target, other, heard: value };
     state.session.prodTotal += 1;

@@ -4,19 +4,23 @@ Entrenador de inglés para I+D / PDM de Cosmewax. Siete modos:
 
 | Modo | Qué hace | Necesita IA |
 |---|---|---|
-| **Tarjetas** | Recall activo español → inglés con repetición espaciada (Leitner, 5 cajas) y corrección por diff de palabras. 157 fichas de partida. Dictado por voz y medición del tiempo de respuesta oral. | No |
-| **Gramática** | 20 estructuras B2-C1 con explicación, ejemplos con audio y ejercicio corregido, también con repaso espaciado. | No |
+| **Tarjetas** | Recall activo español → inglés con repetición espaciada (Leitner, 5 cajas). La corrección la juzga la IA **por sentido**, no por coincidencia de texto: acepta sinónimos y giros válidos, y muestra además las otras formas naturales de decirlo. 157 fichas de partida, ampliables con lotes de 30 términos a medida del perfil, que se repasan en su propia pestaña. Dictado por voz y medición del tiempo de respuesta oral. | Sí, con respaldo |
+| **Gramática** | 20 estructuras B2-C1 con explicación, ejemplos con audio y ejercicio corregido, también con repaso espaciado. La corrección juzga si has usado bien la estructura, no si has reproducido la frase de referencia. | Sí, con respaldo |
 | **Pronunciación** | 9 contrastes de sonidos difíciles para un hispanohablante (TH, V/B, L/R, vocales…) con 45 pares mínimos. Cada par se practica dos veces: primero se distingue de oído, después se produce en voz alta y juzga el reconocedor. | Sólo para ampliar pares |
-| **Conversación** | Simulacro de conversación de 3 a 30 min con un interlocutor que responde en carácter, en **inglés de trabajo** (llamadas de cliente, presentación técnica) o **de la vida diaria** (restaurante, médico, taller…). Al terminar, corrección estructurada en español. | Sí |
-| **Lectura** | Genera un texto B1-B2, el alumno lo lee en voz alta y se comparan palabra a palabra el original y lo que entendió el reconocedor. Las palabras falladas se acumulan entre sesiones. | Sí |
-| **Listening** | Genera un audio y 4 preguntas de comprensión. El alumno escucha sin ver el texto y responde; la corrección evalúa comprensión, no gramática. | Sí |
+| **Conversación** | Simulacro de conversación de 3 a 30 min con un interlocutor que responde en carácter y **se lee en voz alta**, en **inglés de trabajo** (llamadas de cliente, presentación técnica) o **de la vida diaria** (restaurante, médico, taller…). Al terminar, corrección estructurada en español. | Sí |
+| **Lectura** | Genera un texto B1-B2 de 350-400 palabras, el alumno lo lee entero en voz alta y se comparan palabra a palabra el original y lo que entendió el reconocedor. El micrófono se reabre solo cada vez que el navegador lo cierra, así que la lectura larga cuenta como una sola. Las palabras falladas se acumulan entre sesiones. | Sí |
+| **Listening** | Genera un audio largo (500-600 palabras, la longitud de un texto de Cambridge B2 First) y 6 preguntas de comprensión repartidas por todo él. El alumno escucha sin ver el texto y responde; la corrección evalúa comprensión, no gramática. | Sí |
 | **Cuaderno** | Pulsar cualquier palabra en Conversación, Lectura, Listening o Gramática la traduce **en ese contexto** y la guarda. Desde ahí se asciende a tarjeta de repaso. | Sí |
+
+En los cuatro modos que corrigen con IA —Conversación, Listening y, desde ahora,
+Tarjetas y Gramática— el feedback llega con **la palabra o expresión concreta que falló
+señalada en rojo**, no sólo con una frase que dice que algo estaba mal.
 
 Transversal a todos: **acceso con la cuenta de red (AD)**, **perfil profesional**
 (8 perfiles) que adapta el contenido generado, **racha** de días consecutivos,
-**resumen global** y **exportar/importar** el progreso como fichero. El progreso se
-guarda en SQL Server contra el usuario del AD, así que sigue a la persona aunque cambie
-de equipo o de navegador.
+y **resumen global**. El progreso se guarda en SQL Server contra el usuario del AD,
+así que sigue a la persona aunque cambie de equipo o de navegador: no hay nada que
+exportar ni que restaurar a mano.
 
 Procede de un prototipo de un solo fichero HTML (`english_unblocked_v6.html`, conservado
 como referencia) que llamaba a la API de Anthropic desde el navegador con la clave a la
@@ -40,10 +44,13 @@ vista. Eso no es viable fuera del sandbox de artefactos, y todo lo demás estaba
    consume tiempo de IA** ni exige sesión: es el único endpoint abierto, precisamente
    para poder diagnosticar cuando lo que falla es el login.
 
-Tarjetas, Gramática y Pronunciación funcionan siempre, aunque la IA esté apagada o
-caída. Los otros cuatro modos avisan en pantalla en lugar de fallar. Si la BD no
-responde, la aplicación también arranca: sirve los catálogos desde `data/` y avisa de
-que no está guardando.
+Los siete modos **siguen abriéndose** con la IA apagada o caída, pero ya no todos con
+la misma función. Pronunciación no la usa para corregir en ningún caso. Tarjetas y
+Gramática sí: si no hay IA, caen a la comparación de texto de siempre —que da por
+fallado cualquier sinónimo válido— y lo dicen en pantalla, así que se sigue pudiendo
+repasar aunque la corrección sea más tosca. Los otros cuatro modos necesitan IA para
+generar el contenido y avisan en lugar de fallar. Si la BD no responde, la aplicación
+también arranca: sirve los catálogos desde `data/` y avisa de que no está guardando.
 
 > **Al actualizar una instalación que ya existía**, `php tools/instalar_bd.php` aplica
 > el esquema pero **no** vuelve a sembrar los catálogos, a propósito. Si el contenido
@@ -149,7 +156,7 @@ assets/css/login.css      Hoja del login (la comparte el esqueleto de la casa).
 assets/js/
   main.js                 Arranque, router de modos y barra global.
   core/                   config, dom, storage, api, speech, ui, profile,
-                          streak, notebook-service, progress-transfer.
+                          streak, notebook-service.
   lib/                    text.js (normalización y diff), srs.js (Leitner).
   modes/                  flashcards, grammar, pronunciation, conversation,
                           reading, listening, notebook.
@@ -164,7 +171,7 @@ el HTML servido — comprobado en la suite de tests. Además el puerto 5060 est�
 lista de *bad ports* de `fetch`, así que ni siquiera sería posible.
 
 **El cliente no envía prompts, envía tareas.** El endpoint acepta un `task` de una
-lista cerrada (8 tareas) más los datos mínimos. Los prompts se construyen en
+lista cerrada (12 tareas) más los datos mínimos. Los prompts se construyen en
 `PromptRegistry`. Con el sidecar esto importa el doble: el CLI del servidor de IA
 tiene acceso a herramientas y puede leer sus ficheros, así que un prompt libre sería
 un agujero real, no teórico.
@@ -207,13 +214,38 @@ sesión continúa y se avisa **una** vez con un toast. Cortar el ejercicio porqu
 **Los escenarios generados son de cada persona.** Su `context` es material de prompt y
 no sale del servidor: el cliente sólo maneja un id. Cuando esto era un fichero
 compartido no había usuarios; ahora que los hay, el escenario que genera alguien no
-tiene por qué aparecerle a los demás.
+tiene por qué aparecerle a los demás. En el selector se agrupan por el perfil con el
+que se crearon (`scenario.profile_id`), no por el que esté activo: quien alterna entre
+dos perfiles los ve separados, y cambiar de perfil no reetiqueta lo de ayer.
 
-**Tarjetas, Gramática y Pronunciación no usan IA.** Es deliberado: si el sidecar está
-caído, la app sigue sirviendo para algo. Gramática corrige en el navegador contra las
-respuestas de `data/grammar.json`, y Pronunciación contra lo que entiende el
-reconocedor de voz. La IA sólo entra a ampliar catálogo (más vocabulario, más pares
-mínimos, más escenarios), nunca a corregir en estos tres.
+**Tarjetas y Gramática corrigen con IA, y con el diff detrás.** Antes corregían sólo
+con el diff de palabras, y eso tenía un techo claro: el diff sólo sabe comparar contra
+el campo `en` de la ficha o el `exerciseAnswer` del catálogo, así que daba por fallado
+cualquier sinónimo válido —"client" por "customer", otro modal igual de correcto, otro
+orden de palabras—, que es media respuesta buena de un B2. Ahora lo juzga la IA por
+sentido y registro. El diff sigue ahí como respaldo: si la IA está apagada o no
+responde, se usa tal cual y se avisa en pantalla de que la corrección es la básica,
+para que un "incorrecto" injusto se entienda en lugar de desconcertar. La contrapartida
+es que estos dos modos, que antes eran gratis y locales, ahora son los que más llaman
+al sidecar: una llamada por respuesta corregida, de 4 a 17 segundos de espera medidos
+contra el servicio real.
+
+**A los tres fallos seguidos se deja de llamar a la IA.** `aiAvailable()` sólo dice si
+el servidor la tiene configurada, no si responde. Con el sidecar caído y `IA_CLI=true`,
+cada tarjeta lanzaría una llamada condenada — y si el servicio cuelga en lugar de
+rechazar la conexión, son 45 segundos de espera por ficha, que convierte el modo en
+inservible en vez de degradarlo. Tras tres fallos consecutivos Tarjetas y Gramática
+pasan al diff durante el resto de la sesión y lo dicen; un acierto pone el contador a
+cero, así que un `429` puntual o un timeout aislado no apagan nada. Recargar la página
+vuelve a intentarlo.
+
+**El fallo concreto va marcado, no sólo descrito.** Los prompts de corrección piden que
+la palabra o expresión errónea venga entre `**asteriscos dobles**`, y
+`formatFeedbackHtml` (en `core/ui.js`) los convierte en negrita subrayada en rojo. Sin
+esto, "revisa el tiempo verbal de la segunda frase" obliga a releer buscando cuál era.
+El orden importa: se escapa el HTML **primero** y se sustituyen los asteriscos
+**después**, así que el único `<strong>` que puede salir de ahí es el nuestro y el texto
+del modelo nunca llega crudo al DOM.
 
 **Pronunciación se juzga con el reconocedor de voz, no con la IA.** Se compara lo que
 entendió el reconocedor con la palabra pedida, y que devuelva *la otra palabra del par*
@@ -221,6 +253,22 @@ se trata distinto de que no entienda nada: lo primero es exactamente el error qu
 está practicando ("se ha entendido *berry* en vez de *very*"), lo segundo es ruido o
 dicción. Un modelo de lenguaje no oye el audio, así que no podría dar ese veredicto; el
 reconocedor sí, y además es el mismo juez que en una llamada real.
+
+**La tolerancia de Pronunciación está topada por la distancia del par.** El reconocedor
+devuelve "shipp" por *ship* con bastante alegría, y con comparación exacta esa errata
+suya contaba como fallo de pronunciación; de ahí un margen del 20% de la palabra. Pero
+ese margen **no puede llegar a la distancia que separa las dos palabras del par**: 27 de
+los 45 pares del catálogo se distinguen por una sola letra (`van`/`ban`, `cat`/`cut`,
+`three`/`tree`), y ahí un margen de una letra daría por bueno cualquier desliz, incluido
+el del sonido que se está examinando — con *van* de objetivo, decir "fan" quedaría a una
+letra de las dos palabras y pasaría por acierto. En esos 27 pares no hay margen que dar
+y la comparación vuelve a ser exacta; el margen se aplica en los 18 restantes, donde sí
+cabe (`ship`/`sheep`, `collection`/`correction`).
+
+**El interlocutor de Conversación se lee en voz alta siempre.** Era una casilla apagada
+por defecto y así casi nadie la encendía: la conversación acababa siendo un chat
+escrito, que no es lo que ese modo entrena. La casilla se ha quitado. Para silenciarlo
+está el volumen del equipo, y cada burbuja conserva su botón 🔊 para repetir una frase.
 
 **El inglés cotidiano va en su propio bloque, con su propio prompt.** Los grupos de
 escenarios llevan un `mode` (`profesional` / `cotidiano`) que parte el selector en dos y
@@ -231,7 +279,11 @@ maleta perdida.
 
 **Hay límite de peticiones por IP** (`RATE_LIMIT_MAX` por `RATE_LIMIT_WINDOW`
 segundos). El sidecar lanza un proceso por llamada y no tiene cuotas propias: sin
-tope, una pestaña en bucle lo satura para todos los proyectos que lo comparten.
+tope, una pestaña en bucle lo satura para todos los proyectos que lo comparten. Con
+el valor por defecto (60 peticiones / 300 s = 12 por minuto) una sesión normal de
+repaso cabe de sobra —corregir una tarjeta lleva más de cinco segundos entre escribir,
+leer el feedback y puntuar—, pero es el número a subir si Tarjetas empieza a devolver
+`429` en sesiones largas.
 
 **`.env` tiene prioridad sobre las variables de entorno del sistema**, al contrario
 de lo habitual. Es deliberado: `ANTHROPIC_MODEL` y `ANTHROPIC_API_KEY` son nombres
@@ -292,7 +344,7 @@ cualquier corrección hecha en SQL.
 | `card_category`, `card` | Mazo. `is_seed` separa el común de las tarjetas de cada persona |
 | `grammar_item` | 20 estructuras; lo variable, en una columna JSON |
 | `profile` | 8 perfiles, con los `*_hint` que sólo usa el servidor |
-| `scenario_group`, `scenario` | Escenarios; `generated_by` marca los generados con IA y `scenario_group.mode` separa el bloque profesional del cotidiano |
+| `scenario_group`, `scenario` | Escenarios; `generated_by` marca los generados con IA, `profile_id` con qué perfil se generaron y `scenario_group.mode` separa el bloque profesional del cotidiano |
 | `reading_topic` | Temas de lectura, con su `prompt` server-only |
 | `minimal_pair_group` | 9 contrastes de sonidos; los pares, en una columna JSON |
 | `app_user` | Quién ha entrado y cuándo |
@@ -347,8 +399,9 @@ desde la LAN. `PromptFlattener` se encarga de lo primero; el resto está asumido
 
 Tiempos reales medidos en este proyecto: respuesta de conversación 4-7 s, corrección
 de listening ~4 s, feedback de conversación ~20 s, generación de texto o audio
-20-30 s, lote de 15 palabras ~14 s, situación cotidiana ~8 s, lote de pares mínimos
-~11 s. Los `timeout` por tarea están en `config.php` con margen sobre estos valores.
+20-30 s, lote de vocabulario ~14 s (medido con 15 términos; hoy se piden 30), situación
+cotidiana ~8 s, lote de pares mínimos ~11 s. Los `timeout` por tarea están en
+`config.php` con margen sobre estos valores.
 
 ### Alternativa: API pública de Anthropic
 
@@ -447,9 +500,8 @@ sola en las pestañas y en el desplegable del formulario.
 **Un modo nuevo** → un módulo en `assets/js/modes/` que exporte una fábrica con
 `init/show/hide`, una entrada en `MODES` en `main.js` y un botón con su `data-mode`
 en `index.php`. Si necesita al modelo: un `case` en `TaskRouter` y su prompt en
-`PromptRegistry`. Si guarda progreso propio, su clave va en **dos** listas:
-`ProgressRepository::KEYS` (la que manda, en el servidor) y `PROGRESS_KEYS` en
-`core/storage.js` (la que usan exportar e importar).
+`PromptRegistry`. Si guarda progreso propio, su clave tiene que estar en
+`ProgressRepository::KEYS`: el servidor rechaza con un 400 cualquier otra.
 
 ---
 
@@ -465,6 +517,9 @@ X-Requested-With: CosmewaxEnglish     ← obligatoria; corta el uso cruzado
 { "task": "reading.passage",      "topicId": "pro", "profileId": "rd" }
 { "task": "listening.passage",    "topicId": "pro", "profileId": "rd" }
 { "task": "listening.grade",      "passage": "...", "question": "...", "answer": "..." }
+{ "task": "flashcards.grade",     "spanish": "plazo de entrega", "target": "lead time",
+                                  "note": "...", "answer": "delivery time" }
+{ "task": "grammar.grade",        "itemId": "g0", "answer": "The samples was tested." }
 { "task": "notebook.lookup",      "word": "batch", "context": "..." }
 { "task": "vocab.generate",       "profileId": "rd", "existingTerms": ["lead time", ...] }
 { "task": "scenario.generate",    "profileId": "rd" }
@@ -474,6 +529,13 @@ X-Requested-With: CosmewaxEnglish     ← obligatoria; corta el uso cruzado
 200 → { "ok": true, ...datos de la tarea }
 4xx/5xx → { "ok": false, "error": { "code": "...", "message": "..." } }
 ```
+
+La asimetría entre `grammar.grade` y `flashcards.grade` es deliberada: una estructura
+de gramática está en el catálogo del servidor, así que basta su `itemId` y no hay que
+fiarse de que el enunciado llegue intacto; una ficha, en cambio, puede ser propia del
+alumno o de un lote generado, y de ésas el servidor no sabe nada, así que su texto
+viaja en la petición — y entra en el prompt como bloque de datos, igual que el pasaje
+de `listening.grade`.
 
 ```
 GET  api/scenarios.php            → { ok:true, scenarios:[...] }   (sin `context`)
@@ -510,6 +572,7 @@ en el resto de casos van al log de errores de PHP con su `request_id`.
 |---|---|
 | "Los modos con IA están desactivados" | `IA_CLI=false` en `.env`. Ponlo a `true`. Comprueba con `api/health.php`. |
 | "No se pudo contactar con el servidor de IA" | El sidecar (10.0.70.32:5060) no responde, o no estás en la LAN de Cosmewax. Avisa a IT si `curl http://10.0.70.32:5060/health` falla desde el servidor. |
+| "El servidor de IA no está disponible ahora mismo" y `/health` sí responde | El servicio está vivo pero el CLI de Claude del host ha perdido la sesión: todas las llamadas devuelven `500 claude devolvio error`. Se arregla en 10.0.70.32 — pasos en [`Docs/RUNBOOK_SIDECAR_IA.md`](Docs/RUNBOOK_SIDECAR_IA.md). |
 | "sólo acepta peticiones desde la red interna" | La IP de origen no empieza por `10.`. VPN o proxy de por medio. |
 | `unusable_response` | El modelo devolvió un JSON mal formado. Se descarta a propósito en lugar de guardar basura: reinténtalo. |
 | Un modo tarda 20-30 s | Normal en generación de textos y audios: el sidecar no tiene streaming y la respuesta llega entera al final. |
@@ -523,5 +586,4 @@ en el resto de casos van al log de errores de PHP con su `request_id`.
 | El contenido se ve pero nada se guarda | Apache corriendo con una cuenta sin acceso a `CMW0090` — típicamente registrado como servicio con `SYSTEM`. Ver § *Requisitos*. |
 | `api/health.php` dice `db_fallback: true` | La app está sirviendo los catálogos desde `data/`. O la BD está caída o falta ejecutar `php tools/instalar_bd.php`. |
 | Falta el bloque "Modo cotidiano", o Pronunciación no tiene sonidos | Instalación anterior a esos catálogos: el esquema está pero las tablas nuevas siguen vacías. `php tools/instalar_bd.php --resembrar`. El instalador ya lo avisa al ejecutarlo sin esa opción. |
-| "El servidor no pudo guardar el progreso importado" | El fichero era válido pero la BD no aceptó la escritura. Recarga: sigues con el progreso que sí está guardado. |
 | Se ve `<?php` en el navegador | Estás abriendo el fichero, no la URL. Tiene que ser `https://cosmewaxdevjd/...`, con Apache arrancado. |

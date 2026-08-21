@@ -1,7 +1,8 @@
 import { content } from '../core/config.js';
 import { $, delegate, escapeHtml } from '../core/dom.js';
+import { aiAvailable, requestTask } from '../core/api.js';
 import { Dictation, dictationUnavailableReason, speak } from '../core/speech.js';
-import { clickableWords } from '../core/ui.js';
+import { clickableWords, formatFeedbackHtml } from '../core/ui.js';
 import { evaluateAnswer } from '../lib/text.js';
 import { applyGrade, buildQueue, isDue, newEntry, todayStr, MAX_BOX } from '../lib/srs.js';
 
@@ -17,9 +18,12 @@ const RESULT_LABELS = {
  * Modo gramática: estructuras B2-C1 con explicación, ejemplos con audio y
  * ejercicio corregido, todo con repetición espaciada.
  *
- * No usa IA: las respuestas esperadas vienen en `data/grammar.json` y se
- * corrigen con el mismo diff que las tarjetas. Junto con Tarjetas, es lo que
- * hace que la app siga siendo útil si el servidor de IA está caído.
+ * La corrige la IA, igual que las tarjetas y por el mismo motivo, agravado: la
+ * respuesta es una frase entera, así que contra el `exerciseAnswer` del catálogo
+ * salía "incorrecto" por usar otro modal igual de válido o cambiar el orden de
+ * las palabras. Lo que se juzga es si ha usado bien la estructura, no si ha
+ * reproducido la frase de referencia. El diff sigue de respaldo si la IA está
+ * apagada o no responde, así que el modo nunca se queda sin corregir.
  */
 export function createGrammarMode({ store, onActivity }) {
   const el = {
@@ -34,10 +38,16 @@ export function createGrammarMode({ store, onActivity }) {
     level: 'all',
     queue: [],
     index: 0,
-    phase: 'answer', // 'answer' | 'checked'
+    phase: 'answer', // 'answer' | 'grading' | 'checked'
     lastResult: null,
     pendingLatencyMs: null,
+    /** Corrección en curso; descarta la que ya no toca. Ver flashcards.js. */
+    checkId: 0,
+    /** Fallos seguidos de la IA; a los tres se deja de llamar. Ver flashcards.js. */
+    aiFailures: 0,
   };
+
+  const MAX_AI_FAILURES = 3;
 
   const dictation = new Dictation();
 
@@ -89,6 +99,7 @@ export function createGrammarMode({ store, onActivity }) {
   function rebuildQueue() {
     dictation.stop();
     state.pendingLatencyMs = null;
+    state.checkId += 1;
     state.queue = buildQueue(currentItems(), state.srs, { limitAhead: 8 });
     state.index = 0;
     state.phase = 'answer';
@@ -171,13 +182,19 @@ export function createGrammarMode({ store, onActivity }) {
         <div class="grammar-examples">${examples}</div>
         <div class="exercise-label">Ejercicio de práctica</div>
         <div class="exercise-prompt">${escapeHtml(item.exercisePrompt)}</div>
-        ${state.phase === 'answer' ? answerFormHtml() : resultHtml()}
+        ${phaseHtml()}
       </div>`;
 
     if (state.phase === 'answer') {
       const input = $('#grammarInput', el.zone);
       if (input) input.focus();
     }
+  }
+
+  function phaseHtml() {
+    if (state.phase === 'answer') return answerFormHtml();
+    if (state.phase === 'grading') return '<div class="loading">Corrigiendo con IA…</div>';
+    return resultHtml();
   }
 
   function answerFormHtml() {
@@ -199,14 +216,27 @@ export function createGrammarMode({ store, onActivity }) {
       <div class="your-answer-label">Escribiste</div>
       <div class="your-answer-text">${escapeHtml(result.userAnswer)}</div>`;
 
-    if (result.classification === 'correct') {
-      html += `<div class="diff-line"><span class="diff-word is-match">${escapeHtml(result.correctAlt)}</span></div>`;
+    if (result.aiGraded) {
+      // Sin diff: la frase del alumno puede usar bien la estructura y no
+      // parecerse a la de referencia, y el diff sólo marcaría diferencias.
+      if (result.feedback) {
+        html += `<div class="answer-note">${formatFeedbackHtml(result.feedback)}</div>`;
+      }
+      html += `<div class="answer-note">Respuesta de referencia:
+        <strong>${escapeHtml(result.correctAlt)}</strong></div>`;
     } else {
-      const diff = result.diffOps
-        .map((op) => `<span class="diff-word is-${op.type}">${escapeHtml(op.word)}</span>`)
-        .join(' ');
-      html += `<div class="diff-line">${diff}</div>
-        <div class="answer-note">Respuesta esperada: <strong>${escapeHtml(result.correctAlt)}</strong></div>`;
+      if (result.feedback) {
+        html += `<div class="answer-note is-warning">${escapeHtml(result.feedback)}</div>`;
+      }
+      if (result.classification === 'correct') {
+        html += `<div class="diff-line"><span class="diff-word is-match">${escapeHtml(result.correctAlt)}</span></div>`;
+      } else {
+        const diff = result.diffOps
+          .map((op) => `<span class="diff-word is-${op.type}">${escapeHtml(op.word)}</span>`)
+          .join(' ');
+        html += `<div class="diff-line">${diff}</div>
+          <div class="answer-note">Respuesta esperada: <strong>${escapeHtml(result.correctAlt)}</strong></div>`;
+      }
     }
 
     if (result.latencyMs) {
@@ -229,7 +259,9 @@ export function createGrammarMode({ store, onActivity }) {
     return `<div class="empty-state"><div class="big">${escapeHtml(title)}</div>${escapeHtml(body)}</div>`;
   }
 
-  function checkAnswer() {
+  async function checkAnswer() {
+    if (state.phase !== 'answer') return;
+
     const input = $('#grammarInput', el.zone);
     const value = input ? input.value.trim() : '';
     if (!value) {
@@ -238,13 +270,69 @@ export function createGrammarMode({ store, onActivity }) {
     }
 
     const item = state.queue[state.index];
-    state.lastResult = evaluateAnswer(value, { en: item.exerciseAnswer });
-    if (state.pendingLatencyMs !== null) {
-      state.lastResult.latencyMs = state.pendingLatencyMs;
-      state.pendingLatencyMs = null;
-    }
+    const latencyMs = state.pendingLatencyMs;
+    state.pendingLatencyMs = null;
+    dictation.stop();
+
+    state.checkId += 1;
+    const checkId = state.checkId;
+    state.phase = 'grading';
+    render();
+
+    const result = await gradeAnswer(value, item);
+    if (checkId !== state.checkId) return;
+
+    state.lastResult = result;
+    if (latencyMs !== null) result.latencyMs = latencyMs;
     state.phase = 'checked';
     render();
+  }
+
+  /**
+   * Corrige con IA y, si no hay, con el diff de texto de siempre.
+   *
+   * Al servidor sólo va el id de la estructura: el enunciado, la explicación y
+   * la respuesta de referencia están en su catálogo, así que no hace falta
+   * mandárselos (ni fiarse de que lleguen intactos).
+   */
+  async function gradeAnswer(value, item) {
+    const fallback = { en: item.exerciseAnswer };
+    if (!aiAvailable()) {
+      return { ...evaluateAnswer(value, fallback), aiGraded: false, feedback: '' };
+    }
+    if (state.aiFailures >= MAX_AI_FAILURES) {
+      return {
+        ...evaluateAnswer(value, fallback),
+        aiGraded: false,
+        feedback:
+          'El servidor de IA no responde, así que se ha dejado de intentar en esta sesión: ' +
+          'se compara el texto contra la respuesta de referencia, que da por fallada cualquier ' +
+          'otra forma válida de usar la estructura. Recarga la página para volver a probar.',
+      };
+    }
+
+    try {
+      const graded = await requestTask('grammar.grade', { itemId: item.id, answer: value });
+      state.aiFailures = 0;
+      return {
+        classification: graded.classification,
+        correctAlt: graded.correctAnswer,
+        feedback: graded.feedback,
+        diffOps: null,
+        userAnswer: value,
+        aiGraded: true,
+      };
+    } catch (err) {
+      state.aiFailures += 1;
+      return {
+        ...evaluateAnswer(value, fallback),
+        aiGraded: false,
+        feedback:
+          `No se pudo corregir con IA (${err.message}). Se ha comparado el texto palabra ` +
+          'a palabra contra la respuesta de referencia, que da por fallada cualquier otra ' +
+          'forma válida de usar la estructura.',
+      };
+    }
   }
 
   async function rate(grade) {

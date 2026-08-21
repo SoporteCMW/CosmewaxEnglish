@@ -231,6 +231,19 @@
 }
 .diff-word.is-extra { color: var(--danger); text-decoration: line-through; opacity: 0.75; }
 
+/* ---- El fallo concreto dentro del feedback de la IA ---- */
+/* La corrección viene con la palabra o expresión errónea entre asteriscos
+   dobles y `formatFeedbackHtml` los convierte en esto. Presente en Conversación,
+   Listening, Tarjetas y Gramática: en los cuatro, el feedback es un párrafo en
+   español y sin esta marca hay que releerlo para saber a qué palabra se refiere. */
+.feedback-error {
+  color: var(--danger);
+  font-weight: 700;
+  text-decoration: underline;
+  text-decoration-color: var(--danger);
+  text-decoration-thickness: 2px;
+}
+
 /* ---- Palabras marcables para el cuaderno ---- */
 /* Presente en Conversación, Lectura, Listening y Gramática: pulsar una palabra
    la manda al cuaderno con traducción en contexto. */

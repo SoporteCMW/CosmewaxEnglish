@@ -3,7 +3,7 @@ import { $, delegate, escapeHtml } from '../core/dom.js';
 import { capHistory } from '../core/storage.js';
 import { requestTask, requestText, scenariosApi } from '../core/api.js';
 import { Dictation, cancelSpeech, dictationUnavailableReason, speak } from '../core/speech.js';
-import { clickableWords, showToast } from '../core/ui.js';
+import { clickableWords, formatFeedbackHtml, showToast } from '../core/ui.js';
 
 const KEY_STATS = 'conversations';
 const DURATIONS = [
@@ -64,7 +64,15 @@ export function createConversationMode({ store, profile, onActivity }) {
     timerId: null,
     feedbackText: '',
     error: '',
-    ttsEnabled: false,
+    /**
+     * El interlocutor se lee en voz alta siempre.
+     *
+     * Antes era una casilla apagada por defecto, y así casi nadie la encendía:
+     * la conversación acababa siendo un chat escrito, que no es lo que este modo
+     * entrena. Para silenciarlo puntualmente está el volumen del equipo, y cada
+     * burbuja conserva su botón 🔊 para repetir una frase concreta.
+     */
+    ttsEnabled: true,
     generating: null, // id del grupo que está generando, o null
     autoSendId: null, // temporizador del envío automático tras dictar
     /**
@@ -106,11 +114,6 @@ export function createConversationMode({ store, profile, onActivity }) {
       }
     });
 
-    delegate(el.body, 'change', '#ttsCheckbox', (event, target) => {
-      state.ttsEnabled = target.checked;
-      if (!state.ttsEnabled) cancelSpeech();
-    });
-
     el.body.addEventListener('keydown', (event) => {
       if (event.key === 'Enter' && event.target.id === 'convInput') {
         event.preventDefault();
@@ -148,7 +151,7 @@ export function createConversationMode({ store, profile, onActivity }) {
     }
     if (state.phase === 'feedback') {
       el.body.innerHTML = `
-        <div class="feedback-box">${escapeHtml(state.feedbackText)}</div>
+        <div class="feedback-box">${formatFeedbackHtml(state.feedbackText)}</div>
         <button type="button" class="new-conv-btn" data-action="back">Nueva conversación</button>`;
     }
   }
@@ -249,10 +252,6 @@ export function createConversationMode({ store, profile, onActivity }) {
 
     return `
       <div class="duration-row">${durations}</div>
-      <div class="tts-toggle-row">
-        <input type="checkbox" id="ttsCheckbox" ${state.ttsEnabled ? 'checked' : ''}>
-        <label for="ttsCheckbox">🔊 Leer en voz alta las frases del interlocutor</label>
-      </div>
       ${blocks}`;
   }
 

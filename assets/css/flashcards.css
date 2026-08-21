@@ -71,6 +71,9 @@
   line-height: 1.5;
   margin-bottom: 10px;
 }
+/* La IA no ha podido corregir y se ha caído al diff de texto: el alumno tiene
+   que saberlo antes de discutir con un "incorrecto" que quizá no lo era. */
+.answer-note.is-warning { color: var(--danger); }
 
 .rate-row {
   display: grid;

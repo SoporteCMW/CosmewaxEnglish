@@ -85,15 +85,6 @@
   border-color: var(--accent);
 }
 
-.tts-toggle-row {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 11px;
-  color: var(--muted);
-  margin-bottom: 16px;
-}
-
 .conv-header {
   display: flex;
   justify-content: space-between;

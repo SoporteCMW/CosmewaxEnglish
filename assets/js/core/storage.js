@@ -28,29 +28,6 @@ import { config } from './config.js';
 
 const WRITE_DELAY_MS = 800;
 
-/**
- * Las claves de progreso que existen, para exportar e importar.
- *
- * La lista con autoridad es `ProgressRepository::KEYS` en PHP, que es la que de
- * verdad decide qué se guarda; ésta sirve para no mandar al servidor claves que
- * va a rechazar con un 400 al restaurar un fichero manipulado o de otra versión.
- * Al añadir un modo con progreso propio hay que tocar las dos.
- */
-export const PROGRESS_KEYS = [
-  'deck',
-  'srs',
-  'voice-stats',
-  'conversations',
-  'read-stats',
-  'listen-stats',
-  'grammar-srs',
-  'notebook',
-  'streak',
-  'profile',
-  'pron-stats',
-  'generated-pairs',
-];
-
 /** Se vuelca lo pendiente al salir; si no, el último repaso se perdería. */
 const FLUSH_EVENTS = ['pagehide', 'beforeunload'];
 
