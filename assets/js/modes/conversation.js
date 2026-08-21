@@ -190,7 +190,9 @@ export function createConversationMode({ store, profile, onActivity }) {
       const ids = [...new Set(list.map((s) => s.profileId || ''))];
       return ids
         .map((id) => {
-          const label = id ? profileLabel(id) : 'un perfil anterior';
+          // Los generados antes de guardar el perfil se quedan en su propio
+          // grupo: no hay forma de saber con cuál se crearon.
+          const label = id ? profileLabel(id) : 'un perfil sin identificar';
           return (
             heading(`🪄 Generados para ${escapeHtml(label)}`) +
             cardsOf(
