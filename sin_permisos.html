@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Acceso no disponible · Cosmewax English</title>
+    <link rel="icon" type="image/x-icon" href="favicon_circle2.ico">
+    <!-- Mismo truco que login.php: aplicar el tema antes de pintar. -->
+    <script>
+      (function () {
+        try {
+          var t = localStorage.getItem('siteTheme');
+          if (t) document.documentElement.setAttribute('data-theme', t);
+        } catch (e) {}
+      })();
+    </script>
+    <link rel="stylesheet" href="assets/css/login.css">
+</head>
+<body class="login-body">
+    <main class="login-shell">
+        <section class="login-hero" aria-label="Cosmewax English">
+            <img class="login-logo" src="cosmewax-logo.svg" alt="Cosmewax">
+            <div>
+                <p class="eyebrow">Cosmewax · Acceso interno</p>
+                <h1>Acceso no disponible</h1>
+                <p>El inicio de sesión integrado de Windows no ha podido validar tu cuenta.</p>
+            </div>
+        </section>
+
+        <section class="login-card">
+            <p class="eyebrow">Inicio de sesión integrado</p>
+            <h2>No se ha podido entrar</h2>
+            <p class="muted">
+                Tu equipo no está unido al dominio de Cosmewax, o tu cuenta de Windows
+                no se ha podido identificar automáticamente.
+            </p>
+            <div class="alert alert-error" role="alert" style="margin-bottom:22px;">
+                No es un problema de tus permisos en la aplicación: simplemente el
+                acceso automático no está disponible desde este equipo.
+            </div>
+            <p class="muted" style="margin-bottom:18px;">
+                Entra con tu usuario y contraseña de red desde el formulario habitual.
+            </p>
+            <a class="sso-btn" href="login.php">Ir al formulario de acceso</a>
+        </section>
+    </main>
+</body>
+</html>

@@ -318,3 +318,60 @@ html[data-theme="dark"] .login-theme-btn {
     background: #0a0f1e;
   }
 }
+
+/* ── Separador y botón de inicio de sesión integrado de Windows ───────── */
+.login-sep {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 20px 0 6px;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+.login-sep::before,
+.login-sep::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--line);
+}
+
+/* Botón secundario (es un <a>, así que no hereda las reglas de `button`).
+   Usa las variables del login, de modo que respeta el tema claro/oscuro. */
+.sso-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 40px;
+  margin-top: 4px;
+  padding: 9px 11px;
+  border-radius: var(--radius);
+  border: 1.5px solid var(--line);
+  background: transparent;
+  color: var(--text);
+  font-weight: 800;
+  text-decoration: none;
+  transition: background 0.18s, border-color 0.18s, color 0.18s;
+}
+.sso-btn:hover {
+  background: rgba(96, 127, 145, 0.1);
+  border-color: var(--brand-blue);
+  color: var(--blue);
+}
+.sso-btn svg {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+
+html[data-theme="dark"] .sso-btn {
+  color: #f8fafc;
+}
+html[data-theme="dark"] .sso-btn:hover {
+  background: rgba(148, 163, 184, 0.1);
+  border-color: #14b8a6;
+  color: #fff;
+}

@@ -8,7 +8,7 @@ import {
   isSynthesisSupported,
   speak,
 } from '../core/speech.js';
-import { showToast } from '../core/ui.js';
+import { confirmThenRun, showToast } from '../core/ui.js';
 import { levenshtein, normalize } from '../lib/text.js';
 
 const KEY_STATS = 'pron-stats';
@@ -81,6 +81,9 @@ export function createPronunciationMode({ store, onActivity }) {
       const { action } = target.dataset;
       if (action === 'start') startGroup(target.dataset.group);
       if (action === 'generate') generatePairs(target.dataset.group);
+      if (action === 'clear-generated') {
+        confirmThenRun(target, () => clearGeneratedPairs(target.dataset.group));
+      }
       if (action === 'replay') replayTarget();
       if (action === 'answer') answerDiscrimination(target.dataset.choice);
       if (action === 'to-production') goToProduction();
@@ -170,6 +173,17 @@ export function createPronunciationMode({ store, onActivity }) {
              </button>`
           : '';
 
+        // El botón de borrado sólo aparece si hay algo generado que borrar, y
+        // sólo afecta a lo generado: los pares del catálogo no se pueden perder
+        // desde aquí. Es la salida cuando el modelo cuela una palabra inventada.
+        const generatedCount = (state.generated[group.id] || []).length;
+        const clear = generatedCount
+          ? `<button type="button" class="pron-gen-more" data-action="clear-generated"
+                     data-group="${escapeHtml(group.id)}" ${state.generating ? 'disabled' : ''}>
+               🗑 Borrar los ${generatedCount} pares generados de este grupo
+             </button>`
+          : '';
+
         return `
           <div class="pron-group-card">
             <button type="button" class="pron-group-open" data-action="start" data-group="${escapeHtml(group.id)}">
@@ -177,7 +191,9 @@ export function createPronunciationMode({ store, onActivity }) {
               <span class="pron-group-count">${pairs.length} pares</span>
               ${progress}
             </button>
+            ${group.tip ? `<div class="pron-group-tip">${escapeHtml(group.tip)}</div>` : ''}
             ${generate}
+            ${clear}
           </div>`;
       })
       .join('');
@@ -208,6 +224,7 @@ export function createPronunciationMode({ store, onActivity }) {
     return `
       ${progressHtml()}
       <div class="pron-tip-box">${escapeHtml(tip())}</div>
+      ${pairNoteHtml()}
       <div class="pron-phase-label">1. Discriminación auditiva — pulsa la palabra que has oído</div>
       <div class="pron-play-row">
         <button type="button" class="listen-play-btn" data-action="replay">🔊 Reproducir</button>
@@ -260,6 +277,7 @@ export function createPronunciationMode({ store, onActivity }) {
 
     return `
       ${progressHtml()}
+      ${pairNoteHtml()}
       <div class="pron-phase-label">2. Producción — di esta palabra en voz alta</div>
       <div class="pron-say-word">${escapeHtml(target)}</div>
       ${answer}
@@ -288,6 +306,22 @@ export function createPronunciationMode({ store, onActivity }) {
   function tip() {
     const group = findPairGroup(state.groupId);
     return group && group.tip ? group.tip : '';
+  }
+
+  /**
+   * Cómo se articula cada uno de los dos sonidos de ESTE par.
+   *
+   * El `tip` del grupo explica el contraste en abstracto ("la v se hace con los
+   * dientes sobre el labio"); esto lo baja a las dos palabras que hay delante
+   * ("very = v: dientes sobre el labio · berry = b: los dos labios juntos"), que
+   * es lo que hace falta para corregirse sin un profesor al lado. Los pares
+   * generados antes de que existieran las notas no la traen, y entonces no se
+   * pinta el recuadro en lugar de dejar un hueco vacío.
+   */
+  function pairNoteHtml() {
+    const pair = state.queue[state.index];
+    const note = pair && pair.note ? pair.note : '';
+    return note ? `<div class="pron-tip-box pron-pair-note">${escapeHtml(note)}</div>` : '';
   }
 
   function renderStats() {
@@ -493,13 +527,41 @@ export function createPronunciationMode({ store, onActivity }) {
 
       state.generated[groupId] = [...(state.generated[groupId] || []), ...pairs];
       await store.set(KEY_GENERATED, state.generated);
-      showToast(`${pairs.length} pares nuevos en ${group.label}.`);
+      // Se dice cuántos han entrado de verdad, no cuántos se pidieron: el
+      // servidor descarta los repetidos y los mal formados, así que pedir cinco
+      // y recibir tres es lo normal y no un fallo.
+      showToast(
+        `${pairs.length} ${pairs.length === 1 ? 'par nuevo' : 'pares nuevos'} en ${group.label}. ` +
+          'Si alguna palabra no existe de verdad, bórralos con “Borrar los pares generados” de ese grupo.',
+        12000
+      );
     } catch (err) {
       showToast(`No se pudieron generar más pares: ${err.message}`);
     } finally {
       state.generating = null;
       render();
     }
+  }
+
+  /**
+   * Borra los pares generados de un grupo, nunca los del catálogo.
+   *
+   * Existe porque el modelo, por muy apretado que esté el prompt, todavía puede
+   * colar una palabra que no existe, y un par así no se puede acertar jamás: el
+   * reconocedor no va a transcribir nunca esa palabra y el alumno acaba creyendo
+   * que pronuncia mal. Va detrás de la confirmación en dos clics porque lo
+   * borrado no se recupera: habría que volver a generar, y saldrían otros pares.
+   */
+  async function clearGeneratedPairs(groupId) {
+    const group = findPairGroup(groupId);
+    if (!group || !(state.generated[groupId] || []).length) return;
+
+    delete state.generated[groupId];
+    await store.set(KEY_GENERATED, state.generated);
+    showToast(
+      `Pares generados de ${group.label} borrados. Los ${(group.pairs || []).length} del catálogo siguen ahí.`
+    );
+    render();
   }
 
   // ---- Voz ----

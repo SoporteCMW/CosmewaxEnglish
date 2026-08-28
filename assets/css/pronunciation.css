@@ -41,6 +41,17 @@
   color: var(--good);
   font-weight: 700;
 }
+/* Cómo se articula el contraste, ya en el selector: antes había que entrar en el
+   grupo para saber qué distingue "V vs B" de "F vs V", y con 16 grupos elegir a
+   ciegas por la etiqueta no era práctico. */
+.pron-group-tip {
+  font-size: 11.5px;
+  color: var(--text);
+  line-height: 1.5;
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px dashed var(--line);
+}
 
 .pron-gen-more {
   margin-top: 8px;
@@ -67,6 +78,17 @@
   font-size: 12px;
   color: var(--muted);
   line-height: 1.6;
+}
+
+/* La nota del par concreto, dentro del ejercicio. Se destaca sobre el `tip` del
+   grupo a propósito: el tip explica el contraste en abstracto y ya se ha leído
+   al elegir el sonido, mientras que esto es lo que hay que aplicar AHORA, en las
+   dos palabras que están en pantalla. */
+.pron-pair-note {
+  border-color: var(--accent-2);
+  background: var(--accent-2-soft);
+  color: var(--text);
+  font-weight: 500;
 }
 
 .pron-phase-label {

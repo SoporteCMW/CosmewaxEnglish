@@ -4,12 +4,36 @@
     "label": "TH sorda (θ) vs S/T",
     "tip": "La \"th\" de \"think\" se hace poniendo la punta de la lengua entre los dientes y soplando, sin usar las cuerdas vocales. No es una \"s\" ni una \"t\".",
     "pairs": [
-      { "a": "think", "b": "sink" },
-      { "a": "thing", "b": "sing" },
-      { "a": "three", "b": "tree" },
-      { "a": "mouth", "b": "mouse" },
-      { "a": "path", "b": "pass" },
-      { "a": "worth", "b": "worse" }
+      {
+        "a": "think",
+        "b": "sink",
+        "note": "think = \"th\" (θ): lengua entre los dientes, soplas sin vibrar · sink = \"s\": silbido normal, lengua detrás de los dientes de arriba"
+      },
+      {
+        "a": "thing",
+        "b": "sing",
+        "note": "thing = \"th\" (θ): lengua entre los dientes · sing = \"s\": silbido normal, sin sacar la lengua"
+      },
+      {
+        "a": "three",
+        "b": "tree",
+        "note": "three = \"th\" (θ): lengua entre los dientes, sale aire · tree = \"t\": lengua toca justo detrás de los dientes de arriba, sin sacarla"
+      },
+      {
+        "a": "mouth",
+        "b": "mouse",
+        "note": "mouth = \"th\" (θ) final: lengua entre los dientes · mouse = \"s\" final: silbido, lengua dentro de la boca"
+      },
+      {
+        "a": "path",
+        "b": "pass",
+        "note": "path = \"th\" (θ) final: lengua entre los dientes · pass = \"s\" final: silbido normal"
+      },
+      {
+        "a": "worth",
+        "b": "worse",
+        "note": "worth = \"th\" (θ) final: lengua entre los dientes · worse = \"s\" final: silbido, sin sacar la lengua"
+      }
     ]
   },
   {
@@ -17,8 +41,16 @@
     "label": "TH sonora (ð) vs D/Z",
     "tip": "Igual que la \"th\" sorda pero vibrando las cuerdas vocales — la lengua entre los dientes, no detrás de ellos como en la \"d\" española.",
     "pairs": [
-      { "a": "then", "b": "den" },
-      { "a": "breathe", "b": "breeze" }
+      {
+        "a": "then",
+        "b": "den",
+        "note": "then = \"th\" (ð): lengua entre los dientes, vibra · den = \"d\": lengua toca detrás de los dientes de arriba, como en español"
+      },
+      {
+        "a": "breathe",
+        "b": "breeze",
+        "note": "breathe = \"th\" (ð) final: lengua entre los dientes, vibra · breeze = \"z\" final: vibra pero con la lengua dentro, sin sacarla"
+      }
     ]
   },
   {
@@ -26,11 +58,31 @@
     "label": "V vs B",
     "tip": "La \"v\" inglesa se hace con los dientes superiores tocando el labio inferior (como al morder el labio), nunca juntando los dos labios como en la \"b\".",
     "pairs": [
-      { "a": "very", "b": "berry" },
-      { "a": "van", "b": "ban" },
-      { "a": "vote", "b": "boat" },
-      { "a": "vest", "b": "best" },
-      { "a": "curve", "b": "curb" }
+      {
+        "a": "very",
+        "b": "berry",
+        "note": "very = \"v\": dientes de arriba tocan el labio de abajo · berry = \"b\": los dos labios se juntan y se separan de golpe"
+      },
+      {
+        "a": "van",
+        "b": "ban",
+        "note": "van = \"v\": dientes sobre el labio inferior, sonido continuo · ban = \"b\": labios juntos, golpe seco al abrir"
+      },
+      {
+        "a": "vote",
+        "b": "boat",
+        "note": "vote = \"v\": dientes sobre el labio · boat = \"b\": labios juntos sin usar los dientes"
+      },
+      {
+        "a": "vest",
+        "b": "best",
+        "note": "vest = \"v\": roce de dientes y labio · best = \"b\": labios juntos, sin dientes"
+      },
+      {
+        "a": "curve",
+        "b": "curb",
+        "note": "curve = \"v\" final: dientes sobre el labio · curb = \"b\" final: labios juntos, golpe seco"
+      }
     ]
   },
   {
@@ -38,14 +90,46 @@
     "label": "Vocales cortas vs largas",
     "tip": "El inglés tiene muchas más vocales que el español — presta atención a si el sonido es corto y relajado o largo y tenso, no solo a la letra escrita.",
     "pairs": [
-      { "a": "ship", "b": "sheep" },
-      { "a": "bad", "b": "bed" },
-      { "a": "cat", "b": "cut" },
-      { "a": "full", "b": "fool" },
-      { "a": "hot", "b": "hut" },
-      { "a": "sit", "b": "seat" },
-      { "a": "man", "b": "men" },
-      { "a": "cup", "b": "cap" }
+      {
+        "a": "ship",
+        "b": "sheep",
+        "note": "ship = \"i\" corta y relajada (ɪ), como una \"i\" española poco marcada · sheep = \"i\" larga y tensa (iː), se alarga notablemente"
+      },
+      {
+        "a": "bad",
+        "b": "bed",
+        "note": "bad = vocal abierta (æ), boca más abierta que en español · bed = vocal media (ɛ), parecida a la \"e\" española pero más relajada"
+      },
+      {
+        "a": "cat",
+        "b": "cut",
+        "note": "cat = vocal abierta (æ) · cut = vocal central corta y apagada (ʌ), casi como una \"a\" sin fuerza"
+      },
+      {
+        "a": "full",
+        "b": "fool",
+        "note": "full = \"u\" corta y relajada (ʊ), labios poco redondeados · fool = \"u\" larga y tensa (uː), labios muy redondeados y sonido alargado"
+      },
+      {
+        "a": "hot",
+        "b": "hut",
+        "note": "hot = vocal redondeada (ɒ), como una \"o\" abierta · hut = vocal central apagada (ʌ), casi como una \"a\" corta"
+      },
+      {
+        "a": "sit",
+        "b": "seat",
+        "note": "sit = \"i\" corta (ɪ) · seat = \"i\" larga (iː), se alarga claramente"
+      },
+      {
+        "a": "man",
+        "b": "men",
+        "note": "man = vocal abierta (æ) · men = vocal media (ɛ), como la \"e\" española"
+      },
+      {
+        "a": "cup",
+        "b": "cap",
+        "note": "cup = vocal central apagada (ʌ) · cap = vocal abierta (æ), boca más abierta"
+      }
     ]
   },
   {
@@ -53,12 +137,36 @@
     "label": "H aspirada vs sin H",
     "tip": "En español la \"h\" nunca se pronuncia; en inglés sí — es un soplido suave antes de la vocal, no la omitas.",
     "pairs": [
-      { "a": "hair", "b": "air" },
-      { "a": "heat", "b": "eat" },
-      { "a": "hill", "b": "ill" },
-      { "a": "hold", "b": "old" },
-      { "a": "hand", "b": "and" },
-      { "a": "harm", "b": "arm" }
+      {
+        "a": "hair",
+        "b": "air",
+        "note": "hair = empieza con un soplido de aire (h) antes de la vocal · air = va directo a la vocal, sin ningún soplido antes"
+      },
+      {
+        "a": "heat",
+        "b": "eat",
+        "note": "heat = soplido de \"h\" + vocal · eat = solo la vocal, sin soplido inicial"
+      },
+      {
+        "a": "hill",
+        "b": "ill",
+        "note": "hill = soplido de \"h\" + vocal · ill = solo la vocal"
+      },
+      {
+        "a": "hold",
+        "b": "old",
+        "note": "hold = soplido de \"h\" + vocal · old = solo la vocal, empieza directo"
+      },
+      {
+        "a": "hand",
+        "b": "and",
+        "note": "hand = soplido de \"h\" + vocal · and = solo la vocal, sin soplido"
+      },
+      {
+        "a": "harm",
+        "b": "arm",
+        "note": "harm = soplido de \"h\" + vocal · arm = solo la vocal, sin soplido inicial"
+      }
     ]
   },
   {
@@ -66,11 +174,31 @@
     "label": "S/Z final (sorda vs sonora)",
     "tip": "Al final de palabra, compara si el sonido es un silbido sordo (\"s\") o vibra ligeramente (\"z\") — en español casi no se distinguen, pero en inglés cambian el significado.",
     "pairs": [
-      { "a": "price", "b": "prize" },
-      { "a": "ice", "b": "eyes" },
-      { "a": "race", "b": "raise" },
-      { "a": "loose", "b": "lose" },
-      { "a": "rice", "b": "rise" }
+      {
+        "a": "price",
+        "b": "prize",
+        "note": "price = \"s\" final sorda: silbido sin vibrar · prize = \"z\" final sonora: mismo silbido pero con las cuerdas vocales vibrando"
+      },
+      {
+        "a": "ice",
+        "b": "eyes",
+        "note": "ice = \"s\" final sorda · eyes = \"z\" final sonora, vibra"
+      },
+      {
+        "a": "race",
+        "b": "raise",
+        "note": "race = \"s\" final sorda · raise = \"z\" final sonora, vibra"
+      },
+      {
+        "a": "loose",
+        "b": "lose",
+        "note": "loose = \"s\" final sorda · lose = \"z\" final sonora, vibra"
+      },
+      {
+        "a": "rice",
+        "b": "rise",
+        "note": "rice = \"s\" final sorda · rise = \"z\" final sonora, vibra"
+      }
     ]
   },
   {
@@ -78,12 +206,36 @@
     "label": "L vs R",
     "tip": "La \"r\" inglesa no se pronuncia con la lengua vibrando como en español — la lengua se curva hacia atrás sin tocar el paladar.",
     "pairs": [
-      { "a": "light", "b": "right" },
-      { "a": "lice", "b": "rice" },
-      { "a": "belly", "b": "berry" },
-      { "a": "fly", "b": "fry" },
-      { "a": "glass", "b": "grass" },
-      { "a": "collect", "b": "correct" }
+      {
+        "a": "light",
+        "b": "right",
+        "note": "light = \"l\": punta de la lengua toca justo detrás de los dientes de arriba · right = \"r\": lengua curvada hacia atrás, sin tocar el paladar, sin vibrar"
+      },
+      {
+        "a": "lice",
+        "b": "rice",
+        "note": "lice = \"l\": lengua toca el paladar · rice = \"r\": lengua curvada hacia atrás, no toca nada"
+      },
+      {
+        "a": "belly",
+        "b": "berry",
+        "note": "belly = \"l\": lengua toca detrás de los dientes · berry = \"r\": lengua curvada, sin contacto"
+      },
+      {
+        "a": "fly",
+        "b": "fry",
+        "note": "fly = \"l\": contacto claro de la lengua · fry = \"r\": lengua curvada hacia atrás, sin tocar"
+      },
+      {
+        "a": "glass",
+        "b": "grass",
+        "note": "glass = \"l\": lengua toca el paladar · grass = \"r\": lengua curvada, sin vibrar ni tocar"
+      },
+      {
+        "a": "collect",
+        "b": "correct",
+        "note": "collect = \"l\": lengua toca detrás de los dientes · correct = \"r\": lengua curvada hacia atrás, sin contacto"
+      }
     ]
   },
   {
@@ -91,9 +243,21 @@
     "label": "P vs B",
     "tip": "La \"p\" inglesa lleva un pequeño golpe de aire (aspiración) al principio de palabra que en español no existe.",
     "pairs": [
-      { "a": "pig", "b": "big" },
-      { "a": "pack", "b": "back" },
-      { "a": "cap", "b": "cab" }
+      {
+        "a": "pig",
+        "b": "big",
+        "note": "pig = \"p\" con golpe de aire (aspiración) al empezar · big = \"b\" sin aspiración, solo labios juntos que se abren"
+      },
+      {
+        "a": "pack",
+        "b": "back",
+        "note": "pack = \"p\" aspirada, sale aire al empezar · back = \"b\" sin aspiración"
+      },
+      {
+        "a": "cap",
+        "b": "cab",
+        "note": "cap = \"p\" final, seca y sin vibrar · cab = \"b\" final, con un ligero cierre de labios sin aspirar"
+      }
     ]
   },
   {
@@ -101,10 +265,220 @@
     "label": "CH/SH y J/Y",
     "tip": "\"Ch\" (chip) es un golpe seco; \"sh\" (ship) es un soplido continuo — no las mezcles. La \"j\" inglesa (jet) no es la \"y\" (yet).",
     "pairs": [
-      { "a": "chip", "b": "ship" },
-      { "a": "watch", "b": "wash" },
-      { "a": "cheer", "b": "sheer" },
-      { "a": "jet", "b": "yet" }
+      {
+        "a": "chip",
+        "b": "ship",
+        "note": "chip = \"ch\" (tʃ): golpe seco, como en español · ship = \"sh\" (ʃ): soplido continuo, sin el golpe inicial"
+      },
+      {
+        "a": "watch",
+        "b": "wash",
+        "note": "watch = \"ch\" final, golpe seco · wash = \"sh\" final, soplido continuo"
+      },
+      {
+        "a": "cheer",
+        "b": "sheer",
+        "note": "cheer = \"ch\" inicial, golpe seco · sheer = \"sh\" inicial, soplido continuo, más suave"
+      },
+      {
+        "a": "jet",
+        "b": "yet",
+        "note": "jet = \"j\" inglesa (dʒ): como una \"y\" fuerte con un golpe al empezar, parecida a la \"y\" argentina · yet = \"y\" suave (j), como la \"y\" española normal"
+      }
+    ]
+  },
+  {
+    "id": "s_sh",
+    "label": "S vs SH",
+    "tip": "La \"s\" inglesa es un silbido agudo con la lengua cerca de los dientes; la \"sh\" es más suave y con los labios ligeramente redondeados, como al mandar callar (\"shh\").",
+    "pairs": [
+      {
+        "a": "sip",
+        "b": "ship",
+        "note": "sip = \"s\": silbido agudo, lengua cerca de los dientes de arriba · ship = \"sh\": sonido más suave, labios algo redondeados hacia delante"
+      },
+      {
+        "a": "seat",
+        "b": "sheet",
+        "note": "seat = \"s\": silbido agudo · sheet = \"sh\": soplido suave, labios redondeados"
+      },
+      {
+        "a": "sock",
+        "b": "shock",
+        "note": "sock = \"s\": silbido agudo · shock = \"sh\": soplido suave, como mandar callar"
+      },
+      {
+        "a": "save",
+        "b": "shave",
+        "note": "save = \"s\": silbido agudo · shave = \"sh\": soplido suave"
+      },
+      {
+        "a": "mass",
+        "b": "mash",
+        "note": "mass = \"s\" final: silbido agudo · mash = \"sh\" final: soplido suave"
+      }
+    ]
+  },
+  {
+    "id": "f_v",
+    "label": "F vs V",
+    "tip": "La \"f\" es sorda (sin vibrar las cuerdas vocales) y la \"v\" es sonora (vibran) — la posición de dientes y labio es la misma en ambas, solo cambia si vibra o no.",
+    "pairs": [
+      {
+        "a": "fan",
+        "b": "van",
+        "note": "fan = \"f\": sin vibrar las cuerdas vocales · van = \"v\": mismo gesto pero vibrando"
+      },
+      {
+        "a": "fine",
+        "b": "vine",
+        "note": "fine = \"f\": sin vibrar · vine = \"v\": vibra"
+      },
+      {
+        "a": "safe",
+        "b": "save",
+        "note": "safe = \"f\" final: sin vibrar · save = \"v\" final: vibra"
+      },
+      {
+        "a": "ferry",
+        "b": "very",
+        "note": "ferry = \"f\": sin vibrar · very = \"v\": vibra"
+      },
+      {
+        "a": "fat",
+        "b": "vat",
+        "note": "fat = \"f\": sin vibrar · vat = \"v\": vibra"
+      }
+    ]
+  },
+  {
+    "id": "z_s",
+    "label": "Z vs S (inicial)",
+    "tip": "El español no tiene el sonido \"z\" inglés — se parece a una \"s\" pero vibrando las cuerdas vocales, como un zumbido.",
+    "pairs": [
+      {
+        "a": "zeal",
+        "b": "seal",
+        "note": "zeal = \"z\": zumbido, vibra · seal = \"s\": silbido, sin vibrar"
+      },
+      {
+        "a": "zip",
+        "b": "sip",
+        "note": "zip = \"z\": vibra, como un zumbido · sip = \"s\": silbido sin vibrar"
+      },
+      {
+        "a": "zoo",
+        "b": "sue",
+        "note": "zoo = \"z\": vibra · sue = \"s\": silbido sin vibrar"
+      },
+      {
+        "a": "buzz",
+        "b": "bus",
+        "note": "buzz = \"z\" final: vibra, zumbido · bus = \"s\" final: silbido sin vibrar"
+      }
+    ]
+  },
+  {
+    "id": "n_ng",
+    "label": "N vs NG final",
+    "tip": "La \"ng\" inglesa al final de palabra se hace con la parte de atrás de la lengua tocando el paladar blando, sin pronunciar una \"g\" aparte — muy distinta de la \"n\" normal.",
+    "pairs": [
+      {
+        "a": "sin",
+        "b": "sing",
+        "note": "sin = \"n\": lengua toca justo detrás de los dientes de arriba · sing = \"ng\": parte de atrás de la lengua toca el paladar blando"
+      },
+      {
+        "a": "ban",
+        "b": "bang",
+        "note": "ban = \"n\": lengua delante · bang = \"ng\": lengua atrás, sin pronunciar una \"g\" aparte"
+      },
+      {
+        "a": "ran",
+        "b": "rang",
+        "note": "ran = \"n\": lengua delante · rang = \"ng\": lengua atrás"
+      },
+      {
+        "a": "win",
+        "b": "wing",
+        "note": "win = \"n\": lengua delante · wing = \"ng\": lengua atrás, tocando el paladar blando"
+      }
+    ]
+  },
+  {
+    "id": "d_t_final",
+    "label": "D/T final (sorda vs sonora)",
+    "tip": "Igual que con S/Z, al final de palabra compara si el sonido vibra (\"d\") o no (\"t\") — en español esta distinción final apenas se marca.",
+    "pairs": [
+      {
+        "a": "bed",
+        "b": "bet",
+        "note": "bed = \"d\" final: vibra ligeramente · bet = \"t\" final: seca, sin vibrar"
+      },
+      {
+        "a": "seed",
+        "b": "seat",
+        "note": "seed = \"d\" final: vibra · seat = \"t\" final: seca"
+      },
+      {
+        "a": "code",
+        "b": "coat",
+        "note": "code = \"d\" final: vibra · coat = \"t\" final: seca"
+      },
+      {
+        "a": "rode",
+        "b": "wrote",
+        "note": "rode = \"d\" final: vibra · wrote = \"t\" final: seca"
+      }
+    ]
+  },
+  {
+    "id": "w_v",
+    "label": "W vs V",
+    "tip": "La \"w\" inglesa se hace redondeando mucho los labios, como para silbar, sin tocar los dientes; la \"v\" toca los dientes de arriba con el labio de abajo.",
+    "pairs": [
+      {
+        "a": "west",
+        "b": "vest",
+        "note": "west = \"w\": labios muy redondeados, como para silbar, sin tocar los dientes · vest = \"v\": dientes de arriba sobre el labio de abajo"
+      },
+      {
+        "a": "wine",
+        "b": "vine",
+        "note": "wine = \"w\": labios redondeados · vine = \"v\": dientes sobre el labio"
+      },
+      {
+        "a": "wet",
+        "b": "vet",
+        "note": "wet = \"w\": labios redondeados · vet = \"v\": dientes sobre el labio"
+      },
+      {
+        "a": "worse",
+        "b": "verse",
+        "note": "worse = \"w\": labios redondeados, sin dientes · verse = \"v\": dientes sobre el labio"
+      }
+    ]
+  },
+  {
+    "id": "er_vowel",
+    "label": "Vocal \"ER\" (no existe en español)",
+    "tip": "Este sonido (como en \"bird\" o \"turn\") no existe en español — la lengua se queda en el centro de la boca, casi sin moverse, con un ligero toque de \"r\" americana.",
+    "pairs": [
+      {
+        "a": "bird",
+        "b": "bud",
+        "note": "bird = vocal \"er\": lengua queda quieta en el centro de la boca · bud = vocal más abierta y corta, sin el toque de \"r\""
+      },
+      {
+        "a": "turn",
+        "b": "ton",
+        "note": "turn = vocal \"er\" central, lengua quieta · ton = vocal corta y apagada"
+      },
+      {
+        "a": "herd",
+        "b": "hard",
+        "note": "herd = vocal \"er\" central, lengua quieta · hard = vocal abierta y alargada"
+      }
     ]
   }
 ]

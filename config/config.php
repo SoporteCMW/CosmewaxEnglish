@@ -94,8 +94,13 @@ return [
         'vocab.generate' => ['timeout' => 150, 'effort' => 'low', 'max_tokens' => 8000],
         'scenario.generate' => ['timeout' => 90, 'effort' => 'low', 'max_tokens' => 4000],
         'scenario.everyday' => ['timeout' => 90, 'effort' => 'low', 'max_tokens' => 4000],
-        // Cinco pares de palabras: la respuesta más corta de toda la aplicación.
-        'pron.pairs' => ['timeout' => 60, 'effort' => 'low', 'max_tokens' => 2000],
+        // Cinco pares de palabras, cada uno con su nota de articulación. Deja de
+        // ser la respuesta más corta de la app y pasa a ser la más lenta: medido
+        // en 34 s para "V vs B" y 77 s para la vocal "ER", frente a los ~11 s de
+        // cuando sólo eran las dos palabras. El margen es amplio a propósito —
+        // los grupos de vocales tardan el doble que los de consonantes, y
+        // quedarse corto aquí aborta un lote que iba bien.
+        'pron.pairs' => ['timeout' => 150, 'effort' => 'low', 'max_tokens' => 4000],
     ],
 
     'rate_limit' => [

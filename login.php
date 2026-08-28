@@ -105,6 +105,14 @@ $error = isset($_GET['error']) ? h(trim($_GET['error'])) : null;
                 </label>
                 <button type="submit">Entrar</button>
             </form>
+
+            <div class="login-sep">o</div>
+            <a class="sso-btn" href="sso.php">
+                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                    <path d="M3 3h8v8H3V3Zm10 0h8v8h-8V3ZM3 13h8v8H3v-8Zm10 0h8v8h-8v-8Z"/>
+                </svg>
+                Entrar con mi cuenta de Windows
+            </a>
         </section>
     </main>
     <script>

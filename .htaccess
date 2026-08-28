@@ -11,3 +11,43 @@ RedirectMatch 404 (?i)/\.env
 </IfModule>
 
 DirectoryIndex index.php
+
+# ── Inicio de sesión integrado de Windows (SSO por SSPI/NTLM) ─────────────────
+# A NIVEL DE CARPETA, fuera de cualquier bloque: es la página que verá quien no
+# tenga permiso. Dentro de <Files> Apache NO la aplica y el navegador recibiría
+# un 403 con el cuerpo vacío (pantalla en blanco). Ruta local al propio proyecto.
+ErrorDocument 403 /CosmewaxEnglish/sin_permisos.html
+
+# <IfModule> imprescindible: si el módulo no estuviera cargado, estas directivas
+# devolverían un 500 y tumbarían la carpeta entera. Con él, simplemente se ignora.
+<IfModule auth_ntlm_module>
+    # Solo se protege sso.php (y sso_test.php mientras se diagnostica). El resto
+    # de la web —incluido login.php— queda accesible para equipos fuera del
+    # dominio, que entran por el formulario clásico.
+    <Files ~ "^sso(_test)?\.php$">
+        AuthName "Cosmewax English - inicio de sesion integrado"
+        AuthType SSPI
+        NTLMAuth On
+        NTLMAuthoritative On
+
+        # Devuelve "jperez" en lugar de "COSMEWAX\jperez", ya en minúsculas.
+        NTLMOmitDomain On
+        NTLMUsernameCase lower
+
+        # Sin esto, un fallo de autorización devolvería 401 -> el navegador
+        # abriría la ventana de credenciales de Windows. Con On devuelve 403 y se
+        # muestra sin_permisos.html. Requiere Apache >= 2.4.9 (aquí 2.4.58).
+        AuthzSendForbiddenOnFailure On
+
+        <RequireAll>
+            # Cualquier cuenta válida del dominio, igual que el bind LDAP de
+            # auth.php: la app no restringe por grupo. Si en el futuro se quiere
+            # limitar a un grupo de AD, sustituir por:
+            #   Require sspi-group "NombreDelGrupo"   (sAMAccountName, no CN)
+            Require valid-user
+            <RequireNone>
+                Require user "anonymous logon"
+            </RequireNone>
+        </RequireAll>
+    </Files>
+</IfModule>

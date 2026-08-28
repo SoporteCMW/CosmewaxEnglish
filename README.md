@@ -6,7 +6,7 @@ Entrenador de inglés para I+D / PDM de Cosmewax. Siete modos:
 |---|---|---|
 | **Tarjetas** | Recall activo español → inglés con repetición espaciada (Leitner, 5 cajas). La corrección la juzga la IA **por sentido**, no por coincidencia de texto: acepta sinónimos y giros válidos, y muestra además las otras formas naturales de decirlo. 157 fichas de partida, ampliables con lotes de 30 términos a medida del perfil, que se repasan en su propia pestaña. Dictado por voz y medición del tiempo de respuesta oral. | Sí, con respaldo |
 | **Gramática** | 20 estructuras B2-C1 con explicación, ejemplos con audio y ejercicio corregido, también con repaso espaciado. La corrección juzga si has usado bien la estructura, no si has reproducido la frase de referencia. | Sí, con respaldo |
-| **Pronunciación** | 9 contrastes de sonidos difíciles para un hispanohablante (TH, V/B, L/R, vocales…) con 45 pares mínimos. Cada par se practica dos veces: primero se distingue de oído, después se produce en voz alta y juzga el reconocedor. | Sólo para ampliar pares |
+| **Pronunciación** | 16 contrastes de sonidos difíciles para un hispanohablante (TH, V/B, F/V, S/SH, N/NG, L/R, vocales…) con 74 pares mínimos. Cada par se practica dos veces: primero se distingue de oído, después se produce en voz alta y juzga el reconocedor. Cada par lleva su **nota de articulación** —dónde va la lengua, los labios y los dientes en cada una de las dos palabras—, y el selector muestra ya de qué va cada contraste. | Sólo para ampliar pares |
 | **Conversación** | Simulacro de conversación de 3 a 30 min con un interlocutor que responde en carácter y **se lee en voz alta**, en **inglés de trabajo** (llamadas de cliente, presentación técnica) o **de la vida diaria** (restaurante, médico, taller…). Al terminar, corrección estructurada en español. | Sí |
 | **Lectura** | Genera un texto B1-B2 de 350-400 palabras, el alumno lo lee entero en voz alta y se comparan palabra a palabra el original y lo que entendió el reconocedor. El micrófono se reabre solo cada vez que el navegador lo cierra, así que la lectura larga cuenta como una sola. Las palabras falladas se acumulan entre sesiones. | Sí |
 | **Listening** | Genera un audio largo (500-600 palabras, la longitud de un texto de Cambridge B2 First) y 6 preguntas de comprensión repartidas por todo él. El alumno escucha sin ver el texto y responde; la corrección evalúa comprensión, no gramática. | Sí |
@@ -247,6 +247,22 @@ El orden importa: se escapa el HTML **primero** y se sustituyen los asteriscos
 **después**, así que el único `<strong>` que puede salir de ahí es el nuestro y el texto
 del modelo nunca llega crudo al DOM.
 
+**Un par mínimo generado puede tener una palabra que no existe, así que se puede
+borrar.** El prompt exige palabras reales y bien escritas y le dice explícitamente que
+devuelva menos de cinco antes que inventar; el servidor descarta además lo que no sea una
+palabra de dos letras o más y lo repetido. Aun así el modelo puede colar una invención
+plausible, y un par así **no se puede acertar nunca**: el reconocedor jamás va a
+transcribir esa palabra y el alumno acaba creyendo que pronuncia mal. De ahí el botón de
+borrar los pares generados de un grupo, que no toca los del catálogo, y de ahí que el
+aviso tras generar diga cuántos entraron de verdad y recuerde esa salida.
+
+**Cada par lleva su nota de articulación, además del `tip` del grupo.** El `tip` explica
+el contraste en abstracto y se lee una vez al elegir el sonido; la nota baja eso a las
+dos palabras concretas que hay en pantalla ("very = v: dientes sobre el labio · berry =
+b: los dos labios juntos"), que es lo que permite corregirse sin un profesor delante. La
+nota vive en la misma columna JSON que el par, así que añadirla no tocó el esquema, y los
+pares generados antes de que existiera simplemente no la pintan.
+
 **Pronunciación se juzga con el reconocedor de voz, no con la IA.** Se compara lo que
 entendió el reconocedor con la palabra pedida, y que devuelva *la otra palabra del par*
 se trata distinto de que no entienda nada: lo primero es exactamente el error que se
@@ -257,12 +273,12 @@ reconocedor sí, y además es el mismo juez que en una llamada real.
 **La tolerancia de Pronunciación está topada por la distancia del par.** El reconocedor
 devuelve "shipp" por *ship* con bastante alegría, y con comparación exacta esa errata
 suya contaba como fallo de pronunciación; de ahí un margen del 20% de la palabra. Pero
-ese margen **no puede llegar a la distancia que separa las dos palabras del par**: 27 de
-los 45 pares del catálogo se distinguen por una sola letra (`van`/`ban`, `cat`/`cut`,
+ese margen **no puede llegar a la distancia que separa las dos palabras del par**: 46 de
+los 74 pares del catálogo se distinguen por una sola letra (`van`/`ban`, `cat`/`cut`,
 `three`/`tree`), y ahí un margen de una letra daría por bueno cualquier desliz, incluido
 el del sonido que se está examinando — con *van* de objetivo, decir "fan" quedaría a una
-letra de las dos palabras y pasaría por acierto. En esos 27 pares no hay margen que dar
-y la comparación vuelve a ser exacta; el margen se aplica en los 18 restantes, donde sí
+letra de las dos palabras y pasaría por acierto. En esos 46 pares no hay margen que dar
+y la comparación vuelve a ser exacta; el margen se aplica en los 28 restantes, donde sí
 cabe (`ship`/`sheep`, `collection`/`correction`).
 
 **El interlocutor de Conversación se lee en voz alta siempre.** Era una casilla apagada
@@ -398,10 +414,12 @@ Limitaciones del sidecar que condicionan el diseño: un solo prompt de texto (no
 desde la LAN. `PromptFlattener` se encarga de lo primero; el resto está asumido.
 
 Tiempos reales medidos en este proyecto: respuesta de conversación 4-7 s, corrección
-de listening ~4 s, feedback de conversación ~20 s, generación de texto o audio
-20-30 s, lote de vocabulario ~14 s (medido con 15 términos; hoy se piden 30), situación
-cotidiana ~8 s, lote de pares mínimos ~11 s. Los `timeout` por tarea están en
-`config.php` con margen sobre estos valores.
+de listening ~4 s, corrección de tarjeta o de gramática 4-17 s, feedback de conversación
+~20 s, generación de texto o audio 20-30 s, lote de vocabulario ~14 s (medido con 15
+términos; hoy se piden 30), situación cotidiana ~8 s, lote de pares mínimos 34-77 s
+(antes ~11 s: ahora cada par lleva además su nota de articulación, y los grupos de
+vocales tardan el doble que los de consonantes — es la llamada más lenta de la app).
+Los `timeout` por tarea están en `config.php` con margen sobre estos valores.
 
 ### Alternativa: API pública de Anthropic
 
