@@ -12,6 +12,22 @@ export class ApiError extends Error {
 /** Los modos con IA se apagan solos si el servidor no la tiene configurada. */
 export const aiAvailable = () => config.aiConfigured;
 
+/**
+ * Nivel CEFR que se adjunta a cada tarea.
+ *
+ * Se registra desde `main.js` en lugar de importar `core/level.js` aquí porque
+ * el nivel es estado de sesión (vive en el `store`) y este módulo no conoce el
+ * almacén. Hacerlo así evita además tener que acordarse de mandar el nivel en
+ * cada una de las llamadas repartidas por los siete modos: si no está
+ * registrado —por ejemplo durante el arranque— no se manda nada y el servidor
+ * usa su nivel por defecto.
+ */
+let levelProvider = null;
+
+export function setLevelProvider(fn) {
+  levelProvider = typeof fn === 'function' ? fn : null;
+}
+
 async function post(url, body, { signal } = {}) {
   let response;
   try {
@@ -82,7 +98,12 @@ export async function requestTask(task, payload = {}, options = {}) {
       'not_configured'
     );
   }
-  const body = await post(config.apiUrl, { task, ...payload }, options);
+  const level = levelProvider ? levelProvider() : null;
+  const body = await post(
+    config.apiUrl,
+    { task, ...(level ? { level } : {}), ...payload },
+    options
+  );
   const { ok, ...rest } = body;
   return rest;
 }

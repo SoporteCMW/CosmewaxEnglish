@@ -662,6 +662,16 @@ export function createFlashcardsMode({ store, profile, onActivity }) {
 
     addCard,
     deckSize: () => state.deck.length,
+
+    /**
+     * El mazo con su nivel de dominio, para la vista de sólo lectura del
+     * Cuaderno. Se sirve desde aquí y no desde el `store` porque el mazo vivo
+     * incluye las tarjetas propias y las generadas, que no están en el catálogo
+     * que inyecta `index.php`.
+     */
+    listCards: () =>
+      state.deck.map((card) => ({ ...card, box: state.srs[card.id]?.box ?? 1 })),
+
     masteredCount: () =>
       state.deck.filter((card) => (state.srs[card.id]?.box ?? 1) >= MAX_BOX).length,
 
@@ -681,13 +691,6 @@ export function createFlashcardsMode({ store, profile, onActivity }) {
       render();
 
       return state.category === 'all' ? 'todas las categorías' : `"${tabLabel(state.category)}"`;
-    },
-
-    /** Refresca tras una promoción del cuaderno. */
-    refresh() {
-      renderStats();
-      rebuildQueue();
-      render();
     },
   };
 }

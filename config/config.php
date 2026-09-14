@@ -14,7 +14,7 @@ return [
         // aplicaciones de la casa, para que el login y la topbar muestren lo
         // mismo sin duplicar la lectura del .env.
         'name' => Env::get('APP_NAME', 'English Unblocked'),
-        'owner' => 'Cosmewax · I+D / PDM',
+        'owner' => 'Cosmewax · Plataforma para aprender inglés',
         'environment' => Env::get('APP_ENVIRONMENT', 'Desarrollo'),
         // LOGIN_ON=false salta el login: sólo para desarrollo en local. Sin
         // usuario autenticado el progreso va contra una cuenta compartida.

@@ -58,8 +58,18 @@
   cursor: pointer;
 }
 .notebook-actions button:hover { border-color: var(--accent); color: var(--accent); }
-.notebook-actions button.is-promoted {
-  color: var(--good);
-  border-color: var(--good);
-}
 .notebook-actions button:disabled { cursor: default; }
+
+/**
+ * Nivel de dominio en las listas del cuaderno.
+ *
+ * Los mismos puntos que en una tarjeta, pero en el flujo de la fila de acciones:
+ * `.card-box` va posicionado en la esquina de la ficha y aquí no hay esquina.
+ * `margin-right:auto` empuja los botones al otro extremo.
+ */
+.notebook-box {
+  display: flex;
+  gap: 3px;
+  align-items: center;
+  margin-right: auto;
+}

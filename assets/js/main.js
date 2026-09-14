@@ -1,10 +1,11 @@
 import { config, content } from './core/config.js';
 import { $, delegate, escapeHtml } from './core/dom.js';
 import { createStore, setPersistenceWarning } from './core/storage.js';
-import { aiAvailable } from './core/api.js';
+import { aiAvailable, setLevelProvider } from './core/api.js';
 import { INSECURE_CONTEXT_MESSAGE } from './core/speech.js';
 import { confirmThenRun, showToast } from './core/ui.js';
 import { createProfile } from './core/profile.js';
+import { createLevel } from './core/level.js';
 import { createStreak } from './core/streak.js';
 import { createNotebookService } from './core/notebook-service.js';
 import { createFlashcardsMode } from './modes/flashcards.js';
@@ -24,8 +25,13 @@ import { createPronunciationMode } from './modes/pronunciation.js';
  */
 const store = createStore();
 const profile = createProfile({ store });
+const level = createLevel({ store });
 const streak = createStreak({ store });
 const notebook = createNotebookService({ store });
+
+// El nivel CEFR viaja adjunto a cada tarea de IA. Se registra aquí, una sola
+// vez, para que ningún modo tenga que acordarse de mandarlo.
+setLevelProvider(() => level.id());
 
 /** Cualquier modo que complete algo llama aquí: alimenta racha y resumen. */
 async function onActivity() {
@@ -40,19 +46,15 @@ const pronunciation = createPronunciationMode({ store, onActivity });
 const conversation = createConversationMode({ store, profile, onActivity });
 const reading = createReadingMode({ store, profile, onActivity });
 const listening = createListeningMode({ store, profile, onActivity });
+// El Cuaderno enseña además el mazo y las estructuras en sólo lectura: no los
+// guarda, los mira. Por eso recibe funciones de lectura de los otros dos modos
+// en lugar de una copia del estado, que se quedaría vieja en cuanto el alumno
+// repasara una tarjeta.
 const notebookMode = createNotebookMode({
   notebook,
-  // Ascender una palabra del cuaderno crea una tarjeta en la categoría propia.
-  onPromote: async (entry) => {
-    await flashcards.addCard({
-      cat: 'personal',
-      es: entry.translation,
-      en: entry.word,
-      note: `Ejemplo: "${entry.example}"`,
-    });
-    flashcards.refresh();
-    renderSummary();
-  },
+  cards: () => flashcards.listCards(),
+  grammar: { levels: () => grammar.levels(), listItems: () => grammar.listItems() },
+  onActivity,
 });
 
 const MODES = {
@@ -117,7 +119,30 @@ function renderProfileSelect() {
     .join('');
 }
 
+function renderLevelSelect() {
+  const select = $('#levelSelect');
+  if (!select) return;
+  select.innerHTML = level.LEVELS.map(
+    (l) =>
+      `<option value="${escapeHtml(l.id)}" ${l.id === level.id() ? 'selected' : ''}>` +
+      `Nivel ${escapeHtml(l.label)} · ${escapeHtml(l.hint)}</option>`
+  ).join('');
+}
+
 function wireGlobalBar() {
+  const levelSelect = $('#levelSelect');
+  if (levelSelect) {
+    levelSelect.addEventListener('change', async (event) => {
+      if (await level.set(event.target.value)) {
+        showToast(
+          `Nivel activo: ${level.id()}. Las lecturas, los audios, las conversaciones y el ` +
+            'vocabulario nuevo se adaptarán a este nivel. Las tarjetas de Gramática siguen ' +
+            'corrigiéndose con el nivel de cada estructura.'
+        );
+      }
+    });
+  }
+
   const select = $('#profileSelect');
   if (select) {
     select.addEventListener('change', async (event) => {
@@ -251,7 +276,7 @@ async function boot() {
   await store.hydrate();
 
   // El perfil y el cuaderno los necesitan varios modos al iniciarse.
-  await Promise.all([profile.load(), streak.load(), notebook.load()]);
+  await Promise.all([profile.load(), level.load(), streak.load(), notebook.load()]);
 
   const controllers = Object.entries(MODES);
   const results = await Promise.allSettled(
@@ -264,6 +289,7 @@ async function boot() {
   });
 
   renderProfileSelect();
+  renderLevelSelect();
   wireGlobalBar();
   wireResetButtons();
   wireWordMarking();

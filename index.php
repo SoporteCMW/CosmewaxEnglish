@@ -148,6 +148,8 @@ function e(string $value): string
     <div class="global-actions">
       <select id="profileSelect" class="global-select"
               title="El contenido generado (vocabulario, escenarios, lecturas, audios) se adapta a este perfil"></select>
+      <select id="levelSelect" class="global-select"
+              title="Nivel CEFR del contenido generado y corregido con IA. Las tarjetas de Gramática usan el nivel de cada estructura, no éste."></select>
       <span class="streak-badge" id="streakBadge"></span>
     </div>
   </div>
@@ -172,9 +174,9 @@ function e(string $value): string
 
   <nav class="mode-toggle" id="modeToggle" aria-label="Modos de práctica">
     <button type="button" class="mode-btn" data-mode="notebook">📓 Cuaderno</button>
-    <button type="button" class="mode-btn" data-mode="grammar">📐 Gramática</button>
+    <button type="button" class="mode-btn is-active" data-mode="flashcards">📇 Tarjetas de Vocabulario</button>
+    <button type="button" class="mode-btn" data-mode="grammar">📐 Tarjetas de Gramática</button>
     <button type="button" class="mode-btn" data-mode="pronunciation">🗣️ Pronunciación</button>
-    <button type="button" class="mode-btn is-active" data-mode="flashcards">📇 Tarjetas</button>
     <button type="button" class="mode-btn" data-mode="conversation">💬 Conversación</button>
     <button type="button" class="mode-btn" data-mode="reading">📖 Lectura</button>
     <button type="button" class="mode-btn" data-mode="listening">🎧 Listening</button>
@@ -255,7 +257,7 @@ function e(string $value): string
   </section>
 
   <section id="grammarView" class="mode-view" hidden>
-    <p class="subline">Estructuras B2-C1 · explicación + ejemplos con audio + práctica corregida con repaso espaciado</p>
+    <p class="subline">Estructuras B1-C2 · explicación + ejemplos con audio + práctica corregida con repaso espaciado</p>
     <div class="stats-row" id="grammarStatsRow"></div>
     <div class="tabs" id="grammarTabs"></div>
     <div class="card-zone" id="grammarZone">
@@ -282,7 +284,7 @@ function e(string $value): string
 
   <section id="notebookView" class="mode-view" hidden>
     <p class="subline">Pulsa cualquier palabra en Conversación, Lectura, Listening o Gramática para añadirla aquí,
-      con traducción y ejemplo</p>
+      con traducción y ejemplo · se repasan aquí mismo, con repetición espaciada</p>
     <div class="stats-row" id="notebookStatsRow"></div>
     <div id="notebookBody"></div>
     <footer class="footnote">

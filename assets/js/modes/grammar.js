@@ -8,6 +8,9 @@ import { applyGrade, buildQueue, isDue, newEntry, todayStr, MAX_BOX } from '../l
 
 const KEY_SRS = 'grammar-srs';
 
+/** Orden en que se muestran las pestañas de nivel. Ver `levels()`. */
+export const CEFR_ORDER = ['B1', 'B2', 'C1', 'C2'];
+
 const RESULT_LABELS = {
   correct: ['✓ Correcto', 'is-correct'],
   close: ['~ Casi — revisa el detalle', 'is-close'],
@@ -52,7 +55,22 @@ export function createGrammarMode({ store, onActivity }) {
   const dictation = new Dictation();
 
   const items = () => content.grammar;
-  const levels = () => [...new Set(items().map((g) => g.level))];
+
+  /**
+   * Niveles presentes en el catálogo, en orden CEFR y no en el de aparición.
+   *
+   * El catálogo creció por tandas (primero B2 y C1, después B1 y C2), así que
+   * el orden natural del fichero pondría las pestañas como B2 · C1 · B1 · C2.
+   * Se derivan del contenido y no de una lista fija para que ampliarlo siga
+   * siendo editar sólo `data/grammar.json`.
+   */
+  const levels = () => {
+    const present = new Set(items().map((g) => g.level));
+    const known = CEFR_ORDER.filter((level) => present.has(level));
+    const rest = [...present].filter((level) => !CEFR_ORDER.includes(level));
+
+    return [...known, ...rest];
+  };
 
   async function init() {
     state.srs = await store.get(KEY_SRS, {});
@@ -406,6 +424,15 @@ export function createGrammarMode({ store, onActivity }) {
     },
     masteredCount: () => items().filter((g) => (state.srs[g.id]?.box ?? 1) >= MAX_BOX).length,
     totalCount: () => items().length,
+
+    /** Niveles presentes, en orden CEFR. Lo usa el filtro del Cuaderno. */
+    levels,
+
+    /**
+     * Las estructuras con su nivel de dominio, para la vista de sólo lectura
+     * del Cuaderno. El progreso Leitner vive aquí, así que sale de aquí.
+     */
+    listItems: () => items().map((item) => ({ ...item, box: state.srs[item.id]?.box ?? 1 })),
 
     async reset() {
       const ids =
