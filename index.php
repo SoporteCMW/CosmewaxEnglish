@@ -91,6 +91,20 @@ $bootstrap = [
     'grammar' => $grammar,
     'profiles' => $profiles,
     'minimalPairs' => $minimalPairs,
+    // Contenido fijo del test de nivel y del examen. Se corrige en el servidor
+    // contra estos mismos textos (ver PromptRegistry), así que la respuesta de
+    // referencia del vocabulario no sale al navegador.
+    'levelTest' => [
+        'vocab' => array_map(
+            static fn (array $v): array => ['id' => $v['id'], 'es' => $v['es'], 'level' => $v['level']],
+            Cosmewax\English\Prompts\PromptRegistry::LEVEL_TEST_VOCAB
+        ),
+        'reading' => Cosmewax\English\Prompts\PromptRegistry::LEVEL_TEST_READING,
+    ],
+    'examTasks' => [
+        'writing' => Cosmewax\English\Prompts\PromptRegistry::WRITING_TASKS,
+        'speaking' => Cosmewax\English\Prompts\PromptRegistry::SPEAKING_TASKS,
+    ],
 ];
 
 $appName = (string) $app->config('app.name', 'English Unblocked');
@@ -133,6 +147,7 @@ function e(string $value): string
 <link rel="stylesheet" href="assets/css/grammar.css">
 <link rel="stylesheet" href="assets/css/pronunciation.css">
 <link rel="stylesheet" href="assets/css/notebook.css">
+<link rel="stylesheet" href="assets/css/exam.css">
 </head>
 <body>
 <?php require __DIR__ . '/partials/topbar.php'; ?>
@@ -152,6 +167,31 @@ function e(string $value): string
               title="Nivel CEFR del contenido generado y corregido con IA. Las tarjetas de Gramática usan el nivel de cada estructura, no éste."></select>
       <span class="streak-badge" id="streakBadge"></span>
     </div>
+    <div class="global-actions">
+      <button type="button" class="global-btn" id="levelTestBtn"
+              title="Test rápido de colocación (12 ítems) para saber por dónde empezar">🎯 ¿No sabes tu nivel? Haz el test</button>
+      <button type="button" class="global-btn" id="guideBtn"
+              title="Recomendación de hoy y respuestas a tus dudas sobre cómo seguir">💡 ¿Qué hago hoy?</button>
+      <button type="button" class="global-btn" id="onboardingBtn"
+              title="Ver de nuevo el recorrido de bienvenida por la app">❓ Guía de uso</button>
+    </div>
+  </div>
+
+  <!-- Overlays. Se rellenan desde JS; cada uno es un diálogo modal. -->
+  <div class="overlay" id="levelTestOverlay" role="dialog" aria-modal="true" aria-label="Test de nivel" hidden>
+    <div class="overlay-card" id="levelTestCard"></div>
+  </div>
+  <div class="overlay" id="guideOverlay" role="dialog" aria-modal="true" aria-label="¿Qué hago hoy?" hidden>
+    <div class="overlay-card" id="guideCard"></div>
+  </div>
+  <div class="overlay" id="onboardingOverlay" role="dialog" aria-modal="true" aria-label="Guía de uso" hidden>
+    <div class="overlay-card" id="onboardingCard"></div>
+  </div>
+  <div class="overlay" id="examOverlay" role="dialog" aria-modal="true" aria-label="Examen de Progreso" hidden>
+    <div class="overlay-card" id="examOverlayCard"></div>
+  </div>
+  <div class="overlay" id="examDetailOverlay" role="dialog" aria-modal="true" aria-label="Informe del examen" hidden>
+    <div class="overlay-card is-wide" id="examDetailCard"></div>
   </div>
 
   <div class="app-toast" id="appToast" role="status" hidden></div>
@@ -180,6 +220,7 @@ function e(string $value): string
     <button type="button" class="mode-btn" data-mode="conversation">💬 Conversación</button>
     <button type="button" class="mode-btn" data-mode="reading">📖 Lectura</button>
     <button type="button" class="mode-btn" data-mode="listening">🎧 Listening</button>
+    <button type="button" class="mode-btn" data-mode="exam">🎓 Examen de Progreso</button>
   </nav>
 
   <section id="flashcardsView" class="mode-view">
@@ -290,6 +331,12 @@ function e(string $value): string
     <footer class="footnote">
       <button type="button" class="reset-link" data-confirm-action="reset-notebook">Borrar todo el cuaderno</button>
     </footer>
+  </section>
+
+  <section id="examView" class="mode-view" hidden>
+    <p class="subline">Tu panel de seguimiento · simulacros inspirados en los exámenes Cambridge, orientativos,
+      no una certificación oficial</p>
+    <div id="examBody"></div>
   </section>
 </div>
 </div>

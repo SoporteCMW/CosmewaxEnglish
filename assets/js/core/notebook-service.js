@@ -73,18 +73,22 @@ export function createNotebookService({ store }) {
      * Traduce en contexto y guarda. Devuelve la entrada, o null si no se pudo
      * (la IA está apagada, no responde, o ya estaba en el cuaderno).
      */
-    async add(word, context) {
+    async add(word, context, { manual = false } = {}) {
       if (this.has(word)) {
         showToast(`"${word}" ya está en tu cuaderno.`);
         return null;
       }
 
-      const data = await requestTask('notebook.lookup', { word, context });
+      // `manual`: escrita a mano por el alumno, vista fuera de la aplicación.
+      // Puede no traer contexto, y el servidor lo admite sólo en ese caso.
+      const data = await requestTask('notebook.lookup', { word, context, ...(manual ? { manual } : {}) });
       const entry = {
         id: `n${Date.now()}${Math.floor(Math.random() * 1000)}`,
         word,
         translation: data.translation || '',
         example: data.example || context,
+        // Nivel CEFR de la palabra en sí (no del alumno). Null si no lo dio.
+        cefrLevel: data.level || null,
         ts: Date.now(),
         // Entra en la caja 1 y vence hoy: marcar una palabra es justo el momento
         // en que interesa repasarla.

@@ -264,7 +264,6 @@ export function createListeningMode({ store, profile, onActivity }) {
     if (!isSynthesisSupported()) return;
     state.speaking = true;
     speakTracked(state.passage, {
-      rate: 0.95,
       onEnd: () => {
         state.speaking = false;
         if (state.phase === 'listening') render();

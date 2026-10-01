@@ -94,3 +94,36 @@ export function clickableWords(text, context) {
     })
     .join('');
 }
+
+/**
+ * Diálogo modal a pantalla completa (test de nivel, guía, examen…).
+ *
+ * `onClose` es lo que hace el botón "Cerrar" del propio diálogo; Escape hace lo
+ * mismo, para que salir no dependa de encontrar el botón al final de la tarjeta.
+ */
+export function createOverlay(id, onClose) {
+  const overlay = $(`#${id}`);
+  if (overlay) {
+    overlay.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && !overlay.hidden) onClose();
+    });
+  }
+  const card = overlay ? overlay.querySelector('.overlay-card') : null;
+  // Enfocable para que Escape funcione aunque el diálogo no tenga campos.
+  if (card) card.tabIndex = -1;
+  return {
+    card,
+    open() {
+      if (!overlay) return;
+      overlay.hidden = false;
+      document.body.classList.add('has-overlay');
+      if (card && !card.contains(document.activeElement)) card.focus();
+    },
+    close() {
+      if (!overlay) return;
+      overlay.hidden = true;
+      if (!document.querySelector('.overlay:not([hidden])')) document.body.classList.remove('has-overlay');
+    },
+    isOpen: () => Boolean(overlay) && !overlay.hidden,
+  };
+}

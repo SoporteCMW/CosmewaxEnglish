@@ -29,7 +29,21 @@ $checks = [
     'ai_configured' => $app->aiConfigured(),
 ];
 
-if ($provider === 'sidecar') {
+if ($provider === 'azure') {
+    $checks['azure_deployment'] = (string) $app->config('azure.model');
+    $checks['azure_key_present'] = (string) $app->config('azure.api_key') !== '';
+} elseif ($provider === 'ollama') {
+    $checks['ollama_model'] = (string) $app->config('ollama.model');
+    // Que la clave ESTÉ, nunca cuál es. La URL, sólo en depuración, igual que
+    // la del sidecar: no tiene por qué viajar al navegador.
+    $checks['ollama_key_present'] = $app->aiConfigured();
+    if ($app->isDebug()) {
+        $checks['ollama_url'] = (string) $app->config('ollama.url');
+    }
+    // La sonda va con la clave (/api/tags), así que un verde aquí significa que
+    // la pasarela responde Y que la credencial vale.
+    $checks['ollama_reachable'] = $app->aiReachable();
+} elseif ($provider === 'sidecar') {
     $checks['sidecar_enabled'] = (bool) $app->config('sidecar.enabled', false);
     $checks['sidecar_model'] = (string) $app->config('sidecar.model');
     // La URL sólo se revela en depuración: no tiene que aparecer en el HTML ni
@@ -67,9 +81,13 @@ try {
     $checks['datasets'] = 'error: ' . $e->getMessage();
 }
 
-$aiReady = $provider === 'sidecar'
-    ? ($checks['sidecar_reachable'] ?? false) === true
-    : $checks['ai_configured'] === true;
+// Los servicios internos se sondean de verdad; con la API pública basta con que
+// la configuración esté puesta, porque comprobarla costaría tokens.
+$aiReady = match ($provider) {
+    'ollama' => ($checks['ollama_reachable'] ?? false) === true,
+    'sidecar' => ($checks['sidecar_reachable'] ?? false) === true,
+    default => $checks['ai_configured'] === true,
+};
 
 $ready = $checks['curl'] === true
     && $checks['mbstring'] === true

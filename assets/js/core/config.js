@@ -28,6 +28,8 @@ export const content = {
   grammar: list(raw.grammar),
   profiles: list(raw.profiles),
   minimalPairs: list(raw.minimalPairs),
+  levelTest: raw.levelTest || { vocab: [], reading: null },
+  examTasks: raw.examTasks || { writing: {}, speaking: {} },
 };
 
 /** Etiqueta corta de una categoría de tarjeta ("reunion" → "Reunión"). */

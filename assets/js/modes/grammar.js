@@ -424,6 +424,7 @@ export function createGrammarMode({ store, onActivity }) {
     },
     masteredCount: () => items().filter((g) => (state.srs[g.id]?.box ?? 1) >= MAX_BOX).length,
     totalCount: () => items().length,
+    dueCount: () => items().filter((g) => isDue(state.srs[g.id])).length,
 
     /** Niveles presentes, en orden CEFR. Lo usa el filtro del Cuaderno. */
     levels,

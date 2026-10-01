@@ -674,6 +674,7 @@ export function createFlashcardsMode({ store, profile, onActivity }) {
 
     masteredCount: () =>
       state.deck.filter((card) => (state.srs[card.id]?.box ?? 1) >= MAX_BOX).length,
+    dueCount: () => state.deck.filter((card) => isDue(state.srs[card.id])).length,
 
     /** Reinicia el progreso de la categoría visible. Devuelve su descripción. */
     async reset() {

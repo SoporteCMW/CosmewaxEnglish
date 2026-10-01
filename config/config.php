@@ -23,9 +23,36 @@ return [
     ],
 
     'ai' => [
-        // sidecar → claude-sidecar interno, sin claves (modo normal)
+        // azure     → Azure OpenAI (Foundry), Responses API. Modo normal.
+        // ollama    → pasarela interna de Cosmewax (HTTPS + Bearer).
+        // sidecar   → claude-sidecar interno, sin claves. Anterior a la pasarela.
         // anthropic → API pública, requiere ANTHROPIC_API_KEY
-        'provider' => Env::get('AI_PROVIDER', 'sidecar'),
+        'provider' => Env::get('AI_PROVIDER', 'azure'),
+    ],
+
+    // `model` es el nombre del DEPLOYMENT en Foundry, no el del modelo base.
+    'azure' => [
+        'url' => Env::get(
+            'AZURE_OPENAI_URL',
+            'https://cosmeenglish-resource.services.ai.azure.com/api/projects/cosmeenglish/openai/v1/responses'
+        ),
+        'api_key' => Env::get('AZURE_OPENAI_API_KEY', ''),
+        'model' => Env::get('AZURE_OPENAI_DEPLOYMENT', ''),
+        'timeout' => Env::int('AZURE_OPENAI_TIMEOUT', 120),
+    ],
+
+    /**
+     * Pasarela de IA interna: Ollama detrás de Caddy, en la red 10.0.x.x.
+     *
+     * La clave es obligatoria en todas las peticiones y vive sólo en `.env`,
+     * nunca en el código ni en el repositorio. El certificado lo firma la CA
+     * interna de Caddy y el cliente no lo verifica (ver OllamaClient).
+     */
+    'ollama' => [
+        'url' => Env::get('OLLAMA_URL', 'https://10.0.70.32:11443'),
+        'api_key' => Env::get('OLLAMA_API_KEY', ''),
+        'model' => Env::get('OLLAMA_MODEL', 'qwen3-server'),
+        'timeout' => Env::int('OLLAMA_TIMEOUT', 120),
     ],
 
     /**
@@ -54,8 +81,15 @@ return [
      *   - `timeout`     → segundos, lo usa el sidecar (tabla de tiempos reales
      *                     medidos en la referencia del servicio).
      *   - `effort`      → sólo API pública, y sólo en modelos que lo soportan.
-     *   - `max_tokens`  → sólo API pública. Es un techo, no un gasto.
-     *   - `model`       → sólo API pública; vacío = modelo global.
+     *   - `max_tokens`  → API pública y pasarela (allí viaja como `num_predict`).
+     *                     Es un techo, no un gasto.
+     *   - `model`       → sólo API pública; vacío = modelo global. La pasarela
+     *                     usa siempre OLLAMA_MODEL.
+     *   - `json`        → sólo pasarela: fuerza `format:"json"` y temperatura 0.
+     *                     Va marcado en las tareas cuya respuesta se parsea como
+     *                     JSON, que son todas menos las tres de texto libre
+     *                     (conversation.reply, conversation.feedback y
+     *                     reading.passage).
      */
     'tasks' => [
         'conversation.reply' => [
@@ -80,27 +114,43 @@ return [
         ],
         // Pasaje de 500-600 palabras (largo de B2 First) más seis preguntas: es
         // bastante más texto que el resto de generaciones, de ahí el margen.
-        'listening.passage' => ['timeout' => 150, 'effort' => 'low', 'max_tokens' => 8000],
-        'listening.grade' => ['timeout' => 60, 'effort' => 'low', 'max_tokens' => 4000],
+        'listening.passage' => ['timeout' => 150, 'effort' => 'low', 'max_tokens' => 8000, 'json' => true],
+        'listening.grade' => ['timeout' => 60, 'effort' => 'low', 'max_tokens' => 4000, 'json' => true],
         // Corregir una tarjeta o un ejercicio de gramática: una frase de entrada y
         // otra de salida. Son las llamadas más cortas de la app y también, de
         // lejos, las más frecuentes — una por cada respuesta repasada —, así que el
         // timeout es corto a propósito: si el servidor de IA no contesta en 45 s,
         // el modo cae al diff de texto y sigue repasando en lugar de esperar.
-        'flashcards.grade' => ['timeout' => 45, 'effort' => 'low', 'max_tokens' => 2000],
-        'grammar.grade' => ['timeout' => 45, 'effort' => 'low', 'max_tokens' => 2000],
-        'notebook.lookup' => ['timeout' => 45, 'effort' => 'low', 'max_tokens' => 2000],
-        // 30 términos con ejemplo: es la llamada más larga de la app.
-        'vocab.generate' => ['timeout' => 150, 'effort' => 'low', 'max_tokens' => 8000],
-        'scenario.generate' => ['timeout' => 90, 'effort' => 'low', 'max_tokens' => 4000],
-        'scenario.everyday' => ['timeout' => 90, 'effort' => 'low', 'max_tokens' => 4000],
+        'flashcards.grade' => ['timeout' => 45, 'effort' => 'low', 'max_tokens' => 2000, 'json' => true],
+        'grammar.grade' => ['timeout' => 45, 'effort' => 'low', 'max_tokens' => 2000, 'json' => true],
+        'notebook.lookup' => ['timeout' => 45, 'effort' => 'low', 'max_tokens' => 2000, 'json' => true],
+        // 30 términos con ejemplo: es la llamada más larga de la app. El techo
+        // es amplio a propósito — recortarlo reproduce el corte a mitad del JSON
+        // que documenta el QA de v34.
+        'vocab.generate' => ['timeout' => 150, 'effort' => 'low', 'max_tokens' => 8000, 'json' => true],
+        'scenario.generate' => ['timeout' => 90, 'effort' => 'low', 'max_tokens' => 4000, 'json' => true],
+        'scenario.everyday' => ['timeout' => 90, 'effort' => 'low', 'max_tokens' => 4000, 'json' => true],
         // Cinco pares de palabras, cada uno con su nota de articulación. Deja de
         // ser la respuesta más corta de la app y pasa a ser la más lenta: medido
         // en 34 s para "V vs B" y 77 s para la vocal "ER", frente a los ~11 s de
         // cuando sólo eran las dos palabras. El margen es amplio a propósito —
         // los grupos de vocales tardan el doble que los de consonantes, y
         // quedarse corto aquí aborta un lote que iba bien.
-        'pron.pairs' => ['timeout' => 150, 'effort' => 'low', 'max_tokens' => 4000],
+        'pron.pairs' => ['timeout' => 150, 'effort' => 'low', 'max_tokens' => 4000, 'json' => true],
+        // Test de colocación: 12 respuestas cortas de entrada, un nivel y dos
+        // frases de salida.
+        'leveltest.analyze' => ['timeout' => 60, 'effort' => 'low', 'max_tokens' => 2000, 'json' => true],
+        // Examen de Progreso. Los pasajes son de 280-320 palabras (más corto que
+        // Listening a propósito: el examen ya es largo de por sí).
+        'exam.passage' => ['timeout' => 120, 'effort' => 'low', 'max_tokens' => 6000, 'json' => true],
+        'exam.listening' => ['timeout' => 120, 'effort' => 'low', 'max_tokens' => 6000, 'json' => true],
+        'exam.grade.grammar' => ['timeout' => 60, 'effort' => 'low', 'max_tokens' => 1000, 'json' => true],
+        'exam.grade.listening' => ['timeout' => 60, 'effort' => 'low', 'max_tokens' => 1000, 'json' => true],
+        'exam.grade.writing' => ['timeout' => 90, 'effort' => 'medium', 'max_tokens' => 3000, 'json' => true],
+        'exam.grade.speaking' => ['timeout' => 90, 'effort' => 'medium', 'max_tokens' => 3000, 'json' => true],
+        // "¿Qué hago hoy?": tres o cuatro frases en texto plano.
+        'guide.daily' => ['timeout' => 45, 'effort' => 'low', 'max_tokens' => 1500],
+        'guide.ask' => ['timeout' => 45, 'effort' => 'low', 'max_tokens' => 1500],
     ],
 
     'rate_limit' => [

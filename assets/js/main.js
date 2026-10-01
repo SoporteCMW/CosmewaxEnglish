@@ -2,10 +2,12 @@ import { config, content } from './core/config.js';
 import { $, delegate, escapeHtml } from './core/dom.js';
 import { createStore, setPersistenceWarning } from './core/storage.js';
 import { aiAvailable, setLevelProvider } from './core/api.js';
-import { INSECURE_CONTEXT_MESSAGE } from './core/speech.js';
+import { INSECURE_CONTEXT_MESSAGE, setRateProvider } from './core/speech.js';
 import { confirmThenRun, showToast } from './core/ui.js';
 import { createProfile } from './core/profile.js';
-import { createLevel } from './core/level.js';
+import { createLevel, levelRate } from './core/level.js';
+import { createLevelTest } from './core/level-test.js';
+import { createGuide } from './core/guide.js';
 import { createStreak } from './core/streak.js';
 import { createNotebookService } from './core/notebook-service.js';
 import { createFlashcardsMode } from './modes/flashcards.js';
@@ -15,6 +17,7 @@ import { createListeningMode } from './modes/listening.js';
 import { createGrammarMode } from './modes/grammar.js';
 import { createNotebookMode } from './modes/notebook.js';
 import { createPronunciationMode } from './modes/pronunciation.js';
+import { createExamMode } from './modes/exam.js';
 
 /**
  * Arranque y router de modos.
@@ -32,6 +35,8 @@ const notebook = createNotebookService({ store });
 // El nivel CEFR viaja adjunto a cada tarea de IA. Se registra aquí, una sola
 // vez, para que ningún modo tenga que acordarse de mandarlo.
 setLevelProvider(() => level.id());
+// Y la velocidad de la voz sintetizada, que también depende del nivel.
+setRateProvider(() => levelRate(level.id()));
 
 /** Cualquier modo que complete algo llama aquí: alimenta racha y resumen. */
 async function onActivity() {
@@ -56,6 +61,36 @@ const notebookMode = createNotebookMode({
   grammar: { levels: () => grammar.levels(), listItems: () => grammar.listItems() },
   onActivity,
 });
+const exam = createExamMode({ store, onActivity });
+
+/** Aplica un nivel desde el test de colocación. */
+const levelTest = createLevelTest({
+  onAccept: async (id) => {
+    if (await level.set(id)) {
+      renderLevelSelect();
+      showToast(
+        `Nivel activo: ${id}. Las lecturas, los audios, las conversaciones y el vocabulario ` +
+          'nuevo se adaptarán a este nivel.'
+      );
+    }
+  },
+});
+
+/** "¿Qué hago hoy?": el estado real del alumno, sólo números y valores cerrados. */
+const guide = createGuide({
+  store,
+  profileId: () => profile.id(),
+  stats: () => {
+    const last = exam.lastExamSummary();
+    return {
+      cardsDue: flashcards.dueCount(),
+      notebookDue: notebook.dueCount(),
+      grammarDue: grammar.dueCount(),
+      streak: streak.current(),
+      ...(last ? { lastExamDate: last.date, weakestSkill: last.weakestSkill } : {}),
+    };
+  },
+});
 
 const MODES = {
   notebook: { view: $('#notebookView'), controller: notebookMode },
@@ -65,6 +100,7 @@ const MODES = {
   conversation: { view: $('#conversationView'), controller: conversation },
   reading: { view: $('#readingView'), controller: reading },
   listening: { view: $('#listeningView'), controller: listening },
+  exam: { view: $('#examView'), controller: exam },
 };
 
 let activeMode = 'flashcards';
@@ -130,6 +166,10 @@ function renderLevelSelect() {
 }
 
 function wireGlobalBar() {
+  $('#levelTestBtn')?.addEventListener('click', () => levelTest.open());
+  $('#guideBtn')?.addEventListener('click', () => guide.openGuide());
+  $('#onboardingBtn')?.addEventListener('click', () => guide.openOnboarding());
+
   const levelSelect = $('#levelSelect');
   if (levelSelect) {
     levelSelect.addEventListener('change', async (event) => {
@@ -276,7 +316,7 @@ async function boot() {
   await store.hydrate();
 
   // El perfil y el cuaderno los necesitan varios modos al iniciarse.
-  await Promise.all([profile.load(), level.load(), streak.load(), notebook.load()]);
+  await Promise.all([profile.load(), level.load(), streak.load(), notebook.load(), guide.load()]);
 
   const controllers = Object.entries(MODES);
   const results = await Promise.allSettled(
@@ -297,6 +337,7 @@ async function boot() {
   renderSummary();
 
   MODES[activeMode].controller.show();
+  guide.showOnboardingIfNew();
 }
 
 boot().catch((err) => {

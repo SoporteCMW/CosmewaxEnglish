@@ -163,12 +163,25 @@ export class Dictation {
  */
 let speechRun = 0;
 
+/**
+ * Velocidad por defecto de la síntesis, según el nivel activo.
+ *
+ * Igual que el nivel en `core/api.js`: la registra `main.js` una vez y así
+ * ningún modo tiene que pasarla. Las llamadas con `rate` explícito (palabras
+ * sueltas a 0.85 para oírlas despacio) no cambian.
+ */
+let rateProvider = () => 0.95;
+
+export function setRateProvider(fn) {
+  rateProvider = typeof fn === 'function' ? fn : () => 0.95;
+}
+
 function startRun() {
   speechRun += 1;
   return speechRun;
 }
 
-export function speak(text, { rate = 0.95, lang = 'en-US' } = {}) {
+export function speak(text, { rate = rateProvider(), lang = 'en-US' } = {}) {
   if (!isSynthesisSupported() || !text) return;
   startRun();
   window.speechSynthesis.cancel();
@@ -215,7 +228,7 @@ function splitForSpeech(text, maxChars = 220) {
  * del audio del que luego le preguntan. El corte entre trozos es inaudible y
  * `onEnd` sigue llegando una sola vez, al acabar el último.
  */
-export function speakTracked(text, { rate = 0.95, lang = 'en-US', onEnd } = {}) {
+export function speakTracked(text, { rate = rateProvider(), lang = 'en-US', onEnd } = {}) {
   if (!isSynthesisSupported() || !text) {
     if (onEnd) onEnd();
     return;
@@ -263,4 +276,50 @@ export function cancelSpeech() {
   if (!isSynthesisSupported()) return;
   startRun();
   window.speechSynthesis.cancel();
+}
+
+/**
+ * Micrófono de un campo de texto suelto: pulsar dicta, volver a pulsar para.
+ *
+ * Lo usan los diálogos del test de nivel y del examen, que pintan un campo con
+ * su botón y no tienen el aparato de latencias de Tarjetas. El texto dictado
+ * sustituye al del campo, igual que en el resto de la aplicación.
+ */
+export function toggleDictationInto(dictation, input, button, messageBox) {
+  const say = (text) => {
+    if (!messageBox) return;
+    messageBox.textContent = text;
+    messageBox.hidden = !text;
+  };
+  const sync = () => {
+    if (!button) return;
+    button.textContent = dictation.isListening ? '● Escuchando' : '🎤';
+    button.classList.toggle('is-recording', dictation.isListening);
+  };
+
+  const unavailable = dictationUnavailableReason();
+  if (unavailable) {
+    say(unavailable);
+    return;
+  }
+  if (dictation.isListening) {
+    dictation.stop();
+    sync();
+    return;
+  }
+
+  say('');
+  const started = dictation.start({
+    onFinal: (transcript) => {
+      if (!input) return;
+      input.value = transcript.trim();
+      input.focus();
+    },
+    onError: (code, message) => {
+      say(message);
+      sync();
+    },
+    onEnd: sync,
+  });
+  if (started) sync();
 }

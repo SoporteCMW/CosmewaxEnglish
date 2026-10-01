@@ -2,7 +2,7 @@ import { categoryLabel, content, profileLabel } from '../core/config.js';
 import { $, delegate, escapeHtml } from '../core/dom.js';
 import { aiAvailable, requestTask } from '../core/api.js';
 import { Dictation, dictationUnavailableReason, speak } from '../core/speech.js';
-import { formatFeedbackHtml } from '../core/ui.js';
+import { formatFeedbackHtml, showToast } from '../core/ui.js';
 import { evaluateAnswer } from '../lib/text.js';
 import { MAX_BOX } from '../lib/srs.js';
 
@@ -71,6 +71,7 @@ export function createNotebookMode({ notebook, cards, grammar, onActivity }) {
       if (action === 'check') checkAnswer();
       if (action === 'mic') toggleDictation();
       if (action === 'rate') rate(target.dataset.grade);
+      if (action === 'manual-add') addManual(target);
       if (action === 'say-answer' && state.lastResult) {
         speak(state.lastResult.correctAlt, { rate: 0.85 });
       }
@@ -80,6 +81,11 @@ export function createNotebookMode({ notebook, cards, grammar, onActivity }) {
       if (event.key === 'Enter' && event.target.id === 'notebookInput') {
         event.preventDefault();
         checkAnswer();
+      }
+      if (event.key === 'Enter' && event.target.id === 'manualWordInput') {
+        event.preventDefault();
+        const ctx = $('#manualWordContext', el.body);
+        if (ctx) ctx.focus();
       }
     });
 
@@ -266,14 +272,60 @@ export function createNotebookMode({ notebook, cards, grammar, onActivity }) {
     );
   }
 
+  /** Formulario para añadir una palabra vista fuera de la aplicación. */
+  function manualAddHtml() {
+    if (!aiAvailable()) return '';
+    return `
+      <details class="add-form" style="margin-bottom:18px;">
+        <summary>+ Añadir una palabra que has visto fuera de la app</summary>
+        <div class="add-form-inner">
+          <div>
+            <label for="manualWordInput">Palabra o expresión en inglés</label>
+            <input id="manualWordInput" type="text" placeholder="ej. procrastinate" autocomplete="off">
+          </div>
+          <div>
+            <label for="manualWordContext">Frase o contexto donde la viste (opcional, ayuda a traducir bien)</label>
+            <textarea id="manualWordContext" placeholder="ej. Stop procrastinating and send the report."></textarea>
+          </div>
+          <button type="button" class="add-btn" data-action="manual-add">Buscar significado y añadir</button>
+        </div>
+      </details>`;
+  }
+
+  async function addManual(button) {
+    const wordInput = $('#manualWordInput', el.body);
+    const ctxInput = $('#manualWordContext', el.body);
+    const word = wordInput ? wordInput.value.trim() : '';
+    const ctx = ctxInput ? ctxInput.value.trim() : '';
+    if (!word) {
+      if (wordInput) wordInput.focus();
+      return;
+    }
+    if (notebook.has(word)) {
+      showToast(`"${word}" ya está en tu cuaderno.`);
+      return;
+    }
+
+    button.disabled = true;
+    showToast(`Buscando el significado de "${word}"…`, 8000);
+    try {
+      // El repintado lo dispara `notebook.onChange` al guardar.
+      const entry = await notebook.add(word, ctx, { manual: true });
+      if (entry) showToast(`"${entry.word}" → "${entry.translation}" · añadida al cuaderno.`);
+    } catch (err) {
+      showToast(`No se pudo añadir "${word}": ${err.message}`);
+      button.disabled = false;
+    }
+  }
+
   /** Las palabras marcadas, con el botón de repaso. */
   function markedViewHtml() {
     const entries = notebook.all();
     if (!entries.length) {
-      return emptyState(
+      return manualAddHtml() + emptyState(
         'Tu cuaderno está vacío',
         'Ve a Conversación, Lectura, Listening o Gramática y pulsa cualquier palabra del texto ' +
-          'para añadirla aquí, con su traducción en ese contexto.'
+          'para añadirla aquí, con su traducción en ese contexto, o añade una tú mismo arriba.'
       );
     }
 
@@ -284,12 +336,13 @@ export function createNotebookMode({ notebook, cards, grammar, onActivity }) {
       </button>`;
 
     return (
+      manualAddHtml() +
       button +
       entries
         .map(
           (entry) => `
             <article class="notebook-entry">
-              <div class="notebook-source-tag">Nivel ${entry.box ?? 1}/${MAX_BOX}</div>
+              <div class="notebook-source-tag">${entry.cefrLevel ? `${escapeHtml(entry.cefrLevel)} · ` : ''}Dominio ${entry.box ?? 1}/${MAX_BOX}</div>
               <div class="notebook-word">${escapeHtml(entry.word)}</div>
               <div class="notebook-translation">${escapeHtml(entry.translation)}</div>
               <div class="notebook-example">"${escapeHtml(entry.example)}"</div>
@@ -345,7 +398,7 @@ export function createNotebookMode({ notebook, cards, grammar, onActivity }) {
     const entry = state.queue[state.index];
     el.body.innerHTML = `
       <div class="card">
-        <div class="card-tag">Cuaderno</div>
+        <div class="card-tag">Cuaderno${entry.cefrLevel ? ` · ${escapeHtml(entry.cefrLevel)}` : ''}</div>
         <div class="card-box">${dots(entry.box ?? 1)}</div>
         <div class="prompt-label">Traduce al inglés</div>
         <div class="prompt-text">${escapeHtml(entry.translation)}</div>

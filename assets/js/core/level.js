@@ -9,12 +9,22 @@ const KEY = 'level';
  * instrucción concreta que recibe el modelo — aquí no hay nada de prompt, igual
  * que en `profile.js`.
  */
+/*
+ * `rate` es la velocidad de la síntesis de voz para ese nivel: un B1 oye el
+ * audio más despacio y un C2 a velocidad nativa o algo más. Va a juego con el
+ * ritmo de información que pide el prompt de cada nivel en el servidor.
+ */
 export const LEVELS = [
-  { id: 'B1', label: 'B1', hint: 'intermedio — frases cortas y vocabulario común' },
-  { id: 'B2', label: 'B2', hint: 'intermedio alto — inglés de trabajo del día a día' },
-  { id: 'C1', label: 'C1', hint: 'avanzado — matices y lenguaje idiomático' },
-  { id: 'C2', label: 'C2', hint: 'casi nativo — sin simplificar' },
+  { id: 'B1', label: 'B1', rate: 0.82, hint: 'intermedio — frases cortas y vocabulario común' },
+  { id: 'B2', label: 'B2', rate: 0.92, hint: 'intermedio alto — inglés de trabajo del día a día' },
+  { id: 'C1', label: 'C1', rate: 1.0, hint: 'avanzado — matices y lenguaje idiomático' },
+  { id: 'C2', label: 'C2', rate: 1.1, hint: 'casi nativo — sin simplificar' },
 ];
+
+/** Velocidad de voz de un nivel; la de B2 si no se reconoce. */
+export function levelRate(id) {
+  return (LEVELS.find((l) => l.id === id) || LEVELS[1]).rate;
+}
 
 /** El de siempre: es lo que la aplicación asumía antes de existir el selector. */
 const FALLBACK = 'B2';
